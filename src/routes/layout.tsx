@@ -29,6 +29,7 @@ export default component$(() => {
   return (
     <>
       <Header />
+      <div class="h-16 w-full"></div>
       <main class="flex-1">
         <Slot />
       </main>

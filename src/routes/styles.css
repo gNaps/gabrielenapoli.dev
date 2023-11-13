@@ -28,56 +28,118 @@ h4 {
 }
 
 .gradient-2 {
-  background: linear-gradient(
-    90deg,
-    #D267B5 1%,
-    #F76076 100.0%
-  );
+  background: linear-gradient(90deg, #d267b5 1%, #f76076 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .gradient-3 {
-  background: linear-gradient(
-    90deg,
-    #FF6965 1%,
-    #FF7B5D 100.0%
-  );
+  background: linear-gradient(90deg, #ff6965 1%, #ff7b5d 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .gradient-4 {
-  background: linear-gradient(
-    90deg,
-    #C868C5 1%,
-    #EC628A 100.0%
-  );
+  background: linear-gradient(90deg, #c868c5 1%, #ec628a 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .gradient-5 {
-  background: linear-gradient(
-    90deg,
-    #FF8C56 1%,
-    #FF9951 100.0%
-  );
+  background: linear-gradient(90deg, #ff8c56 1%, #ff9951 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .gradient-6 {
-  background: linear-gradient(
-    90deg,
-    #B16CEA 1%,
-    #B26CE9 100.0%
-  );
+  background: linear-gradient(90deg, #b16cea 1%, #b26ce9 100%);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.gradient-no-text {
+  background: linear-gradient(
+    90deg,
+    #b16cea 14.06%,
+    #ff5e69 44.79%,
+    #ff8a56 71.87%,
+    #ffa84b 100%
+  );
+}
+
+svg {
+  fill: #f0f2f5;
+}
+
+svg.inverse {
+  fill: #161513;
+}
+
+.animation {
+  transition: 1000ms ease-in-out;
+  transition-property: transform opacity;
+}
+
+.animation-entered {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.animation-positioning {
+  transform: translateY(100px);
+  opacity: 0;
+}
+
+.menu-responsive-entered {
+  filter: blur(0px);
+  transform: scale(1);
+}
+
+.menu-responsive-animating {
+  filter: blur(20px);
+  transform: scale(0.6);
+}
+
+.menu-responsive {
+  position: fixed;
+  width: 100vw;
+  height: 100dvh;
+  top: 0;
+  left: 0;
+  margin: 0;
+  background-color: #161513;
+  border-color: #161513;
+  border-radius: 0.25rem;
+  transition: 300ms ease-in-out;
+  transition-property: filter, transform;
+  font-family: sans-serif;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 1.5rem;
+  gap: 1rem;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.header {
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: 2;
+}
+
+.stack-wrapper {
+  flex: 49%;
+}
+
+@media (min-width: 992px) {
+  .stack-wrapper {
+    flex: 24%;
+  }
 }

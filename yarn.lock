@@ -463,6 +463,11 @@
   resolved "https://registry.yarnpkg.com/@ungap/structured-clone/-/structured-clone-1.2.0.tgz#756641adb587851b5ccb3e095daf27ae581c8406"
   integrity sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==
 
+"@unpic/qwik@^0.0.32":
+  version "0.0.32"
+  resolved "https://registry.yarnpkg.com/@unpic/qwik/-/qwik-0.0.32.tgz#c748fb3a7cd244ca581bdac748fa7f9d7e68e33f"
+  integrity sha512-kTSBwRAxs0jyJxi1AfQGQT/LVbnvOg6OMVGFT2omExDtHcIImyR+xEsVsDvNyutEb3I97vMEbNVXH4sDJ805Dg==
+
 acorn-jsx@^5.0.0, acorn-jsx@^5.3.2:
   version "5.3.2"
   resolved "https://registry.yarnpkg.com/acorn-jsx/-/acorn-jsx-5.3.2.tgz#7ed5bb55908b3b2f1bc55c6af1653bada7f07937"
@@ -2651,6 +2656,11 @@ queue-tick@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/queue-tick/-/queue-tick-1.0.1.tgz#f6f07ac82c1fd60f82e098b417a80e52f1f4c142"
   integrity sha512-kJt5qhMxoszgU/62PLP1CJytzd2NKetjSRnyuj31fDd3Rlcz3fzlFdFLD1SItunPwyqEOkca6GbV612BWfaBag==
+
+qwik-transition@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/qwik-transition/-/qwik-transition-0.0.7.tgz#57c3d6db5fd0d0bca47a6ddef76a77b39a0b3c8a"
+  integrity sha512-U1wEJ/RWYuwfuWl8cWToTJASkRogoBGlBKbr/lKhzQYGeLNXk2K7IUXCMtELcUNHEI7J1MyNbjYc5lA6fMbQ8w==
 
 rc@^1.2.7:
   version "1.2.8"
