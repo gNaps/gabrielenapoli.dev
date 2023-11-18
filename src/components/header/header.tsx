@@ -1,10 +1,4 @@
-import {
-  $,
-  component$,
-  useSignal,
-  useTask$,
-  useVisibleTask$,
-} from "@builder.io/qwik";
+import { $, component$, useSignal } from "@builder.io/qwik";
 import { Link } from "@builder.io/qwik-city";
 import Button from "../button/button";
 import { useCSSTransition } from "qwik-transition";
@@ -15,38 +9,13 @@ export default component$(() => {
   });
 
   const menuOnOff = useSignal(false);
-  const buttonOnOff = useSignal(true);
-  const showBtnRef = useSignal<HTMLButtonElement>();
-  const menuBtnRef = useSignal<HTMLButtonElement>();
   const menuTrans = useCSSTransition(menuOnOff, { timeout: 300 });
-  const buttonTrans = useCSSTransition(buttonOnOff, {
-    timeout: 300,
-  });
 
   const toggleMenu = $(() => {
     menuOnOff.value = !menuOnOff.value;
     const body = document.querySelector("body");
     body?.classList.toggle("overflow-hidden");
   });
-
-  // useTask$(({ track }) => {
-  //   track(() => menuOnOff.value);
-
-  //   // treat buttonOnOff as computed value of menuOnOff
-  //   buttonOnOff.value = !menuOnOff.value;
-  // });
-
-  // useVisibleTask$(({ track }) => {
-  //   track(() => menuBtnRef.value);
-  //   track(() => menuTrans.shouldMount.value);
-
-  //   // force focus to menu button when it's visible
-  //   if (menuTrans.shouldMount.value && menuBtnRef.value) {
-  //     menuBtnRef.value.focus();
-  //   } else if (!menuTrans.shouldMount.value && showBtnRef.value) {
-  //     showBtnRef.value.focus();
-  //   }
-  // });
 
   return (
     <>

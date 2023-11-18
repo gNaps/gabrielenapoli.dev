@@ -69,7 +69,7 @@ export default component$(() => {
 
   return (
     <>
-      <div class="py-8 lg:px-36 lg:py-24 xl:px-60">
+      <div class="py-8 lg:px-36 lg:py-24 xl:px-96">
         <Animated>
           <h4>Hello, I'm Gabriele.</h4>
           <h1 class="mt-3 lg:mt-7 gradient">
@@ -131,8 +131,7 @@ export default component$(() => {
           <div class="flex flex-col md:flex-row md:flex-wrap">
             {projects.value.data.allProjects.map((p) => (
               <div
-                style="flex: 50%"
-                class="mb-8 md:odd:pr-5 md:even:pl-5"
+                class="mb-8 md:odd:pr-5 md:even:pl-5 w-full md:w-1/2"
                 key={p.id}
               >
                 <Animated>
@@ -264,8 +263,7 @@ export default component$(() => {
           <div class="flex flex-col md:flex-row md:flex-wrap">
             {stories.value.data.allStories.map((s) => (
               <div
-                style="flex: 50%"
-                class="mb-8 md:mb-0 md:odd:pr-5 md:even:pl-5"
+                class="mb-8 md:mb-0 md:odd:pr-5 md:even:pl-5 w-full md:w-1/2"
                 key={s.id}
               >
                 <Animated>

@@ -69,7 +69,7 @@ export default component$(() => {
 
   return (
     <>
-      <div class="py-8 lg:px-36 lg:py-24 xl:px-60">
+      <div class="py-8 lg:px-36 lg:py-24 xl:px-96">
         <Animated>
           <h4>About me.</h4>
           <div class="flex flex-col md:flex-row md:gap-10 items-center">
@@ -103,13 +103,15 @@ export default component$(() => {
               </div>
             </div>
           </div>
-          <Image
-            src="https://www.datocms-assets.com/110849/1699911074-about-me.webp"
-            alt="Gabriele Napoli"
-            width={1200}
-            height={600}
-            class="rounded-lg mt-8"
-          />
+          <div class="flex justify-center">
+            <Image
+              src="https://www.datocms-assets.com/110849/1699911074-about-me.webp"
+              alt="Gabriele Napoli"
+              width={1200}
+              height={600}
+              class="rounded-lg mt-8"
+            />
+          </div>
         </Animated>
 
         <div class="my-16">

@@ -5,11 +5,11 @@ import Animated from "../animated/animated";
 
 export default component$(() => {
   return (
-    <footer class="lg:px-36 lg:pb-24 xl:px-60">
+    <footer class="lg:px-36 lg:pb-24 xl:px-96">
       <Animated>
         <div class="my-3">
           <h2 class="my-2">
-            Let’s work togheter creating unique and incredible applications.
+            Let’s work together creating unique and incredible applications.
           </h2>
           <div class="flex flex-col md:flex-row items-center gap-2">
             <h1 class="my-2">gabrielenap@gmail.com</h1>
