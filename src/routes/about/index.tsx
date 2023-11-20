@@ -69,7 +69,7 @@ export default component$(() => {
 
   return (
     <>
-      <div class="py-8 lg:px-36 lg:py-24 xl:px-96">
+      <div class="py-8 lg:px-36 lg:py-24 xl:px-80">
         <Animated>
           <h4>About me.</h4>
           <div class="flex flex-col md:flex-row md:gap-10 items-center">
@@ -117,7 +117,7 @@ export default component$(() => {
         <div class="my-16">
           <Animated>
             <h2>
-              I’m an expert <span class="gradient-2">Angular</span> and{" "}
+              I’m a senior <span class="gradient-2">Angular</span> and{" "}
               <span class="gradient-3">React</span> developer. For API, I like
               to use <span class="gradient-4">Node.js</span> and, in particular,{" "}
               <span class="gradient-5">Fastify</span> with{" "}
@@ -212,7 +212,7 @@ export const head: DocumentHead = {
     {
       name: "About me | Gabriele Napoli Developer",
       content:
-        "I’m an expert Angular and React developer. For API, I like to use Node.js and, in particular, Fastify with Prisma.",
+        "I’m a senior Angular and React developer. For API, I like to use Node.js and, in particular, Fastify with Prisma.",
     },
   ],
 };

@@ -5,7 +5,7 @@ import Animated from "../animated/animated";
 
 export default component$(() => {
   return (
-    <footer class="lg:px-36 lg:pb-24 xl:px-96">
+    <footer class="lg:px-36 lg:pb-24 xl:px-80">
       <Animated>
         <div class="my-3">
           <h2 class="my-2">

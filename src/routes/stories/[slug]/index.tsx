@@ -56,7 +56,7 @@ export default component$(() => {
 
   return (
     <>
-      <div class="py-8 lg:px-36 lg:py-24 xl:px-96">
+      <div class="py-8 lg:px-36 lg:py-24 xl:px-80">
         <Animated>
           <p class="subtitle">{writtenAt}</p>
           <h1 class="mt-3 lg:mt-7">{title}</h1>
@@ -75,9 +75,11 @@ export default component$(() => {
         </div>
 
         <div class="my-16">
-          {contentChildren.map((c: any) => (
-            <RenderContent content={c} key={c} />
-          ))}
+          <Animated>
+            {contentChildren.map((c: any) => (
+              <RenderContent content={c} key={c} />
+            ))}
+          </Animated>
         </div>
       </div>
     </>
@@ -90,7 +92,7 @@ export const head: DocumentHead = {
     {
       name: "A collection of my projects | Gabriele Napoli Developer",
       content:
-        "I’m an expert Angular and React developer. For API, I like to use Node.js and, in particular, Fastify with Prisma.",
+        "I’m a senior Angular and React developer. For API, I like to use Node.js and, in particular, Fastify with Prisma.",
     },
   ],
 };

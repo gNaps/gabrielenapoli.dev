@@ -69,7 +69,7 @@ export default component$(() => {
 
   return (
     <>
-      <div class="py-8 lg:px-36 lg:py-24 xl:px-96">
+      <div class="py-8 lg:px-36 lg:py-24 xl:px-80">
         <Animated>
           <h4>Hello, I'm Gabriele.</h4>
           <h1 class="mt-3 lg:mt-7 gradient">
@@ -201,7 +201,7 @@ export default component$(() => {
         <div class="my-16">
           <Animated>
             <h2>
-              I’m an expert <span class="gradient-2">Angular</span> and{" "}
+              I’m a senior <span class="gradient-2">Angular</span> and{" "}
               <span class="gradient-3">React</span> developer. For API, I like
               to use <span class="gradient-4">Node.js</span> and, in particular,{" "}
               <span class="gradient-5">Fastify</span> with{" "}
