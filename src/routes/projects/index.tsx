@@ -1,6 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import { routeLoader$, type DocumentHead } from "@builder.io/qwik-city";
-import { FramerAnimated } from "~/components/framer-animated/framer-animated";
+import { ContainerAnimated } from "~/components/container-animated/container-animated";
 import ListProjects from "~/components/list-projects/list-projects";
 import { projectsListApi } from "~/utils/api.utils";
 
@@ -15,12 +15,12 @@ export default component$(() => {
   return (
     <>
       <div class="py-8 lg:px-36 lg:py-24 xl:px-80">
-        <FramerAnimated client:visible>
+        <ContainerAnimated client:visible>
           <h4>My projects.</h4>
           <h1 class="mt-3 lg:mt-7">
             Remember our words <span class="gradient">coding is coming.</span>
           </h1>
-        </FramerAnimated>
+        </ContainerAnimated>
 
         <div class="my-16">
           <ListProjects projects={projects.value} homepage={false} />

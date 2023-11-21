@@ -11,6 +11,11 @@ export default component$(
   ({ type = "basic", value, onClick, size = "medium" }: ButtonProps) => {
     const bg = type === "basic" ? "bg-white" : "bg-black";
     const textColor = type === "basic" ? "text-black" : "text-white";
+
+    const hoverBg =
+      type === "basic"
+        ? "hover:bg-gradient-to-r from-[#B16CEA] via-[#FFA84B] via-[#FF8A56] to-[#FF5E69] hover:text-white"
+        : "hover:bg-white hover:text-black";
     return (
       <>
         <button
@@ -20,7 +25,7 @@ export default component$(
               : size === "small"
               ? "py-2 px-4"
               : ""
-          } rounded-full border border-white ${bg} ${textColor}`}
+          } rounded-full border border-white ${bg} ${textColor} ${hoverBg}`}
           onClick$={onClick}
         >
           {value && value.toLocaleUpperCase()}

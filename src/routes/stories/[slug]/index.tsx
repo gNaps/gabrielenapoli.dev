@@ -2,7 +2,7 @@ import { component$ } from "@builder.io/qwik";
 import { routeLoader$, type DocumentHead } from "@builder.io/qwik-city";
 import { Image } from "@unpic/qwik";
 import RenderContent from "~/components/render-content/render-content";
-import { FramerAnimated } from "~/components/framer-animated/framer-animated";
+import { ContainerAnimated } from "~/components/container-animated/container-animated";
 import { storyDetailApi } from "~/utils/api.utils";
 
 export const useStory = routeLoader$(async (requestEvent) => {
@@ -27,13 +27,13 @@ export default component$(() => {
   return (
     <>
       <div class="py-8 lg:px-36 lg:py-24 xl:px-80">
-        <FramerAnimated client:visible>
+        <ContainerAnimated client:visible>
           <p class="subtitle">{writtenAt}</p>
           <h1 class="mt-3 lg:mt-7">{title}</h1>
-        </FramerAnimated>
+        </ContainerAnimated>
 
         <div class="my-8 flex justify-center">
-          <FramerAnimated client:visible>
+          <ContainerAnimated client:visible>
             <Image
               src={preview.url}
               alt={preview.alt}
@@ -41,15 +41,15 @@ export default component$(() => {
               height={600}
               class="rounded-lg"
             />
-          </FramerAnimated>
+          </ContainerAnimated>
         </div>
 
         <div class="my-16">
-          <FramerAnimated client:visible>
+          <ContainerAnimated client:visible>
             {contentChildren.map((c: any) => (
               <RenderContent content={c} key={c} />
             ))}
-          </FramerAnimated>
+          </ContainerAnimated>
         </div>
       </div>
     </>

@@ -14,8 +14,7 @@ export default component$(() => {
   const toggleMenu = $(() => {
     const body = document.querySelector("body");
     body?.classList.toggle("overflow-hidden");
-
-    setTimeout(() => (menuOpen.value = !menuOpen.value), 100);
+    menuOpen.value = !menuOpen.value;
   });
 
   return (

@@ -1,5 +1,5 @@
 import { $, component$ } from "@builder.io/qwik";
-import { FramerAnimated } from "../framer-animated/framer-animated";
+import { ContainerAnimated } from "../container-animated/container-animated";
 import Button from "../button/button";
 import { useNavigate } from "@builder.io/qwik-city";
 
@@ -12,7 +12,7 @@ export default component$(() => {
 
   return (
     <>
-      <FramerAnimated client:visible>
+      <ContainerAnimated client:visible>
         <h4>Hello, I'm Gabriele.</h4>
         <h1 class="mt-3 lg:mt-7 gradient">
           Fullstack developer from Milan.
@@ -44,7 +44,7 @@ export default component$(() => {
             </svg>
           </Button>
         </div>
-      </FramerAnimated>
+      </ContainerAnimated>
     </>
   );
 });

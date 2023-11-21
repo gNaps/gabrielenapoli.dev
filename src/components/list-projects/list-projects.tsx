@@ -1,6 +1,6 @@
 import { $, component$ } from "@builder.io/qwik";
 import type { AllProjectsData } from "~/models/project.model";
-import { FramerAnimated } from "../framer-animated/framer-animated";
+import { ContainerAnimated } from "../container-animated/container-animated";
 import ItemProject from "./item-project/item-project";
 import Button from "../button/button";
 import { useNavigate } from "@builder.io/qwik-city";
@@ -20,7 +20,7 @@ export default component$(({ projects, homepage }: ListProjectsProps) => {
   return (
     <>
       {homepage && (
-        <FramerAnimated client:visible>
+        <ContainerAnimated client:visible>
           <div class="flex justify-between mb-6">
             <h4>LATEST PROJECTS</h4>
             <div class="hidden md:block">
@@ -47,19 +47,19 @@ export default component$(({ projects, homepage }: ListProjectsProps) => {
               </Button>
             </div>
           </div>
-        </FramerAnimated>
+        </ContainerAnimated>
       )}
       <div class="flex flex-col md:flex-row md:flex-wrap">
         {projects.data.allProjects.map((p) => (
           <div class="mb-8 md:odd:pr-5 md:even:pl-5 w-full md:w-1/2" key={p.id}>
-            <FramerAnimated client:visible>
+            <ContainerAnimated client:visible>
               <ItemProject {...p} />
-            </FramerAnimated>
+            </ContainerAnimated>
           </div>
         ))}
       </div>
       {homepage && (
-        <FramerAnimated client:visible>
+        <ContainerAnimated client:visible>
           <div class="md:hidden flex justify-center">
             <Button type="outlined" value="View all" onClick={openProjects}>
               <svg
@@ -78,7 +78,7 @@ export default component$(({ projects, homepage }: ListProjectsProps) => {
               </svg>
             </Button>
           </div>
-        </FramerAnimated>
+        </ContainerAnimated>
       )}
     </>
   );

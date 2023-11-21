@@ -1,5 +1,5 @@
 import { $, component$ } from "@builder.io/qwik";
-import { FramerAnimated } from "../framer-animated/framer-animated";
+import { ContainerAnimated } from "../container-animated/container-animated";
 import ItemStory from "./item-story/item-story";
 import Button from "../button/button";
 import { useNavigate } from "@builder.io/qwik-city";
@@ -20,7 +20,7 @@ export default component$(({ stories, homepage }: ListStoriesProps) => {
   return (
     <>
       {homepage && (
-        <FramerAnimated client:visible>
+        <ContainerAnimated client:visible>
           <div class="flex justify-between mb-6">
             <h4>STORIES</h4>
             <div class="hidden md:block">
@@ -47,7 +47,7 @@ export default component$(({ stories, homepage }: ListStoriesProps) => {
               </Button>
             </div>
           </div>
-        </FramerAnimated>
+        </ContainerAnimated>
       )}
 
       <div class="flex flex-col md:flex-row md:flex-wrap">
@@ -61,7 +61,7 @@ export default component$(({ stories, homepage }: ListStoriesProps) => {
         ))}
       </div>
       {homepage && (
-        <FramerAnimated client:visible>
+        <ContainerAnimated client:visible>
           <div class="md:hidden flex justify-center">
             <Button type="outlined" value="View all" onClick={openStories}>
               <svg
@@ -80,7 +80,7 @@ export default component$(({ stories, homepage }: ListStoriesProps) => {
               </svg>
             </Button>
           </div>
-        </FramerAnimated>
+        </ContainerAnimated>
       )}
     </>
   );

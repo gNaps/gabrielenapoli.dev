@@ -14,6 +14,19 @@ h4 {
   @apply text-xl lg:text-3xl text-grey;
 }
 
+.header a:hover {
+  background: linear-gradient(
+    90deg,
+    #b16cea 14.06%,
+    #ff5e69 44.79%,
+    #ff8a56 71.87%,
+    #ffa84b 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .gradient {
   background: linear-gradient(
     90deg,

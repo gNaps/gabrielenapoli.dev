@@ -13,8 +13,7 @@ function Animated({ children }: any): any {
       style={{
         transform: isInView ? "none" : "translateY(100px)",
         opacity: isInView ? 1 : 0,
-        //transition: "all 0.9s cubic-bezier(0.17, 0.55, 0.55, 1) 0.5s",
-        transition: "1000ms ease-in-out",
+        transition: "800ms ease-in-out",
       }}
     >
       {children}
@@ -22,4 +21,4 @@ function Animated({ children }: any): any {
   );
 }
 
-export const FramerAnimated = qwikify$(Animated);
+export const ContainerAnimated = qwikify$(Animated);

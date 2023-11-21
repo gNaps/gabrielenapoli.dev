@@ -3,7 +3,7 @@ import { routeLoader$, type DocumentHead } from "@builder.io/qwik-city";
 import { Image } from "@unpic/qwik";
 import RenderContent from "~/components/render-content/render-content";
 import Button from "~/components/button/button";
-import { FramerAnimated } from "~/components/framer-animated/framer-animated";
+import { ContainerAnimated } from "~/components/container-animated/container-animated";
 import { projectDetailApi } from "~/utils/api.utils";
 
 export const useProject = routeLoader$(async (requestEvent) => {
@@ -37,13 +37,13 @@ export default component$(() => {
   return (
     <>
       <div class="py-8 lg:px-36 lg:py-24 xl:px-80">
-        <FramerAnimated client:visible>
+        <ContainerAnimated client:visible>
           <h4>{title}.</h4>
           <h1 class="mt-3 lg:mt-7">{subtitle}</h1>
-        </FramerAnimated>
+        </ContainerAnimated>
 
         <div class="my-8 flex justify-center">
-          <FramerAnimated client:visible>
+          <ContainerAnimated client:visible>
             <Image
               src={preview.url}
               alt={preview.alt}
@@ -51,11 +51,11 @@ export default component$(() => {
               height={600}
               class="rounded-lg"
             />
-          </FramerAnimated>
+          </ContainerAnimated>
         </div>
 
         <div class="mb-16">
-          <FramerAnimated client:visible>
+          <ContainerAnimated client:visible>
             <div class="flex gap-5 justify-center">
               {skill.map((s) => (
                 <div
@@ -65,16 +65,18 @@ export default component$(() => {
                 ></div>
               ))}
             </div>
-          </FramerAnimated>
+          </ContainerAnimated>
         </div>
 
         <div class="my-16">
-          {contentChildren.map((c: any) => (
-            <RenderContent content={c} key={c} />
-          ))}
+          <ContainerAnimated client:visible>
+            {contentChildren.map((c: any) => (
+              <RenderContent content={c} key={c} />
+            ))}
+          </ContainerAnimated>
         </div>
 
-        <FramerAnimated client:visible>
+        <ContainerAnimated client:visible>
           <div class="my-16 flex gap-3 flex-row">
             {urlPreview && (
               <Button value="Try it">
@@ -113,7 +115,7 @@ export default component$(() => {
               </Button>
             )}
           </div>
-        </FramerAnimated>
+        </ContainerAnimated>
 
         <div class="flex flex-col md:flex-row md:flex-wrap">
           {gallery.map((g) => (
@@ -121,7 +123,7 @@ export default component$(() => {
               class="mb-8 md:odd:pr-5 md:even:pl-5 w-full md:w-1/2"
               key={g.id}
             >
-              <FramerAnimated client:visible>
+              <ContainerAnimated client:visible>
                 <Image
                   src={g.url}
                   alt={g.alt}
@@ -129,7 +131,7 @@ export default component$(() => {
                   height={400}
                   class="rounded-lg"
                 />
-              </FramerAnimated>
+              </ContainerAnimated>
             </div>
           ))}
         </div>

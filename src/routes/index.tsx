@@ -1,7 +1,7 @@
 import { component$ } from "@builder.io/qwik";
 import { routeLoader$, type DocumentHead } from "@builder.io/qwik-city";
 import Button from "~/components/button/button";
-import { FramerAnimated } from "~/components/framer-animated/framer-animated";
+import { ContainerAnimated } from "~/components/container-animated/container-animated";
 import ListProjects from "~/components/list-projects/list-projects";
 import Hero from "~/components/hero/hero";
 import ListStories from "~/components/list-stories/list-stories";
@@ -31,7 +31,7 @@ export default component$(() => {
         </div>
 
         <div class="my-16">
-          <FramerAnimated client:visible>
+          <ContainerAnimated client:visible>
             <h2>
               I’m a senior <span class="gradient-2">Angular</span> and{" "}
               <span class="gradient-3">React</span> developer. For backend, I
@@ -64,7 +64,7 @@ export default component$(() => {
                 </svg>
               </Button>
             </div>
-          </FramerAnimated>
+          </ContainerAnimated>
         </div>
 
         <div class="my-16">

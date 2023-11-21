@@ -6,7 +6,7 @@ import {
 } from "@builder.io/qwik-city";
 import Button from "~/components/button/button";
 import { Image } from "@unpic/qwik";
-import { FramerAnimated } from "~/components/framer-animated/framer-animated";
+import { ContainerAnimated } from "~/components/container-animated/container-animated";
 import { experiencesApi, stacksApi } from "~/utils/api.utils";
 
 export const useExperiences = routeLoader$(async (requestEvent) => {
@@ -31,7 +31,7 @@ export default component$(() => {
   return (
     <>
       <div class="py-8 lg:px-36 lg:py-24 xl:px-80">
-        <FramerAnimated client:visible>
+        <ContainerAnimated client:visible>
           <h4>About me.</h4>
           <div class="flex flex-col md:flex-row md:gap-10 items-center">
             <h1 class="mt-3 lg:mt-7">
@@ -73,10 +73,10 @@ export default component$(() => {
               class="rounded-lg mt-8"
             />
           </div>
-        </FramerAnimated>
+        </ContainerAnimated>
 
         <div class="my-16">
-          <FramerAnimated client:visible>
+          <ContainerAnimated client:visible>
             <h2>
               I’m a senior <span class="gradient-2">Angular</span> and{" "}
               <span class="gradient-3">React</span> developer. For backend, I
@@ -90,11 +90,11 @@ export default component$(() => {
               experiences. I like to manage the entire development process, from
               designing intuitive UI to database architecture.
             </p>
-          </FramerAnimated>
+          </ContainerAnimated>
         </div>
 
         <div class="my-16">
-          <FramerAnimated client:visible>
+          <ContainerAnimated client:visible>
             <h4>EXPERIENCES</h4>
             {experiences.value.data.allExperiences.map((exp) => (
               <div
@@ -119,11 +119,11 @@ export default component$(() => {
                 </div>
               </div>
             ))}
-          </FramerAnimated>
+          </ContainerAnimated>
         </div>
 
         <div class="my-16">
-          <FramerAnimated client:visible>
+          <ContainerAnimated client:visible>
             <h4 class="mb-6">STACK</h4>
             <div class="w-full flex flex-wrap px-10">
               {stacks.value.data.allStacks.map((s) => (
@@ -142,11 +142,11 @@ export default component$(() => {
                 </div>
               ))}
             </div>
-          </FramerAnimated>
+          </ContainerAnimated>
         </div>
 
         <div class="my-16">
-          <FramerAnimated client:visible>
+          <ContainerAnimated client:visible>
             <p class="mb-3">
               After graduating in 2019, I've spent the last 5 years as a full
               stack web developer. I've worked in various web projects, from
@@ -160,7 +160,7 @@ export default component$(() => {
               projects, and having fun with Figma. But hey, life isn't just
               code! I love read manga and play video games
             </p>
-          </FramerAnimated>
+          </ContainerAnimated>
         </div>
       </div>
     </>
