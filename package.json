@@ -47,9 +47,12 @@
     "vite-tsconfig-paths": "^4.2.1"
   },
   "dependencies": {
+    "@modular-forms/qwik": "^0.21.0",
     "@types/react-syntax-highlighter": "^15.5.10",
     "@unpic/qwik": "^0.0.32",
-    "qwik-transition": "^0.0.7",
-    "react-syntax-highlighter": "^15.5.0"
+    "framer-motion": "^10.16.5",
+    "react-syntax-highlighter": "^15.5.0",
+    "resend": "^2.0.0",
+    "valibot": "^0.21.0"
   }
 }

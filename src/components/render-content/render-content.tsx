@@ -1,16 +1,10 @@
 import { component$ } from "@builder.io/qwik";
 import RenderContent from "~/components/render-content/render-content";
 import RenderContentItems from "./render-content-items/render-content-items";
-import Animated from "../animated/animated";
-import { Link } from "@builder.io/qwik-city";
 import { QCodeViewer } from "../code-viewer/code-viewer";
 
 export default component$(({ content }: any) => {
-  console.log("children", content.children);
-  console.log("type", content.type);
   if (content.children) {
-    console.log("has children");
-
     switch (content.type) {
       case "paragraph":
         return (
@@ -40,13 +34,10 @@ export default component$(({ content }: any) => {
         return <></>;
     }
   } else {
-    console.log("not children", content);
     if (content.code) {
-      console.log("è un codice");
       return <QCodeViewer codeString={content.code}></QCodeViewer>;
     } else {
       return content.map((c: any) => {
-        console.log("not children TYPE", c.type);
         switch (c.type) {
           case "listItem":
             return (

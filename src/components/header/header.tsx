@@ -1,20 +1,21 @@
 import { $, component$, useSignal } from "@builder.io/qwik";
-import { Link } from "@builder.io/qwik-city";
+import { Link, useNavigate } from "@builder.io/qwik-city";
 import Button from "../button/button";
-import { useCSSTransition } from "qwik-transition";
 
 export default component$(() => {
-  const onLetsTalk = $(() => {
-    console.log("onLetsTalk");
+  const nav = useNavigate();
+
+  const contacts = $(async () => {
+    await nav(`/contacts`);
   });
 
-  const menuOnOff = useSignal(false);
-  const menuTrans = useCSSTransition(menuOnOff, { timeout: 300 });
+  const menuOpen = useSignal(false);
 
   const toggleMenu = $(() => {
-    menuOnOff.value = !menuOnOff.value;
     const body = document.querySelector("body");
     body?.classList.toggle("overflow-hidden");
+
+    setTimeout(() => (menuOpen.value = !menuOpen.value), 100);
   });
 
   return (
@@ -33,7 +34,7 @@ export default component$(() => {
           <Link href="/stories"> STORIES </Link>
         </nav>
         <span class="hidden lg:block">
-          <Button type="outlined" value="Let's talk" onClick={onLetsTalk}>
+          <Button type="outlined" value="Let's talk" onClick={contacts}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -69,19 +70,16 @@ export default component$(() => {
           </Button>
         </span>
       </header>
-      {menuTrans.shouldMount.value ? (
-        <nav
-          class={`menu-responsive ${
-            menuTrans.stage.value === "enterTo"
-              ? "menu-responsive-entered"
-              : "menu-responsive-animating"
-          }`}
-        >
+      {menuOpen.value ? (
+        <nav class={`menu-responsive`}>
+          <Link href="/" class="text-2xl block lg:hidden fixed top-10 left-8">
+            G<span class="font-extrabold">N</span>
+          </Link>
           <button
             onClick$={() => {
               toggleMenu();
             }}
-            class="fixed top-5 right-5"
+            class="fixed top-10 right-12"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

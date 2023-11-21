@@ -9,3 +9,14 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+::-moz-selection {
+  /* Code for Firefox */
+  color: #161513 !important;
+  background: #f0f2f5 !important;
+}
+
+::selection {
+  color: #161513 !important;
+  background: #f0f2f5 !important;
+}

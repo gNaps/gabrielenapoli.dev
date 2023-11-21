@@ -1,42 +1,14 @@
 import { component$ } from "@builder.io/qwik";
 import { routeLoader$, type DocumentHead } from "@builder.io/qwik-city";
-import Animated from "~/components/animated/animated";
 import { Image } from "@unpic/qwik";
 import RenderContent from "~/components/render-content/render-content";
-import { StoryData } from "~/models/story.model";
+import { FramerAnimated } from "~/components/framer-animated/framer-animated";
+import { storyDetailApi } from "~/utils/api.utils";
 
 export const useStory = routeLoader$(async (requestEvent) => {
   const { slug } = requestEvent.params;
-  const STORY_QUERY = `{
-    story(filter: { slug: { eq: "${slug}" } }) {
-      writtenAt
-      title
-      slug
-      id
-      content {
-        blocks
-        links
-        value
-      }
-      preview {
-        url
-        title
-        id
-        alt
-      }
-    }
-   }`;
-
-  const response = await fetch("https://graphql.datocms.com/", {
-    headers: {
-      Authorization: `Bearer 186d5bb937f0caf3896ce670a1410f`,
-    },
-    method: "POST",
-    body: JSON.stringify({ query: STORY_QUERY }),
-  });
-
-  const responseBody = await response.json();
-  return responseBody as StoryData;
+  const token = requestEvent.env.get("AUTH_TOKEN");
+  return storyDetailApi(slug, token ?? "");
 });
 
 export default component$(() => {
@@ -44,8 +16,6 @@ export default component$(() => {
   const {
     writtenAt,
     title,
-    slug,
-    id,
     content: {
       value: {
         document: { children: contentChildren },
@@ -57,13 +27,13 @@ export default component$(() => {
   return (
     <>
       <div class="py-8 lg:px-36 lg:py-24 xl:px-80">
-        <Animated>
+        <FramerAnimated client:visible>
           <p class="subtitle">{writtenAt}</p>
           <h1 class="mt-3 lg:mt-7">{title}</h1>
-        </Animated>
+        </FramerAnimated>
 
         <div class="my-8 flex justify-center">
-          <Animated>
+          <FramerAnimated client:visible>
             <Image
               src={preview.url}
               alt={preview.alt}
@@ -71,15 +41,15 @@ export default component$(() => {
               height={600}
               class="rounded-lg"
             />
-          </Animated>
+          </FramerAnimated>
         </div>
 
         <div class="my-16">
-          <Animated>
+          <FramerAnimated client:visible>
             {contentChildren.map((c: any) => (
               <RenderContent content={c} key={c} />
             ))}
-          </Animated>
+          </FramerAnimated>
         </div>
       </div>
     </>
@@ -92,7 +62,7 @@ export const head: DocumentHead = {
     {
       name: "A collection of my projects | Gabriele Napoli Developer",
       content:
-        "I’m a senior Angular and React developer. For API, I like to use Node.js and, in particular, Fastify with Prisma.",
+        "I’m a senior Angular and React developer. For backend, I like to use Node.js and, in particular, Fastify with Prisma.",
     },
   ],
 };

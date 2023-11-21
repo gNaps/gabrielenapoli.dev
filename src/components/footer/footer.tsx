@@ -1,12 +1,12 @@
 import { component$ } from "@builder.io/qwik";
 import { useServerTimeLoader } from "~/routes/layout";
 import styles from "./footer.module.css";
-import Animated from "../animated/animated";
+import { FramerAnimated } from "../framer-animated/framer-animated";
 
 export default component$(() => {
   return (
     <footer class="lg:px-36 lg:pb-24 xl:px-80">
-      <Animated>
+      <FramerAnimated client:visible>
         <div class="my-3">
           <h2 class="my-2">
             Let’s work together creating unique and incredible applications.
@@ -63,7 +63,7 @@ export default component$(() => {
             ©2023 All Rights Reserved. Designed with 🖤
           </p>
         </div>
-      </Animated>
+      </FramerAnimated>
     </footer>
   );
 });

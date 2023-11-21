@@ -1,76 +1,37 @@
-import { component$ } from "@builder.io/qwik";
-import { routeLoader$, type DocumentHead } from "@builder.io/qwik-city";
-import Animated from "~/components/animated/animated";
+import { $, component$ } from "@builder.io/qwik";
+import {
+  routeLoader$,
+  type DocumentHead,
+  useNavigate,
+} from "@builder.io/qwik-city";
 import Button from "~/components/button/button";
 import { Image } from "@unpic/qwik";
-import type { AllExperiencesData } from "~/models/experience.model";
-import { AllStacksData } from "~/models/stack.model";
+import { FramerAnimated } from "~/components/framer-animated/framer-animated";
+import { experiencesApi, stacksApi } from "~/utils/api.utils";
 
-export const useExperiences = routeLoader$(async () => {
-  const EXPERIENCES_QUERY = `{
-    allExperiences(orderBy: [order_ASC]) {
-        company
-        id
-        jobTitle
-        order
-        skill {
-            id
-            icon
-            name
-        }
-        yearEnd
-        yearStart
-    }
-}`;
-
-  const response = await fetch("https://graphql.datocms.com/", {
-    headers: {
-      Authorization: `Bearer 186d5bb937f0caf3896ce670a1410f`,
-    },
-    method: "POST",
-    body: JSON.stringify({ query: EXPERIENCES_QUERY }),
-  });
-
-  const responseBody = await response.json();
-  return responseBody as AllExperiencesData;
+export const useExperiences = routeLoader$(async (requestEvent) => {
+  const token = requestEvent.env.get("AUTH_TOKEN");
+  return await experiencesApi(token ?? "");
 });
 
-export const useStacks = routeLoader$(async () => {
-  const STACKS_QUERY = `{
-      allStacks(orderBy: [end_DESC]) {
-          id
-          learning
-          end
-          skill {
-              id
-              icon
-              name
-          }
-      }
-  }`;
-
-  const response = await fetch("https://graphql.datocms.com/", {
-    headers: {
-      Authorization: `Bearer 186d5bb937f0caf3896ce670a1410f`,
-    },
-    method: "POST",
-    body: JSON.stringify({ query: STACKS_QUERY }),
-  });
-
-  const responseBody = await response.json();
-  return responseBody as AllStacksData;
+export const useStacks = routeLoader$(async (requestEvent) => {
+  const token = requestEvent.env.get("AUTH_TOKEN");
+  return await stacksApi(token ?? "");
 });
 
 export default component$(() => {
   const experiences = useExperiences();
   const stacks = useStacks();
+  const nav = useNavigate();
 
-  console.log("exp", experiences.value);
+  const contacts = $(async () => {
+    await nav(`/contacts`);
+  });
 
   return (
     <>
       <div class="py-8 lg:px-36 lg:py-24 xl:px-80">
-        <Animated>
+        <FramerAnimated client:visible>
           <h4>About me.</h4>
           <div class="flex flex-col md:flex-row md:gap-10 items-center">
             <h1 class="mt-3 lg:mt-7">
@@ -84,7 +45,7 @@ export default component$(() => {
               </p>
 
               <div class="mt-8">
-                <Button value="Let's talk">
+                <Button value="Let's talk" onClick={contacts}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -112,15 +73,15 @@ export default component$(() => {
               class="rounded-lg mt-8"
             />
           </div>
-        </Animated>
+        </FramerAnimated>
 
         <div class="my-16">
-          <Animated>
+          <FramerAnimated client:visible>
             <h2>
               I’m a senior <span class="gradient-2">Angular</span> and{" "}
-              <span class="gradient-3">React</span> developer. For API, I like
-              to use <span class="gradient-4">Node.js</span> and, in particular,{" "}
-              <span class="gradient-5">Fastify</span> with{" "}
+              <span class="gradient-3">React</span> developer. For backend, I
+              like to use <span class="gradient-4">Node.js</span> and, in
+              particular, <span class="gradient-5">Fastify</span> with{" "}
               <span class="gradient-6">Prisma</span>.
             </h2>
 
@@ -129,11 +90,11 @@ export default component$(() => {
               experiences. I like to manage the entire development process, from
               designing intuitive UI to database architecture.
             </p>
-          </Animated>
+          </FramerAnimated>
         </div>
 
         <div class="my-16">
-          <Animated>
+          <FramerAnimated client:visible>
             <h4>EXPERIENCES</h4>
             {experiences.value.data.allExperiences.map((exp) => (
               <div
@@ -158,11 +119,11 @@ export default component$(() => {
                 </div>
               </div>
             ))}
-          </Animated>
+          </FramerAnimated>
         </div>
 
         <div class="my-16">
-          <Animated>
+          <FramerAnimated client:visible>
             <h4 class="mb-6">STACK</h4>
             <div class="w-full flex flex-wrap px-10">
               {stacks.value.data.allStacks.map((s) => (
@@ -181,11 +142,11 @@ export default component$(() => {
                 </div>
               ))}
             </div>
-          </Animated>
+          </FramerAnimated>
         </div>
 
         <div class="my-16">
-          <Animated>
+          <FramerAnimated client:visible>
             <p class="mb-3">
               After graduating in 2019, I've spent the last 5 years as a full
               stack web developer. I've worked in various web projects, from
@@ -199,7 +160,7 @@ export default component$(() => {
               projects, and having fun with Figma. But hey, life isn't just
               code! I love read manga and play video games
             </p>
-          </Animated>
+          </FramerAnimated>
         </div>
       </div>
     </>
@@ -212,7 +173,7 @@ export const head: DocumentHead = {
     {
       name: "About me | Gabriele Napoli Developer",
       content:
-        "I’m a senior Angular and React developer. For API, I like to use Node.js and, in particular, Fastify with Prisma.",
+        "I’m a senior Angular and React developer. For backend, I like to use Node.js and, in particular, Fastify with Prisma.",
     },
   ],
 };

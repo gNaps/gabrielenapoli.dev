@@ -1,5 +1,5 @@
 h1 {
-  @apply text-3xl lg:text-6xl font-bold;
+  @apply text-4xl lg:text-6xl font-bold;
 }
 
 h2 {
@@ -80,31 +80,6 @@ svg.inverse {
   fill: #161513;
 }
 
-.animation {
-  transition: 1000ms ease-in-out;
-  transition-property: transform opacity;
-}
-
-.animation-entered {
-  transform: translateX(0);
-  opacity: 1;
-}
-
-.animation-positioning {
-  transform: translateY(100px);
-  opacity: 0;
-}
-
-.menu-responsive-entered {
-  filter: blur(0px);
-  transform: scale(1);
-}
-
-.menu-responsive-animating {
-  filter: blur(20px);
-  transform: scale(0.6);
-}
-
 .menu-responsive {
   position: fixed;
   width: 100vw;
@@ -142,6 +117,12 @@ svg.inverse {
   .stack-wrapper {
     flex: 24%;
   }
+}
+
+input,
+textarea {
+  background-color: #4a4a4a !important;
+  @apply rounded-xl	px-3 py-4;
 }
 
 /* GIST */
