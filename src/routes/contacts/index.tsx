@@ -4,7 +4,7 @@ import {
   type DocumentHead,
   server$,
 } from "@builder.io/qwik-city";
-import { ContainerAnimated } from "~/components/container-animated/container-animated";
+// import { ContainerAnimated } from "~/components/container-animated/container-animated";
 import type { InitialValues, SubmitHandler } from "@modular-forms/qwik";
 import { formAction$, reset, useForm, valiForm$ } from "@modular-forms/qwik";
 import { Resend } from "resend";
@@ -66,7 +66,7 @@ export default component$(() => {
     console.log("handle submit");
     const greeting = await serverGreeter("gabriele", "napoli");
     alert(greeting);
-    //reset(contactForm);
+    reset(contactForm);
   });
 
   return (
