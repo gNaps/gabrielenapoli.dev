@@ -10,14 +10,7 @@ interface ButtonProps {
 }
 
 export default component$(
-  ({
-    type = "basic",
-    value,
-    onClick,
-    size = "medium",
-    name,
-    id,
-  }: ButtonProps) => {
+  ({ type = "basic", value, onClick, size = "medium", id }: ButtonProps) => {
     const bg = type === "basic" ? "bg-white" : "bg-black";
     const textColor = type === "basic" ? "text-black" : "text-white";
 
