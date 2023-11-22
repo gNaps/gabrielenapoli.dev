@@ -26,7 +26,6 @@ export const onStaticGenerate: StaticGenerateHandler = async ({ env }) => {
 
 export default component$(() => {
   const project = useProject();
-
   const {
     title,
     subtitle,

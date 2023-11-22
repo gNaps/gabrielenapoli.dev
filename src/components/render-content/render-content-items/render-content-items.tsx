@@ -10,7 +10,6 @@ export default component$(({ type, value, marks }: any) => {
         const imageSrc =
           "https://www.datocms-assets.com/" +
           value.replace('<img src="', "").replace('" />', "");
-        console.log("imageSrc", imageSrc);
         return (
           <Image
             src={imageSrc}

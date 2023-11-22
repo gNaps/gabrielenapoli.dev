@@ -1,11 +1,12 @@
 // This pragma is required so that React JSX is used instead of Qwik JSX
 /** @jsxImportSource react */
-import SyntaxHighlighter from "react-syntax-highlighter";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 //import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { qwikify$ } from "@builder.io/qwik-react";
 
 // An existing React component
 function CodeViewer({ codeString }: any) {
+  console.log("CODE STRING", codeString);
   const dark: any = {
     hljs: {
       display: "block",
@@ -105,9 +106,9 @@ function CodeViewer({ codeString }: any) {
       fontStyle: "italic",
     },
   };
+  console.log("dark", dark);
   return (
     <SyntaxHighlighter
-      language="typescript"
       style={dark}
       showLineNumbers={true}
       lineNumberStyle={{ color: "#4a4a4a" }}
