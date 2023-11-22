@@ -6,7 +6,6 @@ import { qwikify$ } from "@builder.io/qwik-react";
 
 // An existing React component
 function CodeViewer({ codeString }: any) {
-  console.log("CODE STRING", codeString);
   const dark: any = {
     hljs: {
       display: "block",
@@ -106,7 +105,6 @@ function CodeViewer({ codeString }: any) {
       fontStyle: "italic",
     },
   };
-  console.log("dark", dark);
   return (
     <SyntaxHighlighter
       style={dark}
