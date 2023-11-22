@@ -5,10 +5,11 @@ interface ButtonProps {
   value?: string;
   onClick?: any;
   size?: "small" | "medium" | "large";
+  name?: string;
 }
 
 export default component$(
-  ({ type = "basic", value, onClick, size = "medium" }: ButtonProps) => {
+  ({ type = "basic", value, onClick, size = "medium", name }: ButtonProps) => {
     const bg = type === "basic" ? "bg-white" : "bg-black";
     const textColor = type === "basic" ? "text-black" : "text-white";
 
@@ -27,11 +28,12 @@ export default component$(
               : ""
           } rounded-full border border-white ${bg} ${textColor} ${hoverBg}`}
           onClick$={onClick}
+          name={name ?? value}
         >
           {value && value.toLocaleUpperCase()}
           <Slot />
         </button>
       </>
     );
-  },
+  }
 );
