@@ -38,7 +38,7 @@ export default component$(() => {
     <>
       <div class="py-8 lg:px-36 lg:py-24 xl:px-80">
         <ContainerAnimated client:visible>
-          <h4>{title}.</h4>
+          <p class="h4">{title}.</p>
           <h1 class="mt-3 lg:mt-7">{subtitle}</h1>
         </ContainerAnimated>
 

@@ -6,7 +6,8 @@ h2 {
   @apply text-2xl lg:text-4xl font-bold;
 }
 
-h4 {
+h4,
+.h4 {
   @apply text-lg lg:text-3xl;
 }
 

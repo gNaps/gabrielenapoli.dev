@@ -32,7 +32,7 @@ export default component$(() => {
     <>
       <div class="py-8 lg:px-36 lg:py-24 xl:px-80">
         <ContainerAnimated client:visible>
-          <h4>About me.</h4>
+          <p class="h4">About me.</p>
           <div class="flex flex-col md:flex-row md:gap-10 items-center">
             <h1 class="mt-3 lg:mt-7">
               In the world of the digital era,{" "}

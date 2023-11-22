@@ -16,7 +16,7 @@ export default component$(() => {
     <>
       <div class="py-8 lg:px-36 lg:py-24 xl:px-80">
         <ContainerAnimated client:visible>
-          <h4>My projects.</h4>
+          <p class="h4">My projects.</p>
           <h1 class="mt-3 lg:mt-7">
             Remember our words <span class="gradient">coding is coming.</span>
           </h1>

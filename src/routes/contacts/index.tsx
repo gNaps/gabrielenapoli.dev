@@ -55,7 +55,7 @@ export default component$(() => {
     <>
       <div class="py-8 lg:px-36 lg:py-24 xl:px-80">
         <ContainerAnimated client:visible>
-          <h4>Reach out and let's chat.</h4>
+          <p class="h4">Reach out and let's chat.</p>
           <h1 class="mt-3 lg:mt-7">
             Got an idea? <span class="gradient">tell me about it.</span>
           </h1>
@@ -109,6 +109,7 @@ export default component$(() => {
               <button
                 type="submit"
                 class="rounded-lg bg-white text-black py-3 font-semibold mt-3"
+                aria-label="send message"
               >
                 Send message
               </button>

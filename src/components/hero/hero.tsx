@@ -13,7 +13,7 @@ export default component$(() => {
   return (
     <>
       <ContainerAnimated client:visible>
-        <h4>Hello, I'm Gabriele.</h4>
+        <p class="h4">Hello, I'm Gabriele.</p>
         <h1 class="mt-3 lg:mt-7 gradient">
           Fullstack developer from Milan.
           <br />
