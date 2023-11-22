@@ -14,7 +14,7 @@ const serverGreeter = server$(function (firstName: string, lastName: string) {
   const greeting = `Hello ${firstName} ${lastName}`;
   console.log("Prints in the server", greeting);
   console.log("SENDER_API_KEY", this.env.get("SENDER_API_KEY"));
-  return this.env.get("SENDER_API_KEY");
+  return process.env["SENDER_API_KEY"];
 });
 
 const ContactSchema = object({
