@@ -28,7 +28,7 @@ export default component$(
               : ""
           } rounded-full border border-white ${bg} ${textColor} ${hoverBg}`}
           onClick$={onClick}
-          name={name ?? value}
+          aria-label={name ?? value}
         >
           {value && value.toLocaleUpperCase()}
           <Slot />
