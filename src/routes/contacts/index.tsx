@@ -37,7 +37,7 @@ export const useFormAction = formAction$<ContactForm>(
       text: message,
     });
   },
-  valiForm$(ContactSchema)
+  valiForm$(ContactSchema),
 );
 
 export default component$(() => {
