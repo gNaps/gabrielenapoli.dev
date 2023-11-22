@@ -36,7 +36,7 @@ export default component$(
               : ""
           } rounded-full border border-white ${bg} ${textColor} ${hoverBg}`}
           onClick$={onClick}
-          aria-label={name}
+          aria-label={value}
           id={id}
         >
           {value && value.toLocaleUpperCase()}
