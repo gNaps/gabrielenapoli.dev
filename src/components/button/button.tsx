@@ -2,7 +2,7 @@ import { Slot, component$ } from "@builder.io/qwik";
 
 interface ButtonProps {
   type?: "basic" | "outlined";
-  value: string;
+  value?: string;
   onClick?: any;
   size?: "small" | "medium" | "large";
   name?: string;
@@ -36,7 +36,7 @@ export default component$(
               : ""
           } rounded-full border border-white ${bg} ${textColor} ${hoverBg}`}
           onClick$={onClick}
-          aria-label={name ?? value}
+          aria-label={name}
           id={id}
         >
           {value && value.toLocaleUpperCase()}
