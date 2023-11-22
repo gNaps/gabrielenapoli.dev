@@ -22,7 +22,7 @@ export default component$(({ stories, homepage }: ListStoriesProps) => {
       {homepage && (
         <ContainerAnimated client:visible>
           <div class="flex justify-between mb-6">
-            <h4>STORIES</h4>
+            <p class="h4">STORIES</p>
             <div class="hidden md:block">
               <Button
                 type="outlined"
