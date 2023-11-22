@@ -4,7 +4,7 @@ import { routeLoader$, type DocumentHead } from "@builder.io/qwik-city";
 import { Image } from "@unpic/qwik";
 import RenderContent from "~/components/render-content/render-content";
 import { ContainerAnimated } from "~/components/container-animated/container-animated";
-import { storiesIdsApi, storyDetailApi } from "~/utils/api.utils";
+import { storiesSlugsApi, storyDetailApi } from "~/utils/api.utils";
 
 export const useStory = routeLoader$(async (requestEvent) => {
   const { slug } = requestEvent.params;
@@ -14,11 +14,11 @@ export const useStory = routeLoader$(async (requestEvent) => {
 
 export const onStaticGenerate: StaticGenerateHandler = async ({ env }) => {
   const token = env.get("AUTH_TOKEN");
-  const storiesIds = await storiesIdsApi(token ?? "");
+  const storiesSlugs = await storiesSlugsApi(token ?? "");
 
   return {
-    params: storiesIds.data.allStories.map((s) => {
-      return { id: s.id };
+    params: storiesSlugs.data.allStories.map((s) => {
+      return { slug: s.slug };
     }),
   };
 };

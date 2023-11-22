@@ -250,10 +250,10 @@ export const stacksApi = async (token: string) => {
   return responseBody as AllStacksData;
 };
 
-export const projectsIdsApi = async (token: string) => {
+export const projectsSlugsApi = async (token: string) => {
   const PROJECTS_QUERY = `{
         allProjects {
-          id
+          slug
         }
        }`;
 
@@ -269,10 +269,10 @@ export const projectsIdsApi = async (token: string) => {
   return responseBody as AllProjectsData;
 };
 
-export const storiesIdsApi = async (token: string) => {
+export const storiesSlugsApi = async (token: string) => {
   const STORIES_QUERY = `{
         allStories {
-          id
+          slug
         }
        }`;
 

@@ -5,7 +5,7 @@ import { Image } from "@unpic/qwik";
 import RenderContent from "~/components/render-content/render-content";
 import Button from "~/components/button/button";
 import { ContainerAnimated } from "~/components/container-animated/container-animated";
-import { projectDetailApi, projectsIdsApi } from "~/utils/api.utils";
+import { projectDetailApi, projectsSlugsApi } from "~/utils/api.utils";
 
 export const useProject = routeLoader$(async (requestEvent) => {
   const { slug } = requestEvent.params;
@@ -15,11 +15,11 @@ export const useProject = routeLoader$(async (requestEvent) => {
 
 export const onStaticGenerate: StaticGenerateHandler = async ({ env }) => {
   const token = env.get("AUTH_TOKEN");
-  const projectsIds = await projectsIdsApi(token ?? "");
+  const projectsSlugs = await projectsSlugsApi(token ?? "");
 
   return {
-    params: projectsIds.data.allProjects.map((p) => {
-      return { id: p.id };
+    params: projectsSlugs.data.allProjects.map((p) => {
+      return { slug: p.slug };
     }),
   };
 };
