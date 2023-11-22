@@ -249,3 +249,41 @@ export const stacksApi = async (token: string) => {
   const responseBody = await response.json();
   return responseBody as AllStacksData;
 };
+
+export const projectsIdsApi = async (token: string) => {
+  const PROJECTS_QUERY = `{
+        allProjects {
+          id
+        }
+       }`;
+
+  const response = await fetch("https://graphql.datocms.com/", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    method: "POST",
+    body: JSON.stringify({ query: PROJECTS_QUERY }),
+  });
+
+  const responseBody = await response.json();
+  return responseBody as AllProjectsData;
+};
+
+export const storiesIdsApi = async (token: string) => {
+  const STORIES_QUERY = `{
+        allStories {
+          id
+        }
+       }`;
+
+  const response = await fetch("https://graphql.datocms.com/", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    method: "POST",
+    body: JSON.stringify({ query: STORIES_QUERY }),
+  });
+
+  const responseBody = await response.json();
+  return responseBody as AllStoriesData;
+};
