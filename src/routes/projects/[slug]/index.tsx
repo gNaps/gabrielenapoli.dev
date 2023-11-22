@@ -1,6 +1,6 @@
 import { component$ } from "@builder.io/qwik";
 import type { StaticGenerateHandler } from "@builder.io/qwik-city";
-import { routeLoader$, type DocumentHead } from "@builder.io/qwik-city";
+import { routeLoader$, type DocumentHead, Link } from "@builder.io/qwik-city";
 import { Image } from "@unpic/qwik";
 import RenderContent from "~/components/render-content/render-content";
 import Button from "~/components/button/button";
@@ -86,49 +86,53 @@ export default component$(() => {
         <ContainerAnimated client:visible>
           <div class="my-16 flex gap-3 flex-row">
             {urlPreview && (
-              <Button
-                value="Try it"
-                id={"button-try-it"}
-                name={"button-try-it"}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="w-6 h-6"
+              <Link href={urlPreview} target="blank">
+                <Button
+                  value="Try it"
+                  id={"button-try-it"}
+                  name={"button-try-it"}
                 >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                  />
-                </svg>
-              </Button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="w-6 h-6"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                    />
+                  </svg>
+                </Button>
+              </Link>
             )}
             {urlGithub && (
-              <Button
-                value="Github"
-                type="outlined"
-                id={"button-github"}
-                name={"button-github"}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="w-6 h-6"
+              <Link href={urlGithub} target="blank">
+                <Button
+                  value="Github"
+                  type="outlined"
+                  id={"button-github"}
+                  name={"button-github"}
                 >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                  />
-                </svg>
-              </Button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="w-6 h-6"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                    />
+                  </svg>
+                </Button>
+              </Link>
             )}
           </div>
         </ContainerAnimated>
