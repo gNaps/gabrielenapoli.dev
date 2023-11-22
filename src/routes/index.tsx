@@ -47,7 +47,12 @@ export default component$(() => {
             </p>
 
             <div class="mt-8">
-              <Button value="About me" type="outlined">
+              <Button
+                value="About me"
+                type="outlined"
+                id={"button-about-me"}
+                name={"button-about-me"}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"

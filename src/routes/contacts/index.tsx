@@ -110,6 +110,7 @@ export default component$(() => {
                 type="submit"
                 class="rounded-lg bg-white text-black py-3 font-semibold mt-3"
                 aria-label="send message"
+                id="button-send-message"
               >
                 Send message
               </button>

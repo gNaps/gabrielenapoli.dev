@@ -29,6 +29,8 @@ export default component$(({ stories, homepage }: ListStoriesProps) => {
                 value="View all"
                 size="small"
                 onClick={openStories}
+                id={"button-view-all-stories"}
+                name={"button-view-all-stories"}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -63,7 +65,13 @@ export default component$(({ stories, homepage }: ListStoriesProps) => {
       {homepage && (
         <ContainerAnimated client:visible>
           <div class="md:hidden flex justify-center">
-            <Button type="outlined" value="View all" onClick={openStories}>
+            <Button
+              type="outlined"
+              value="View all"
+              onClick={openStories}
+              id={"button-open-stories"}
+              name={"button-open-stories"}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"

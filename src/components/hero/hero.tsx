@@ -27,7 +27,12 @@ export default component$(() => {
         </p>
 
         <div class="mt-8">
-          <Button value="Let's talk" onClick={contacts}>
+          <Button
+            value="Let's talk"
+            onClick={contacts}
+            id={"button-lets-talk-hero"}
+            name={"button-lets-talk-hero"}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

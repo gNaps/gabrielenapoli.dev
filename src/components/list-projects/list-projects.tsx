@@ -29,6 +29,8 @@ export default component$(({ projects, homepage }: ListProjectsProps) => {
                 value="View all"
                 size="small"
                 onClick={openProjects}
+                id={"button-view-all-projects"}
+                name={"button-view-all-projects"}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -69,6 +71,8 @@ export default component$(({ projects, homepage }: ListProjectsProps) => {
                 stroke-width="1.5"
                 stroke="currentColor"
                 class="w-6 h-6"
+                id={"button-open-project"}
+                name={"button-open-project"}
               >
                 <path
                   stroke-linecap="round"

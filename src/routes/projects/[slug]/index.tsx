@@ -79,7 +79,11 @@ export default component$(() => {
         <ContainerAnimated client:visible>
           <div class="my-16 flex gap-3 flex-row">
             {urlPreview && (
-              <Button value="Try it">
+              <Button
+                value="Try it"
+                id={"button-try-it"}
+                name={"button-try-it"}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -97,7 +101,12 @@ export default component$(() => {
               </Button>
             )}
             {urlGithub && (
-              <Button value="Github" type="outlined">
+              <Button
+                value="Github"
+                type="outlined"
+                id={"button-github"}
+                name={"button-github"}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"

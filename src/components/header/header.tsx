@@ -33,7 +33,13 @@ export default component$(() => {
           <Link href="/stories"> STORIES </Link>
         </nav>
         <span class="hidden lg:block">
-          <Button type="outlined" value="Let's talk" onClick={contacts}>
+          <Button
+            type="outlined"
+            value="Let's talk"
+            onClick={contacts}
+            id={"button-lets-talk-header"}
+            name={"button-lets-talk-header"}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -51,7 +57,12 @@ export default component$(() => {
           </Button>
         </span>
         <span class="block lg:hidden">
-          <Button type="outlined" onClick={toggleMenu}>
+          <Button
+            type="outlined"
+            onClick={toggleMenu}
+            id={"button-lets-talk-header-responsive"}
+            name={"button-lets-talk-header-responsive"}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
