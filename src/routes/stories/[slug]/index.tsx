@@ -26,7 +26,7 @@ export default component$(() => {
 
   return (
     <>
-      <div class="py-8 lg:px-36 lg:py-24 xl:px-80">
+      <div class="py-8 lg:px-36 lg:py-24 xl:px-80 story-wrapper">
         <ContainerAnimated client:visible>
           <p class="subtitle">{writtenAt}</p>
           <h1 class="mt-3 lg:mt-7">{title}</h1>

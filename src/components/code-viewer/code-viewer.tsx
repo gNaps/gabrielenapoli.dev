@@ -10,9 +10,17 @@ function CodeViewer({ codeString }: any) {
     hljs: {
       display: "block",
       overflowX: "auto",
-      padding: "0.5em",
-      background: "#444",
-      color: "#ddd",
+      paddingTop: "2em",
+      paddingBottom: "2em",
+      paddingRight: "0.5em",
+      paddingLeft: "0.5em",
+      //background: "#444",
+      //color: "#ddd",
+      background: "linear-gradient(#202020, #181818)",
+      borderColor: "#383838 !important",
+      borderRadius: "0 0 3px 3px",
+      color: "#b5b5b5",
+      fontSize: ".9rem",
     },
     "hljs-keyword": {
       color: "white",
@@ -37,43 +45,43 @@ function CodeViewer({ codeString }: any) {
       color: "#ddd",
     },
     "hljs-string": {
-      color: "#d88",
+      color: "#B16CEA",
     },
     "hljs-title": {
-      color: "#d88",
+      color: "#FF5E69",
       fontWeight: "bold",
     },
     "hljs-name": {
-      color: "#d88",
+      color: "#FF5E69",
       fontWeight: "bold",
     },
     "hljs-type": {
-      color: "#d88",
+      color: "#B16CEA",
       fontWeight: "bold",
     },
     "hljs-attribute": {
-      color: "#d88",
+      color: "#B16CEA",
     },
     "hljs-symbol": {
-      color: "#d88",
+      color: "#B16CEA",
     },
     "hljs-bullet": {
-      color: "#d88",
+      color: "#B16CEA",
     },
     "hljs-built_in": {
-      color: "#d88",
+      color: "#B16CEA",
     },
     "hljs-addition": {
-      color: "#d88",
+      color: "#B16CEA",
     },
     "hljs-variable": {
-      color: "#d88",
+      color: "#B16CEA",
     },
     "hljs-template-tag": {
-      color: "#d88",
+      color: "#B16CEA",
     },
     "hljs-template-variable": {
-      color: "#d88",
+      color: "#B16CEA",
     },
     "hljs-comment": {
       color: "#777",
@@ -98,7 +106,12 @@ function CodeViewer({ codeString }: any) {
     },
   };
   return (
-    <SyntaxHighlighter language="typescript" style={dark}>
+    <SyntaxHighlighter
+      language="typescript"
+      style={dark}
+      showLineNumbers={true}
+      lineNumberStyle={{ color: "#4a4a4a" }}
+    >
       {codeString}
     </SyntaxHighlighter>
   );

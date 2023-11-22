@@ -28,7 +28,7 @@ export default component$(({ type, value, marks }: any) => {
                 marks && marks.includes("emphasis") ? "italic" : ""
               } ${
                 marks && marks.includes("code")
-                  ? "text-sm p-1 bg-white text-black rounded"
+                  ? "text-sm p-1 bg-grey text-white rounded"
                   : ""
               }`}
             >
