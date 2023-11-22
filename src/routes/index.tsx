@@ -79,8 +79,9 @@ export const head: DocumentHead = {
   title: "Gabriele Napoli | Fullstack Javascript",
   meta: [
     {
-      name: "Home page | Gabriele Napoli Developer",
-      content: "Full stack developer from Milan. In love with Javascript.",
+      name: "description",
+      content:
+        "Gabriele Napoli | Full stack developer from Milan. In love with Javascript.",
     },
   ],
 };

@@ -37,7 +37,7 @@ export const useFormAction = formAction$<ContactForm>(
       text: message,
     });
   },
-  valiForm$(ContactSchema),
+  valiForm$(ContactSchema)
 );
 
 export default component$(() => {
@@ -124,8 +124,9 @@ export const head: DocumentHead = {
   title: "Gabriele Napoli | Fullstack Javascript",
   meta: [
     {
-      name: "Home page | Gabriele Napoli Developer",
-      content: "Full stack developer from Milan. In love with Javascript.",
+      name: "description",
+      content:
+        "Gabriele Napoli | Fullstack Javascript | I’m a senior Angular and React developer. For backend, I like to use Node.js and, in particular, Fastify with Prisma.",
     },
   ],
 };

@@ -171,9 +171,9 @@ export const head: DocumentHead = {
   title: "Gabriele Napoli | Fullstack Javascript",
   meta: [
     {
-      name: "About me | Gabriele Napoli Developer",
+      name: "description",
       content:
-        "I’m a senior Angular and React developer. For backend, I like to use Node.js and, in particular, Fastify with Prisma.",
+        "Gabriele Napoli | Fullstack Javascript | I’m a senior Angular and React developer. For backend, I like to use Node.js and, in particular, Fastify with Prisma.",
     },
   ],
 };
