@@ -39,12 +39,12 @@ export default component$(() => {
   const handleSubmit = $<SubmitHandler<ContactForm>>(
     async ({ name, email, message }) => {
       console.log("SONO CLIENT");
-      const res = await fetch(process.env.SUPABASE_URL!, {
+      const res = await fetch(import.meta.env.SUPABASE_URL!, {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`,
+          Authorization: `Bearer ${import.meta.env.SUPABASE_ANON_KEY}`,
         },
         body: JSON.stringify({
           subject: "Nuova mail da GABRIELENAPOLI.DEV | " + email + " | " + name,
