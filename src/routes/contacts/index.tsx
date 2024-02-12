@@ -44,7 +44,7 @@ export default component$(() => {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.PUBLIC_SUPABASE_URL}`,
+          Authorization: `Bearer ${import.meta.env.PUBLIC_SUPAVASE_ANON_KEY}`,
         },
         body: JSON.stringify({
           subject: "Nuova mail da GABRIELENAPOLI.DEV | " + email + " | " + name,
