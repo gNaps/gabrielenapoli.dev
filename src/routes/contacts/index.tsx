@@ -10,12 +10,12 @@ import { formAction$, reset, useForm, valiForm$ } from "@modular-forms/qwik";
 import { Resend } from "resend";
 import { email, minLength, object, string } from "valibot";
 
-const serverGreeter = server$(function (firstName: string, lastName: string) {
-  const greeting = `Hello ${firstName} ${lastName}`;
-  console.log("Prints in the server", greeting);
-  console.log("SENDER_API_KEY", this.env.get("SENDER_API_KEY"));
-  return greeting;
-});
+// const serverGreeter = server$(function (firstName: string, lastName: string) {
+//   const greeting = `Hello ${firstName} ${lastName}`;
+//   console.log("Prints in the server", greeting);
+//   console.log("SENDER_API_KEY", this.env.get("SENDER_API_KEY"));
+//   return greeting;
+// });
 
 const ContactSchema = object({
   email: string([
@@ -38,22 +38,9 @@ export const useFormLoader = routeLoader$<InitialValues<ContactForm>>(() => ({
   message: "",
 }));
 
-export const useFormAction = formAction$<ContactForm>(
-  async ({ name, email, message }, requestEvent) => {
-    console.log("eccoci");
-    const resend = new Resend(requestEvent.env.get("SENDER_API_KEY"));
-    console.log("send email");
-    await resend.emails.send({
-      from: requestEvent.env.get("EMAIL_NO_REPLY")!,
-      to: [requestEvent.env.get("CONTACTS_EMAIL")!],
-      subject: `Hai ricevuto una mail da ${name} - ${email}`,
-      text: message,
-    });
-
-    console.log("sended");
-  },
-  valiForm$(ContactSchema)
-);
+export const useFormAction = formAction$<ContactForm>(async () => {
+  // run on server
+}, valiForm$(ContactSchema));
 
 export default component$(() => {
   const [contactForm, { Form, Field }] = useForm<ContactForm>({
@@ -62,12 +49,24 @@ export default component$(() => {
     validate: valiForm$(ContactSchema),
   });
 
-  const handleSubmit = $<SubmitHandler<ContactForm>>(async () => {
-    console.log("handle submit");
-    const greeting = await serverGreeter("gabriele", "napoli");
-    alert(greeting);
-    reset(contactForm);
-  });
+  const handleSubmit = $<SubmitHandler<ContactForm>>(
+    async ({ name, email, message }) => {
+      const res = await fetch(process.env.SUPABASE_URL!, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.SUPAVASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          subject: "Nuova mail da GABRIELENAPOLI.DEV | " + email + " | " + name,
+          html: message,
+        }),
+      });
+      await res.json();
+      reset(contactForm);
+    }
+  );
 
   return (
     <>
