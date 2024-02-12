@@ -1,13 +1,8 @@
 import { $, component$ } from "@builder.io/qwik";
-import {
-  routeLoader$,
-  type DocumentHead,
-  server$,
-} from "@builder.io/qwik-city";
+import { routeLoader$, type DocumentHead } from "@builder.io/qwik-city";
 import { ContainerAnimated } from "~/components/container-animated/container-animated";
 import type { InitialValues, SubmitHandler } from "@modular-forms/qwik";
 import { formAction$, reset, useForm, valiForm$ } from "@modular-forms/qwik";
-import { Resend } from "resend";
 import { email, minLength, object, string } from "valibot";
 
 // const serverGreeter = server$(function (firstName: string, lastName: string) {
