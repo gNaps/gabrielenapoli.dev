@@ -5,13 +5,6 @@ import type { InitialValues, SubmitHandler } from "@modular-forms/qwik";
 import { formAction$, reset, useForm, valiForm$ } from "@modular-forms/qwik";
 import { email, minLength, object, string } from "valibot";
 
-// const serverGreeter = server$(function (firstName: string, lastName: string) {
-//   const greeting = `Hello ${firstName} ${lastName}`;
-//   console.log("Prints in the server", greeting);
-//   console.log("SENDER_API_KEY", this.env.get("SENDER_API_KEY"));
-//   return greeting;
-// });
-
 const ContactSchema = object({
   email: string([
     minLength(1, "Please enter your email."),
@@ -40,12 +33,12 @@ export const useFormAction = formAction$<ContactForm>(async () => {
 export default component$(() => {
   const [contactForm, { Form, Field }] = useForm<ContactForm>({
     loader: useFormLoader(),
-    action: useFormAction(),
     validate: valiForm$(ContactSchema),
   });
 
   const handleSubmit = $<SubmitHandler<ContactForm>>(
     async ({ name, email, message }) => {
+      console.log("SONO CLIENT");
       const res = await fetch(process.env.SUPABASE_URL!, {
         method: "POST",
         headers: {
