@@ -9,6 +9,11 @@ export default component$(({ preview, title, writtenAt, slug }: Story) => {
   const nav = useNavigate();
 
   const openDetailStory = $(async () => {
+    (window as any).goatcounter.count({
+      path: "click-story",
+      title: slug,
+      event: true,
+    });
     await nav(`/stories/${slug}`);
   });
 

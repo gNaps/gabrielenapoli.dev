@@ -8,6 +8,11 @@ export default component$(({ preview, title, skill, slug }: Project) => {
   const nav = useNavigate();
 
   const openDetailProject = $(async () => {
+    (window as any).goatcounter.count({
+      path: "click-project",
+      title: slug,
+      event: true,
+    });
     await nav(`/projects/${slug}`);
   });
 

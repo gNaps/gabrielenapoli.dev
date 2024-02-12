@@ -11,6 +11,10 @@ export default component$(() => {
   const nav = useNavigate();
 
   const openDetailProject = $(async () => {
+    (window as any).goatcounter.count({
+      path: "click-contacts-footer",
+      event: true,
+    });
     await nav(`/contacts`);
   });
   return (

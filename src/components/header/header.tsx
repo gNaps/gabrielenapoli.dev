@@ -6,6 +6,10 @@ export default component$(() => {
   const nav = useNavigate();
 
   const contacts = $(async () => {
+    (window as any).goatcounter.count({
+      path: "click-contacts-header",
+      event: true,
+    });
     await nav(`/contacts`);
   });
 
