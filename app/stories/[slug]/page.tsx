@@ -1,0 +1,42 @@
+import StoryDetail from "@/components/story-detail/story-detail";
+import { storyDetailApi } from "@/utils/api.utils";
+import { Metadata } from "next";
+
+export const useStory = async (slug: string) => {
+  const token = process.env.AUTH_TOKEN;
+  return await storyDetailApi(slug, token ?? "");
+};
+
+type StoryDetailPageProps = {
+  params: { slug: string };
+};
+
+const ProjectDetailPage = async ({ params }: StoryDetailPageProps) => {
+  const param = await params;
+  const story = await useStory(param.slug);
+
+  return (
+    <>
+      <div className="py-8 px-6 lg:px-36 lg:py-24 xl:px-100">
+        <StoryDetail {...story.data.story} />
+      </div>
+    </>
+  );
+};
+
+export default ProjectDetailPage;
+
+export const metadata: Metadata = {
+  title: "Gabriele Napoli | Fullstack Developer",
+  description: `I’m a senior Angular and React developer. For backend, I like to use Node.js and, in
+            particular, Fastify with Prisma.`,
+  keywords: [
+    "Gabriele",
+    "Napoli",
+    "Developer",
+    "Angular",
+    "React",
+    "Node",
+    "About",
+  ],
+};
