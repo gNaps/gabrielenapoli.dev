@@ -1,19 +1,16 @@
+import { PageProps } from "@/.next/types/app/page";
 import ProjectDetail from "@/components/project-detail/project-detail";
 import { projectDetailApi } from "@/utils/api.utils";
 import { Metadata } from "next";
 
-export const getProject = async (slug: string) => {
+const useProject = async (slug: string) => {
   const token = process.env.AUTH_TOKEN;
   return await projectDetailApi(slug, token ?? "");
 };
 
-type ProjectDetailPageProps = {
-  params: { slug: string };
-};
-
-const ProjectDetailPage = async ({ params }: ProjectDetailPageProps) => {
+const ProjectDetailPage = async ({ params }: PageProps) => {
   const param = await params;
-  const project = await getProject(param.slug);
+  const project = await useProject(param.slug);
 
   return (
     <>

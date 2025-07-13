@@ -2,7 +2,7 @@ import Projects from "@/components/projects/projects";
 import { projectsListApi } from "@/utils/api.utils";
 import { Metadata } from "next";
 
-export const useProjects = async () => {
+const useProjects = async () => {
   const token = process.env.AUTH_TOKEN;
   return await projectsListApi(token ?? "");
 };

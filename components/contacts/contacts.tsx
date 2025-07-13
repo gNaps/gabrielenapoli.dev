@@ -23,7 +23,7 @@ const Contacts = () => {
 
   const submit = async (payload: ContactForm) => {
     try {
-      const response = await fetch(`api/send`, {
+      await fetch(`api/send`, {
         method: "POST",
         body: JSON.stringify(payload),
       });

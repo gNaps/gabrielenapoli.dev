@@ -5,12 +5,13 @@ import CodeViewer from "../code-viewer/code-viewer";
 import RenderContentItems from "./render-content-item/render-content-item";
 
 const RenderContent = ({ content }: any) => {
+  const id = useId();
   if (content.children) {
     switch (content.type) {
       case "paragraph":
         return (
           <p className="mb-5 text-xl">
-            <RenderContent content={content.children} key={useId()} />
+            <RenderContent content={content.children} key={id} />
           </p>
         );
       case "heading":
@@ -18,7 +19,7 @@ const RenderContent = ({ content }: any) => {
           <>
             {content.level === 4 && (
               <h4 className="text-3xl font-bold my-4">
-                <RenderContent content={content.children} key={useId()} />
+                <RenderContent content={content.children} key={id} />
               </h4>
             )}
           </>
@@ -26,11 +27,11 @@ const RenderContent = ({ content }: any) => {
       case "list":
         return (
           <ul className="text-lg">
-            <RenderContent content={content.children} key={useId()} />
+            <RenderContent content={content.children} key={id} />
           </ul>
         );
       case "listItem":
-        return <RenderContent content={content.children} key={useId()} />;
+        return <RenderContent content={content.children} key={id} />;
       default:
         return <></>;
     }
@@ -42,20 +43,20 @@ const RenderContent = ({ content }: any) => {
         switch (c.type) {
           case "listItem":
             return (
-              <li key={useId() + index}>
-                <RenderContent content={c.children} key={useId() + index} />
+              <li key={id + index}>
+                <RenderContent content={c.children} key={id + index} />
               </li>
             );
           case "paragraph":
-            return <RenderContent content={c.children} key={useId()} />;
+            return <RenderContent content={c.children} key={id} />;
           case "link":
             return (
               <a
                 href={c.url ? c.url : c.children[0].value}
                 target="_blank"
-                key={useId() + index}
+                key={id + index}
               >
-                <RenderContent content={c.children} key={useId()} />
+                <RenderContent content={c.children} key={id} />
               </a>
             );
           default:
@@ -64,7 +65,7 @@ const RenderContent = ({ content }: any) => {
                 type={c.type}
                 value={c.value}
                 marks={c.marks}
-                key={useId()}
+                key={id}
               />
             );
         }

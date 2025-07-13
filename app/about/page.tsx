@@ -3,12 +3,12 @@ import { experiencesApi, stacksApi } from "@/utils/api.utils";
 import { Metadata } from "next";
 import Head from "next/head";
 
-export const useExperiences = async () => {
+const useExperiences = async () => {
   const token = process.env.AUTH_TOKEN;
   return await experiencesApi(token ?? "");
 };
 
-export const useStacks = async () => {
+const useStacks = async () => {
   const token = process.env.AUTH_TOKEN;
   return await stacksApi(token ?? "");
 };

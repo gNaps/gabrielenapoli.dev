@@ -13,6 +13,8 @@ const StoryDetail = ({ writtenAt, title, content, preview }: Story) => {
     },
   } = content;
 
+  const id = useId();
+
   return (
     <>
       <ContainerAnimated>
@@ -34,8 +36,8 @@ const StoryDetail = ({ writtenAt, title, content, preview }: Story) => {
 
       <div className="my-16 story-wrapper">
         <ContainerAnimated>
-          {contentChildren.map((c: any) => (
-            <RenderContent content={c} key={useId()} />
+          {contentChildren.map((c) => (
+            <RenderContent content={c} key={id} />
           ))}
         </ContainerAnimated>
       </div>

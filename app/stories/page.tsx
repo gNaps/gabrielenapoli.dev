@@ -2,7 +2,7 @@ import Stories from "@/components/stories/stories";
 import { storiesListApi } from "@/utils/api.utils";
 import { Metadata } from "next";
 
-export const useStories = async () => {
+const useStories = async () => {
   const token = process.env.AUTH_TOKEN;
   return await storiesListApi(token ?? "");
 };

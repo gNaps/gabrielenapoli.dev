@@ -1,17 +1,14 @@
+import { PageProps } from "@/.next/types/app/page";
 import StoryDetail from "@/components/story-detail/story-detail";
 import { storyDetailApi } from "@/utils/api.utils";
 import { Metadata } from "next";
 
-export const useStory = async (slug: string) => {
+const useStory = async (slug: string) => {
   const token = process.env.AUTH_TOKEN;
   return await storyDetailApi(slug, token ?? "");
 };
 
-type StoryDetailPageProps = {
-  params: { slug: string };
-};
-
-const ProjectDetailPage = async ({ params }: StoryDetailPageProps) => {
+const ProjectDetailPage = async ({ params }: PageProps) => {
   const param = await params;
   const story = await useStory(param.slug);
 

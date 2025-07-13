@@ -6,12 +6,12 @@ import { projectsHomeApi, storiesHomeApi } from "@/utils/api.utils";
 import { Metadata } from "next";
 import Head from "next/head";
 
-export const useProjects = async () => {
+const useProjects = async () => {
   const token = process.env.AUTH_TOKEN;
   return await projectsHomeApi(token ?? "");
 };
 
-export const useStories = async () => {
+const useStories = async () => {
   const token = process.env.AUTH_TOKEN;
   return await storiesHomeApi(token ?? "");
 };

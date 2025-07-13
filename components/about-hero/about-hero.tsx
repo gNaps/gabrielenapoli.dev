@@ -42,6 +42,7 @@ const AboutHero = () => {
           type="outlined"
           id={"button-about-me"}
           name={"button-about-me"}
+          onClick={contacts}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
