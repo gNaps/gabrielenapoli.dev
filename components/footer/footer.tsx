@@ -6,20 +6,9 @@ import {
   LINKEDIN_URL,
 } from "@/utils/social-links.utils";
 import Link from "next/dist/client/link";
-import { useRouter } from "next/navigation";
 import ContainerAnimated from "../container-animated/container-animated";
 
 const Footer = () => {
-  const router = useRouter();
-
-  const contacts = () => {
-    (window as any).goatcounter.count({
-      path: "click-contacts-header",
-      event: true,
-    });
-    router.push(`/contacts`);
-  };
-
   return (
     <footer className="pb-8 px-6 lg:px-36 lg:pb-24 xl:px-100">
       <ContainerAnimated>

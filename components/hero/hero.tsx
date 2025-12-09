@@ -1,19 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import ContainerAnimated from "../container-animated/container-animated";
 
 const Hero = () => {
-  const router = useRouter();
-
-  const contacts = () => {
-    (window as any).goatcounter.count({
-      path: "click-contacts-header",
-      event: true,
-    });
-    router.push(`/contacts`);
-  };
-
   return (
     <>
       <ContainerAnimated>

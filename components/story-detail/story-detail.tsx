@@ -4,12 +4,9 @@ import ContainerAnimated from "@/components/container-animated/container-animate
 import { Story } from "@/models/story.model";
 import { MDXRemote } from "next-mdx-remote";
 import Image from "next/image";
-import { useId } from "react";
 import CodeViewer from "../code-viewer/code-viewer";
 
 const StoryDetail = ({ writtenAt, title, content, preview }: Story) => {
-  const id = useId();
-
   const components = {
     pre: (props: any) => (
       <CodeViewer codeString={props.children.props.children} />

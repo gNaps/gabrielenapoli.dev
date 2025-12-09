@@ -4,7 +4,6 @@ import { Experience } from "@/models/experience.model";
 import { Stack } from "@/models/stack.model";
 import { MDXRemote } from "next-mdx-remote";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import ContainerAnimated from "../container-animated/container-animated";
 import GradientText from "../gradient-text/gradient-text";
 
@@ -14,16 +13,6 @@ interface AbuoutProps {
 }
 
 const About = ({ experiences, stacks }: AbuoutProps) => {
-  const router = useRouter();
-
-  const contacts = () => {
-    (window as any).goatcounter.count({
-      path: "click-contacts-header",
-      event: true,
-    });
-    router.push(`/contacts`);
-  };
-
   return (
     <>
       <ContainerAnimated>

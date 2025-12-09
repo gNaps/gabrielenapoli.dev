@@ -13,7 +13,7 @@ const useExperiences = async () => {
   var exps = await experiencesApi(token ?? "");
 
   for (const exp of exps) {
-    const { frontMatter, mdxSource } = await getExperienceBySlug(exp.slug);
+    const { mdxSource } = await getExperienceBySlug(exp.slug);
     exp.description = mdxSource;
 
     exp.skills = exp.skills.map((skill) => {

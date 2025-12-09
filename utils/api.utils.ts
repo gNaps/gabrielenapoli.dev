@@ -2,8 +2,6 @@ import { allExperiences } from "@/cms/experiences";
 import { allProjects } from "@/cms/projects";
 import { allStacks } from "@/cms/stacks";
 import { allStories } from "@/cms/stories";
-import { AllProjectsData } from "@/models/project.model";
-import { AllStoriesData } from "@/models/story.model";
 import fs from "fs";
 import matter from "gray-matter";
 import { serialize } from "next-mdx-remote/serialize";
@@ -271,43 +269,43 @@ export const stacksApi = async (token: string) => {
   return allStacks;
 };
 
-export const projectsSlugsApi = async (token: string) => {
-  const PROJECTS_QUERY = `{
-        allProjects {
-          slug
-        }
-       }`;
+// export const projectsSlugsApi = async (token: string) => {
+//   const PROJECTS_QUERY = `{
+//         allProjects {
+//           slug
+//         }
+//        }`;
 
-  const response = await fetch("https://graphql.datocms.com/", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    method: "POST",
-    body: JSON.stringify({ query: PROJECTS_QUERY }),
-  });
+//   const response = await fetch("https://graphql.datocms.com/", {
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//     },
+//     method: "POST",
+//     body: JSON.stringify({ query: PROJECTS_QUERY }),
+//   });
 
-  const responseBody = await response.json();
-  return responseBody as AllProjectsData;
-};
+//   const responseBody = await response.json();
+//   return responseBody as AllProjectsData;
+// };
 
-export const storiesSlugsApi = async (token: string) => {
-  const STORIES_QUERY = `{
-        allStories {
-          slug
-        }
-       }`;
+// export const storiesSlugsApi = async (token: string) => {
+//   const STORIES_QUERY = `{
+//         allStories {
+//           slug
+//         }
+//        }`;
 
-  const response = await fetch("https://graphql.datocms.com/", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    method: "POST",
-    body: JSON.stringify({ query: STORIES_QUERY }),
-  });
+//   const response = await fetch("https://graphql.datocms.com/", {
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//     },
+//     method: "POST",
+//     body: JSON.stringify({ query: STORIES_QUERY }),
+//   });
 
-  const responseBody = await response.json();
-  return responseBody as AllStoriesData;
-};
+//   const responseBody = await response.json();
+//   return responseBody as AllStoriesData;
+// };
 
 export async function getPostBySlug(slug: string) {
   const postsDirectory = path.join(process.cwd(), "cms/contents/projects");

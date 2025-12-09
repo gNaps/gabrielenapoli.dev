@@ -11,7 +11,7 @@ const useStory = async (slug: string) => {
 const ProjectDetailPage = async ({ params }: PageProps) => {
   const param = await params;
   const story = await useStory(param.slug.join("/"));
-  const { frontMatter, mdxSource } = await getStoriesBySlug(param.slug);
+  const { mdxSource } = await getStoriesBySlug(param.slug);
   story.content = mdxSource;
 
   return (
