@@ -311,7 +311,7 @@ export async function getPostBySlug(slug: string) {
   return Content();
 }
 
-export async function getStoriesBySlug(slug: string[]) {
+export async function getStoriesBySlug(slug: string) {
   // const postsDirectory = path.join(process.cwd(), "cms/contents/stories");
   // console.log("postsDirectory", postsDirectory);
   // console.log("slug", slug);

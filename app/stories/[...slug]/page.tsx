@@ -1,4 +1,3 @@
-import { PageProps } from "@/.next/types/app/page";
 import StoryDetail from "@/components/story-detail/story-detail";
 import { getStoriesBySlug, storyDetailApi } from "@/utils/api.utils";
 import fs from "fs";
@@ -21,7 +20,9 @@ async function generateStaticParams() {
   return slugs;
 }
 
-const ProjectDetailPage = async ({ params }: PageProps) => {
+export const dynamicParams = false;
+
+const StoryDetailPage = async ({ params }: any) => {
   const param = await params;
   const story = await useStory(param.slug.join("/"));
   const content = await getStoriesBySlug(param.slug.join("/"));
@@ -36,7 +37,7 @@ const ProjectDetailPage = async ({ params }: PageProps) => {
   );
 };
 
-export default ProjectDetailPage;
+export default StoryDetailPage;
 
 export const metadata: Metadata = {
   title: "Gabriele Napoli | Fullstack Developer",

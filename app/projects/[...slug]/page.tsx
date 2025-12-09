@@ -22,10 +22,10 @@ async function generateStaticParams() {
 
 export const dynamicParams = false;
 
-const ProjectDetailPage = async (params: Promise<{ slug: string[] }>) => {
-  const { slug } = await params;
-  const project = await useProject(slug.join("/"));
-  const content = await getPostBySlug(slug.join("/"));
+const ProjectDetailPage = async ({ params }: any) => {
+  const param = await params;
+  const project = await useProject(param.slug.join("/"));
+  const content = await getPostBySlug(param.slug);
   project.content = content;
 
   return (
