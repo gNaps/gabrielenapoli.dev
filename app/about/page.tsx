@@ -10,7 +10,7 @@ import Head from "next/head";
 
 const useExperiences = async () => {
   const token = process.env.AUTH_TOKEN;
-  var exps = await experiencesApi(token ?? "");
+  const exps = await experiencesApi(token ?? "");
 
   for (const exp of exps) {
     const { mdxSource } = await getExperienceBySlug(exp.slug);
