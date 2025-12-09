@@ -1,5 +1,5 @@
 .animated-gradient-text {
-  backdrop-filter: blur(10px);
+  /* backdrop-filter: blur(10px); */
   transition: box-shadow 0.5s ease-out;
   overflow: hidden;
 }
@@ -47,9 +47,8 @@
 }
 
 .text-content {
-  display: inline-block;
   position: relative;
-  z-index: 2;
+  /* z-index: 2; */
   background-size: 300% 100%;
   background-clip: text;
   -webkit-background-clip: text;

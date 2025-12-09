@@ -65,7 +65,7 @@ const RenderContent = ({ content }: any) => {
                 type={c.type}
                 value={c.value}
                 marks={c.marks}
-                key={id}
+                key={id + index}
               />
             );
         }

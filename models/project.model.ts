@@ -1,5 +1,4 @@
 import type { Image } from "./image.model";
-import type { Skill } from "./skill.model";
 
 export interface Project {
   id: string;
@@ -7,12 +6,12 @@ export interface Project {
   title: string;
   slug: string;
   preview: Image;
-  skill: Skill[];
+  skill: string[];
   subtitle: string;
   urlGithub: string;
   urlPreview: string;
-  gallery: Image[];
-  content: any;
+  gallery?: Image[];
+  content?: any;
 }
 
 export interface AllProjectsData {

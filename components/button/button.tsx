@@ -25,13 +25,13 @@ const GNButton = ({
 
   const hoverBg =
     type === "basic"
-      ? "hover:bg-gradient-to-r from-[#B16CEA] via-[#FFA84B] via-[#FF8A56] to-[#FF5E69] hover:text-white"
+      ? "hover:bg-gradient-to-r from-[#ff33bb] to-[#00d5ff] hover:text-black"
       : "hover:bg-white hover:text-black";
   return (
     <button
       className={`flex items-center gap-2 ${
         size === "medium" ? "py-2 px-7" : size === "small" ? "py-2 px-4" : ""
-      } rounded-full border border-white ${bg} ${textColor} ${hoverBg}`}
+      } rounded-full border border-white ${bg} ${textColor} ${hoverBg} cursor-pointer font-semibold transition-all duration-300`}
       onClick={onClick}
       aria-label={value}
       id={id}

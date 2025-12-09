@@ -1,16 +1,42 @@
+import { allSkills } from "@/cms/skills";
 import About from "@/components/about/about";
-import { experiencesApi, stacksApi } from "@/utils/api.utils";
+import {
+  experiencesApi,
+  getExperienceBySlug,
+  stacksApi,
+} from "@/utils/api.utils";
 import { Metadata } from "next";
 import Head from "next/head";
 
 const useExperiences = async () => {
   const token = process.env.AUTH_TOKEN;
-  return await experiencesApi(token ?? "");
+  var exps = await experiencesApi(token ?? "");
+
+  for (const exp of exps) {
+    const { frontMatter, mdxSource } = await getExperienceBySlug(exp.slug);
+    exp.description = mdxSource;
+
+    exp.skills = exp.skills.map((skill) => {
+      const skillData = allSkills.find((s) => s.id === skill.id);
+      return skillData ? { ...skillData, ...skill } : skill;
+    });
+  }
+
+  return exps;
 };
 
 const useStacks = async () => {
   const token = process.env.AUTH_TOKEN;
-  return await stacksApi(token ?? "");
+  const stacks = await stacksApi(token ?? "");
+
+  for (const stack of stacks) {
+    const skillData = allSkills.find((s) => s.id === stack.skill.id);
+    if (skillData) {
+      stack.skill = { ...skillData, ...stack.skill };
+    }
+  }
+
+  return stacks;
 };
 
 const AboutPage = async () => {

@@ -7,11 +7,7 @@ export interface Story {
   slug: string;
   preview: Image;
   writtenAt: string;
-  content: {
-    value: {
-      document: { children: any[] };
-    };
-  };
+  content?: any;
 }
 
 export interface AllStoriesData {

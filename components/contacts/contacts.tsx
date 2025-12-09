@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import ContainerAnimated from "../container-animated/container-animated";
+import GradientText from "../gradient-text/gradient-text";
 
 type ContactForm = {
   email: string;
@@ -40,7 +41,8 @@ const Contacts = () => {
       <ContainerAnimated>
         <p className="h4">Reach out and let's chat.</p>
         <h1 className="mt-3 lg:mt-7">
-          Got an idea? <span className="gradient">tell me about it.</span>
+          Got an idea?{" "}
+          <GradientText animationSpeed={3}>tell me about it.</GradientText>
         </h1>
       </ContainerAnimated>
 

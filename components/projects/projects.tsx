@@ -1,12 +1,12 @@
 "use client";
 
-import { AllProjectsData } from "@/models/project.model";
+import { Project } from "@/models/project.model";
 import ContainerAnimated from "../container-animated/container-animated";
 import GradientText from "../gradient-text/gradient-text";
 import ListProjects from "../list-projects/list-projects";
 
 interface ProjectProps {
-  projects: AllProjectsData;
+  projects: Project[];
 }
 
 const Projects = ({ projects }: ProjectProps) => {
@@ -15,7 +15,7 @@ const Projects = ({ projects }: ProjectProps) => {
       <ContainerAnimated>
         <p className="h4">My projects.</p>
         <h1 className="mt-3 lg:mt-7">
-          Remember the words:
+          Remember the words:{" "}
           <GradientText animationSpeed={3}>coding is coming.</GradientText>
         </h1>
         <p className="mt-4 lg:mt-6 subtitle">

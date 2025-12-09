@@ -1,19 +1,27 @@
 "use client";
 
 import ContainerAnimated from "@/components/container-animated/container-animated";
-import RenderContent from "@/components/render-content/render-content";
 import { Story } from "@/models/story.model";
+import { MDXRemote } from "next-mdx-remote";
 import Image from "next/image";
 import { useId } from "react";
+import CodeViewer from "../code-viewer/code-viewer";
 
 const StoryDetail = ({ writtenAt, title, content, preview }: Story) => {
-  const {
-    value: {
-      document: { children: contentChildren },
-    },
-  } = content;
-
   const id = useId();
+
+  const components = {
+    pre: (props: any) => (
+      <CodeViewer codeString={props.children.props.children} />
+    ),
+    Card(props: any) {
+      return (
+        <div className="my-8 p-6 rounded-lg shadow-md bg-neutral-900">
+          {props.children}
+        </div>
+      );
+    },
+  };
 
   return (
     <>
@@ -34,11 +42,14 @@ const StoryDetail = ({ writtenAt, title, content, preview }: Story) => {
         </ContainerAnimated>
       </div>
 
-      <div className="my-16 story-wrapper">
+      <div className="my-16 story-wrapper text-lg">
         <ContainerAnimated>
-          {contentChildren.map((c) => (
-            <RenderContent content={c} key={id} />
-          ))}
+          <MDXRemote
+            compiledSource={content.compiledSource}
+            frontmatter={content.frontmatter}
+            scope={content.scope}
+            components={components}
+          />
         </ContainerAnimated>
       </div>
     </>

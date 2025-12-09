@@ -1,12 +1,12 @@
 "use client";
 
-import { AllStoriesData } from "@/models/story.model";
+import { Story } from "@/models/story.model";
 import ContainerAnimated from "../container-animated/container-animated";
 import GradientText from "../gradient-text/gradient-text";
 import ListStories from "../list-stories/list-stories";
 
 interface StoryProps {
-  stories: AllStoriesData;
+  stories: Story[];
 }
 
 const Stories = ({ stories }: StoryProps) => {
@@ -20,6 +20,7 @@ const Stories = ({ stories }: StoryProps) => {
             code wings, code words.
           </GradientText>
         </h1>
+
         <p className="mt-4 lg:mt-6 subtitle">
           Here you can find articles, guides and tutorials about web
           development.

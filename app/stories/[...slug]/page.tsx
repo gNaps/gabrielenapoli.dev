@@ -1,6 +1,6 @@
 import { PageProps } from "@/.next/types/app/page";
 import StoryDetail from "@/components/story-detail/story-detail";
-import { storyDetailApi } from "@/utils/api.utils";
+import { getStoriesBySlug, storyDetailApi } from "@/utils/api.utils";
 import { Metadata } from "next";
 
 const useStory = async (slug: string) => {
@@ -10,12 +10,14 @@ const useStory = async (slug: string) => {
 
 const ProjectDetailPage = async ({ params }: PageProps) => {
   const param = await params;
-  const story = await useStory(param.slug);
+  const story = await useStory(param.slug.join("/"));
+  const { frontMatter, mdxSource } = await getStoriesBySlug(param.slug);
+  story.content = mdxSource;
 
   return (
     <>
       <div className="py-8 px-6 lg:px-36 lg:py-24 xl:px-100">
-        <StoryDetail {...story.data.story} />
+        <StoryDetail {...story} />
       </div>
     </>
   );

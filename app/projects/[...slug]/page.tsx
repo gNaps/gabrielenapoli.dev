@@ -1,21 +1,36 @@
 import { PageProps } from "@/.next/types/app/page";
 import ProjectDetail from "@/components/project-detail/project-detail";
-import { projectDetailApi } from "@/utils/api.utils";
+import { getPostBySlug, projectDetailApi } from "@/utils/api.utils";
+import fs from "fs";
 import { Metadata } from "next";
+import path from "path";
 
 const useProject = async (slug: string) => {
   const token = process.env.AUTH_TOKEN;
   return await projectDetailApi(slug, token ?? "");
 };
 
+const postsDirectory = path.join(process.cwd(), "cms/contents/projects");
+
+async function generateStaticParams() {
+  const slugs = fs
+    .readdirSync(postsDirectory)
+    .filter((file) => file.endsWith(".mdx"))
+    .map((file) => ({ slug: file.replace(/\.mdx$/, "") }));
+
+  return slugs;
+}
+
 const ProjectDetailPage = async ({ params }: PageProps) => {
   const param = await params;
-  const project = await useProject(param.slug);
+  const project = await useProject(param.slug.join("/"));
+  const { frontMatter, mdxSource } = await getPostBySlug(param.slug);
+  project.content = mdxSource;
 
   return (
     <>
       <div className="py-8 px-6 lg:px-36 lg:py-24 xl:px-100">
-        <ProjectDetail {...project.data.project} />
+        <ProjectDetail {...project} />
       </div>
     </>
   );

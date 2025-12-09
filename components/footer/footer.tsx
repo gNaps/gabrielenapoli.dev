@@ -23,35 +23,11 @@ const Footer = () => {
   return (
     <footer className="pb-8 px-6 lg:px-36 lg:pb-24 xl:px-100">
       <ContainerAnimated>
-        <div className="my-3 flex flex-col items-center justify-center">
+        <div className="my-3 flex flex-col items-center justify-center text-center">
           <h3 className="my-2">
             Let’s work together creating unique and incredible applications.
           </h3>
-          <div className="flex flex-col xl:flex-row items-center gap-2">
-            <h2 className="flex md:hidden text-center my-2">
-              gabrielenap@gmail.com
-            </h2>
-            <h2 className="hidden md:flex my-2">gabrielenap@gmail.com</h2>
-            <div
-              className="border border-white bg-white h-14 w-14 md:h-16 md:w-16 rounded-full flex justify-center items-center text-black cursor-pointer"
-              onClick={contacts}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"
-                />
-              </svg>
-            </div>
-          </div>
+          <h2 className="flex my-2">gabrielenap@gmail.com</h2>
           <div className="flex items-center justify-center my-14 gap-8">
             <Link href={GITHUB_URL} target="blank">
               <svg

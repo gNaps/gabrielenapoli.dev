@@ -1,10 +1,10 @@
-import type { Skill } from "./skill.model";
+import { Skill } from "./skill.model";
 
 export interface Stack {
   id: string;
-  learning: string;
+  learning: boolean;
   end: string;
-  skill: Skill;
+  skill: Partial<Skill>;
 }
 
 export interface AllStacksData {

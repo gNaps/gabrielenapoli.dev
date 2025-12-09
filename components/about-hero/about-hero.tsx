@@ -19,7 +19,7 @@ const AboutHero = () => {
   return (
     <ContainerAnimated>
       <h2>
-        I’m a senior <GradientText animationSpeed={3}>Angular</GradientText> and{" "}
+        I’m a senior <GradientText animationSpeed={2}>Angular</GradientText> and{" "}
         <GradientText animationSpeed={3}>React</GradientText> developer,
         passionate about crafting seamless and performant web applications. On
         the backend, I love working with{" "}
@@ -43,22 +43,7 @@ const AboutHero = () => {
           id={"button-about-me"}
           name={"button-about-me"}
           onClick={contacts}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-            />
-          </svg>
-        </Button>
+        />
       </div>
     </ContainerAnimated>
   );

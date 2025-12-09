@@ -1,0 +1,103 @@
+---
+title: "RxJS: zip vs combineLast vs withLatestFrom vs forkJoin"
+slug: "rxjs-zip-vs-combinelast-vs-withlatestfrom-vs-forkJoin"
+---
+
+<Card>
+Working with Angular, you can't avoid using RxJS and observables, and you often have to combine two 
+or more of them together. A developer with little experience might struggle with this. RxJS offers four 
+main operators to combine observables: forkJoin, zip, combineLatest and withLatestFrom. What is the 
+difference between them and when is it more correct to use one or the other?
+
+<br />
+Let's consider this scenario: we have to draw colored icons and we have two
+different people as sources of information, the first one tells us the color of
+the icon and the second one the type. The two people are not synchronized with
+each other and they choose the color and icon spontaneously. We have to wait for
+both information and combine them together. In this example, the two people
+indicate two observables color$ and icon$.
+
+```typescript
+import { forkJoin, zip, combineLatest, Subject } from "rxjs";
+import { withLatestFrom, take, first } from "rxjs/operators";
+
+// We define the values of color and icon that we accept
+
+type Color = "";
+type Icon = "";
+
+// We define the two people who have to communicate the information to us
+const color$ = new Subject<Color>();
+const icon$ = new Subject<Icon>();
+
+// The two people start sending us the colors and icons to draw
+color$.next("red");
+icon$.next("github");
+
+color$.next("blue");
+icon$.next("bitbucket");
+
+color$.next("green");
+icon$.next("gitlab");
+
+color$.next("purple");
+```
+
+At this point we have to listen to the two observables.
+
+<br />
+### zip
+
+```typescript
+zip(color$, icon$).subscribe(([color, icon]) =>
+  console.log(`Crafted a ${icon} ${color} icon`)
+);
+```
+
+<br />
+<img src="/cms/zip.webp" />
+
+<br />
+In this case color waits for icon every time a new value is put, this means that
+to emit a new value both values have to change!
+
+<br />
+### withLatestFrom
+
+```typescript
+color$
+  .pipe(withLatestFrom(icon$))
+  .subscribe(([color, icon]) => console.log(`Crafted a ${icon} ${color} icon`));
+```
+
+<br />
+<img src="/cms/withlatestfrom.webp" />
+
+<br />
+In our case color is the primary. At the beginning, and only at the beginning,
+color looks for the value of icon, once icon responds color takes control of the
+emitted values.
+
+<br />
+### forkJoin
+
+```typescript
+forkJoin(color$, icon$).subscribe(([color, icon]) =>
+  console.log(`Crafted a ${icon} ${color} icon`)
+);
+
+// ... at some point
+color$.complete();
+icon$.complete();
+```
+
+<br />
+<img src="/cms/forkjoin.webp" />
+
+<br />
+We can conclude by saying that these four operators emit values in very
+different conditions even if sometimes they seem to work in the same way. This
+often leads juniors to consider them equal but this is not the case and it is
+important to understand the differences.
+
+</Card>

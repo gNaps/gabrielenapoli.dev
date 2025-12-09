@@ -33,7 +33,7 @@ const Navbar = () => {
         <Link href="/" className="text-2xl block lg:hidden">
           G<span className="font-extrabold">N</span>
         </Link>
-        <nav className="hidden lg:flex gap-5 items-center">
+        <nav className="hidden lg:flex gap-5 items-center font-semibold">
           <Link href="/"> HOME </Link>
           <Link href="/about/"> ABOUT </Link>
           <Link href="/projects"> PROJECTS </Link>
@@ -46,22 +46,7 @@ const Navbar = () => {
             onClick={contacts}
             id={"button-lets-talk-header"}
             name={"button-lets-talk-header"}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-              />
-            </svg>
-          </Button>
+          />
         </span>
         <span className="block lg:hidden">
           <Button

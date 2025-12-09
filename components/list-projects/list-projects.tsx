@@ -1,13 +1,13 @@
 "use client";
 
-import { AllProjectsData } from "@/models/project.model";
+import { Project } from "@/models/project.model";
 import { useRouter } from "next/navigation";
 import Button from "../button/button";
 import ContainerAnimated from "../container-animated/container-animated";
 import ItemProject from "./item-project/item-project";
 
 interface ListProjectsProps {
-  projects: AllProjectsData;
+  projects: Project[];
   homepage: boolean;
 }
 
@@ -32,28 +32,13 @@ const ListProjects = ({ projects, homepage }: ListProjectsProps) => {
                 onClick={openProjects}
                 id={"button-view-all-projects"}
                 name={"button-view-all-projects"}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                  />
-                </svg>
-              </Button>
+              />
             </div>
           </div>
         </ContainerAnimated>
       )}
       <div className="flex flex-col md:flex-row md:flex-wrap">
-        {projects.data.allProjects.map((p) => (
+        {projects.map((p) => (
           <div
             className="mb-8 md:odd:pr-5 md:even:pl-5 w-full md:w-1/2"
             key={p.id}
@@ -67,24 +52,7 @@ const ListProjects = ({ projects, homepage }: ListProjectsProps) => {
       {homepage && (
         <ContainerAnimated>
           <div className="md:hidden flex justify-center">
-            <Button type="outlined" value="View all" onClick={openProjects}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-6 h-6"
-                id={"button-open-project"}
-                name={"button-open-project"}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                />
-              </svg>
-            </Button>
+            <Button type="outlined" value="View all" onClick={openProjects} />
           </div>
         </ContainerAnimated>
       )}

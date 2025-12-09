@@ -1,14 +1,16 @@
 import type { Skill } from "./skill.model";
 
 export interface Experience {
-  id: string;
+  id: number;
+  slug: string;
   company: string;
-  description: any;
+  description?: any;
   jobTitle: string;
   order: number;
-  skill: Skill[];
-  yearEnd: number;
+  skills: Partial<Skill>[];
+  yearEnd?: number;
   yearStart: number;
+  logo: string;
 }
 
 export interface AllExperiencesData {

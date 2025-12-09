@@ -44,15 +44,15 @@ export default async function Home() {
       <div className="py-8 px-6 lg:px-36 lg:py-24 xl:px-100">
         <Hero />
 
-        <div className="my-16">
+        <div className="mt-16">
           <ListProjects projects={projects} homepage={true} />
         </div>
 
-        <div className="my-16">
+        <div className="my-8">
           <AboutHero />
         </div>
 
-        <div className="my-16">
+        <div className="mt-16">
           <ListStories stories={stories} homepage={true} />
         </div>
       </div>

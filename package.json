@@ -1,5 +1,5 @@
 {
-  "name": "gabrielenapoli.dev-nextjs",
+  "name": "gabrielenapoli.dev",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "framer-motion": "^12.23.0",
+    "gray-matter": "^4.0.3",
     "next": "15.3.5",
+    "next-mdx-remote": "^5.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.60.0",

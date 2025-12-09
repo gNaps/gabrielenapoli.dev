@@ -1,23 +1,20 @@
 "use client";
 
-import { AllExperiencesData } from "@/models/experience.model";
-import { AllStacksData } from "@/models/stack.model";
+import { Experience } from "@/models/experience.model";
+import { Stack } from "@/models/stack.model";
+import { MDXRemote } from "next-mdx-remote";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import Button from "../button/button";
 import ContainerAnimated from "../container-animated/container-animated";
 import GradientText from "../gradient-text/gradient-text";
-import RenderContent from "../render-content/render-content";
 
 interface AbuoutProps {
-  experiences: AllExperiencesData;
-  stacks: AllStacksData;
+  experiences: Experience[];
+  stacks: Stack[];
 }
 
 const About = ({ experiences, stacks }: AbuoutProps) => {
   const router = useRouter();
-
-  console.log("experiences", experiences);
 
   const contacts = () => {
     (window as any).goatcounter.count({
@@ -43,56 +40,32 @@ const About = ({ experiences, stacks }: AbuoutProps) => {
               Hello universe! I’m Gabriele. Find out a little more about me
               here.
             </p>
-
-            <div className="mt-8">
-              <Button
-                value="Let's talk"
-                onClick={contacts}
-                id={"button-lets-talk-home"}
-                name={"button-lets-talk-home"}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                  />
-                </svg>
-              </Button>
-            </div>
           </div>
         </div>
-        <div className="flex justify-center">
-          <Image
-            src="https://www.datocms-assets.com/110849/1699911074-about-me.webp"
-            alt="Gabriele Napoli"
-            width={1200}
-            height={600}
-            className="rounded-lg mt-8"
-          />
+        <div className="flex justify-center my-8">
+          <div
+            className="rounded-full w-56 h-56 lg:w-64 lg:h-64"
+            style={{
+              backgroundImage: `url(/cms/about_me.webp)`,
+              backgroundSize: "cover",
+              backgroundPosition: "center 70%",
+            }}
+          ></div>
         </div>
+        <h2>
+          I’m a senior <GradientText animationSpeed={3}>Angular</GradientText>{" "}
+          and <GradientText animationSpeed={3}>React</GradientText> developer,
+          passionate about crafting seamless and performant web applications. On
+          the backend, I love working with{" "}
+          <GradientText animationSpeed={3}>Node.js</GradientText> especially
+          when using <GradientText animationSpeed={3}>Fastify</GradientText> for
+          speed and <GradientText animationSpeed={3}>Prisma</GradientText> for
+          clarity and structure.
+        </h2>
       </ContainerAnimated>
 
       <div className="my-16">
         <ContainerAnimated>
-          <h2>
-            I’m a senior <GradientText animationSpeed={3}>Angular</GradientText>{" "}
-            and <GradientText animationSpeed={3}>React</GradientText> developer,
-            passionate about crafting seamless and performant web applications.
-            On the backend, I love working with{" "}
-            <GradientText animationSpeed={3}>Node.js</GradientText> especially
-            when using <GradientText animationSpeed={3}>Fastify</GradientText>{" "}
-            for speed and <GradientText animationSpeed={3}>Prisma</GradientText>{" "}
-            for clarity and structure.
-          </h2>
-
           <p className="mt-4 lg:mt-6 subtitle">
             I enjoy taking care of the entire development process: from
             designing clean, intuitive interfaces to shaping robust database
@@ -108,55 +81,63 @@ const About = ({ experiences, stacks }: AbuoutProps) => {
           <h4>EXPERIENCES</h4>
         </ContainerAnimated>
 
-        {experiences.data.allExperiences.map((exp) => (
-          <div
-            className="flex flex-col-reverse md:flex-row md:justify-between my-10 exp-card pb-3 border-b border-white"
-            key={exp.id}
-          >
-            <ContainerAnimated>
-              <div className="flex flex-col w-full md:w-4/5">
-                <p className="text-2xl mb-2">{exp.jobTitle}</p>
-                <p className="mb-2">@{exp.company}</p>
-                <div className="flex gap-3 mb-2">
-                  {exp.skill.map((s) => (
+        {experiences.map((exp) => (
+          <ContainerAnimated key={exp.id}>
+            <div className="flex my-10 pb-3 rounded-lg bg-neutral-900 p-4">
+              <div className="flex flex-col w-full">
+                <div className="flex items-center">
+                  <Image
+                    src={exp.logo}
+                    alt={exp.slug}
+                    width={100}
+                    height={100}
+                    className="w-16 h-16 mr-4 rounded-md object-contain"
+                  />
+                  <div>
+                    <p className="text-2xl mb-2">{exp.jobTitle}</p>
+                    <p className="mb-2">
+                      @{exp.company} | {exp.yearStart} - {exp.yearEnd || "Now"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 my-3">
+                  {exp.skills.map((s) => (
                     <div
-                      dangerouslySetInnerHTML={{ __html: s.icon }}
+                      dangerouslySetInnerHTML={{ __html: s.icon! }}
                       key={s.id}
-                      className="w-6 h-6"
+                      className="w-8 h-8"
                     ></div>
                   ))}
                 </div>
-                <div>
-                  {exp.description?.value?.document?.children ? (
-                    <RenderContent
-                      content={exp.description?.value?.document?.children}
+                <div className="text-sm">
+                  {exp.description ? (
+                    <MDXRemote
+                      compiledSource={exp.description.compiledSource}
+                      frontmatter={exp.description.frontmatter}
+                      scope={exp.description.scope}
                     />
                   ) : (
                     <></>
                   )}
                 </div>
               </div>
-              <div className="flex gap-1 mb-2 md:mb-0">
-                <p className="bg-neutral-900 h-max p-2 rounded-lg">
-                  {exp.yearStart} - {exp.yearEnd || "Present"}
-                </p>
-              </div>
-            </ContainerAnimated>
-          </div>
+            </div>
+          </ContainerAnimated>
         ))}
       </div>
 
       <div className="my-16">
         <ContainerAnimated>
           <h4 className="mb-6">STACK</h4>
-          <div className="w-full flex flex-wrap px-10">
-            {stacks.data.allStacks.map((s) => (
+          <div className="w-full grid grid-cols-2 lg:grid-cols-4 px-10">
+            {stacks.map((s) => (
               <div
-                className="flex flex-col items-center my-6 gap-2 stack-wrapper"
+                className="flex flex-col items-center justify-center gap-2 my-6"
                 key={s.id}
               >
                 <div
-                  dangerouslySetInnerHTML={{ __html: s.skill.icon }}
+                  dangerouslySetInnerHTML={{ __html: s.skill.icon! }}
                   key={s.id}
                   className="w-16 h-16"
                 ></div>

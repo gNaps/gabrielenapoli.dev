@@ -2,7 +2,8 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { style } from "./style";
 
 const CodeViewer = ({ codeString }: any) => {
-  return (
+  const newlineCount = (codeString.match(/\r?\n/g) || []).length;
+  return newlineCount > 1 ? (
     <SyntaxHighlighter
       language="typescript"
       style={style}
@@ -11,6 +12,8 @@ const CodeViewer = ({ codeString }: any) => {
     >
       {codeString}
     </SyntaxHighlighter>
+  ) : (
+    <pre>{codeString}</pre>
   );
 };
 
