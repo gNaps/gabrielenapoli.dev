@@ -3,7 +3,6 @@
 import Button from "@/components/button/button";
 import ContainerAnimated from "@/components/container-animated/container-animated";
 import { Project } from "@/models/project.model";
-import { MDXRemote } from "next-mdx-remote";
 import Image from "next/image";
 import Link from "next/link";
 import SkillIcon from "../skill-icon/skill-icon";
@@ -52,7 +51,7 @@ const ProjectDetail = ({
           {/* {contentChildren.map((c: any) => (
             <RenderContent content={c} key={useId()} />
           ))} */}
-          <MDXRemote
+          {/* <MDXRemote
             compiledSource={content.compiledSource}
             frontmatter={content.frontmatter}
             scope={content.scope}
@@ -65,7 +64,8 @@ const ProjectDetail = ({
                 );
               },
             }}
-          />
+          /> */}
+          {content}
         </ContainerAnimated>
       </div>
 

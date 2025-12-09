@@ -2,7 +2,6 @@
 
 import { Experience } from "@/models/experience.model";
 import { Stack } from "@/models/stack.model";
-import { MDXRemote } from "next-mdx-remote";
 import Image from "next/image";
 import ContainerAnimated from "../container-animated/container-animated";
 import GradientText from "../gradient-text/gradient-text";
@@ -99,17 +98,7 @@ const About = ({ experiences, stacks }: AbuoutProps) => {
                     ></div>
                   ))}
                 </div>
-                <div className="text-sm">
-                  {exp.description ? (
-                    <MDXRemote
-                      compiledSource={exp.description.compiledSource}
-                      frontmatter={exp.description.frontmatter}
-                      scope={exp.description.scope}
-                    />
-                  ) : (
-                    <></>
-                  )}
-                </div>
+                <div className="text-sm">{exp.description}</div>
               </div>
             </div>
           </ContainerAnimated>

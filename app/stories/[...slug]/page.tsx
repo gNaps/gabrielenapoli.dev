@@ -1,18 +1,31 @@
 import { PageProps } from "@/.next/types/app/page";
 import StoryDetail from "@/components/story-detail/story-detail";
 import { getStoriesBySlug, storyDetailApi } from "@/utils/api.utils";
+import fs from "fs";
 import { Metadata } from "next";
+import path from "path";
 
 const useStory = async (slug: string) => {
   const token = process.env.AUTH_TOKEN;
   return await storyDetailApi(slug, token ?? "");
 };
 
+const postsDirectory = path.join(process.cwd(), "cms/contents/stories");
+
+async function generateStaticParams() {
+  const slugs = fs
+    .readdirSync(postsDirectory)
+    .filter((file) => file.endsWith(".mdx"))
+    .map((file) => ({ slug: file.replace(/\.mdx$/, "") }));
+
+  return slugs;
+}
+
 const ProjectDetailPage = async ({ params }: PageProps) => {
   const param = await params;
   const story = await useStory(param.slug.join("/"));
-  const { mdxSource } = await getStoriesBySlug(param.slug);
-  story.content = mdxSource;
+  const content = await getStoriesBySlug(param.slug.join("/"));
+  story.content = content;
 
   return (
     <>

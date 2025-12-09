@@ -1,29 +1,32 @@
-import { PageProps } from "@/.next/types/app/page";
 import ProjectDetail from "@/components/project-detail/project-detail";
 import { getPostBySlug, projectDetailApi } from "@/utils/api.utils";
+import fs from "fs";
 import { Metadata } from "next";
+import path from "path";
 
 const useProject = async (slug: string) => {
   const token = process.env.AUTH_TOKEN;
   return await projectDetailApi(slug, token ?? "");
 };
 
-// const postsDirectory = path.join(process.cwd(), "cms/contents/projects");
+const postsDirectory = path.join(process.cwd(), "cms/contents/projects");
 
-// async function generateStaticParams() {
-//   const slugs = fs
-//     .readdirSync(postsDirectory)
-//     .filter((file) => file.endsWith(".mdx"))
-//     .map((file) => ({ slug: file.replace(/\.mdx$/, "") }));
+async function generateStaticParams() {
+  const slugs = fs
+    .readdirSync(postsDirectory)
+    .filter((file) => file.endsWith(".mdx"))
+    .map((file) => ({ slug: file.replace(/\.mdx$/, "") }));
 
-//   return slugs;
-// }
+  return slugs;
+}
 
-const ProjectDetailPage = async ({ params }: PageProps) => {
-  const param = await params;
-  const project = await useProject(param.slug.join("/"));
-  const { mdxSource } = await getPostBySlug(param.slug);
-  project.content = mdxSource;
+export const dynamicParams = false;
+
+const ProjectDetailPage = async (params: Promise<{ slug: string[] }>) => {
+  const { slug } = await params;
+  const project = await useProject(slug.join("/"));
+  const content = await getPostBySlug(slug.join("/"));
+  project.content = content;
 
   return (
     <>

@@ -2,7 +2,6 @@
 
 import ContainerAnimated from "@/components/container-animated/container-animated";
 import { Story } from "@/models/story.model";
-import { MDXRemote } from "next-mdx-remote";
 import Image from "next/image";
 import CodeViewer from "../code-viewer/code-viewer";
 
@@ -41,12 +40,13 @@ const StoryDetail = ({ writtenAt, title, content, preview }: Story) => {
 
       <div className="my-16 story-wrapper text-lg">
         <ContainerAnimated>
-          <MDXRemote
+          {/* <MDXRemote
             compiledSource={content.compiledSource}
             frontmatter={content.frontmatter}
             scope={content.scope}
             components={components}
-          />
+          /> */}
+          {content}
         </ContainerAnimated>
       </div>
     </>

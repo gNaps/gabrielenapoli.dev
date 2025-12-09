@@ -2,10 +2,6 @@ import { allExperiences } from "@/cms/experiences";
 import { allProjects } from "@/cms/projects";
 import { allStacks } from "@/cms/stacks";
 import { allStories } from "@/cms/stories";
-import fs from "fs";
-import matter from "gray-matter";
-import { serialize } from "next-mdx-remote/serialize";
-import path from "path";
 
 export const projectsHomeApi = async (token: string) => {
   // const PROJECTS_QUERY = `{
@@ -308,43 +304,38 @@ export const stacksApi = async (token: string) => {
 // };
 
 export async function getPostBySlug(slug: string) {
-  const postsDirectory = path.join(process.cwd(), "cms/contents/projects");
-  const fullPath = path.join(postsDirectory, `${slug}.mdx`);
-  const fileContents = fs.readFileSync(fullPath, "utf8");
-  const { data, content } = matter(fileContents);
-  const mdxSource = await serialize(content);
+  const { default: Content } = await import(
+    `@/cms/contents/projects/${slug}.mdx`
+  );
 
-  return {
-    frontMatter: data,
-    mdxSource,
-  };
+  return Content();
 }
 
 export async function getStoriesBySlug(slug: string[]) {
-  const postsDirectory = path.join(process.cwd(), "cms/contents/stories");
-  console.log("postsDirectory", postsDirectory);
-  console.log("slug", slug);
-  const fullPath = path.join(postsDirectory, `${slug.join("/")}.mdx`);
-  console.log("fullPath", fullPath);
-  const fileContents = fs.readFileSync(fullPath, "utf8");
-  const { data, content } = matter(fileContents);
-  const mdxSource = await serialize(content);
+  // const postsDirectory = path.join(process.cwd(), "cms/contents/stories");
+  // console.log("postsDirectory", postsDirectory);
+  // console.log("slug", slug);
+  // const fullPath = path.join(postsDirectory, `${slug.join("/")}.mdx`);
+  // console.log("fullPath", fullPath);
+  // const fileContents = fs.readFileSync(fullPath, "utf8");
+  // const { data, content } = matter(fileContents);
+  // const mdxSource = await serialize(content);
 
-  return {
-    frontMatter: data,
-    mdxSource,
-  };
+  // return {
+  //   frontMatter: data,
+  //   mdxSource,
+  // };
+  const { default: Content } = await import(
+    `@/cms/contents/stories/${slug}.mdx`
+  );
+
+  return Content();
 }
 
 export async function getExperienceBySlug(slug: string) {
-  const postsDirectory = path.join(process.cwd(), "cms/contents/experiences");
-  const fullPath = path.join(postsDirectory, `${slug}.mdx`);
-  const fileContents = fs.readFileSync(fullPath, "utf8");
-  const { data, content } = matter(fileContents);
-  const mdxSource = await serialize(content);
+  const { default: Content } = await import(
+    `@/cms/contents/experiences/${slug}.mdx`
+  );
 
-  return {
-    frontMatter: data,
-    mdxSource,
-  };
+  return Content();
 }
