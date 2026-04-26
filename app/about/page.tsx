@@ -76,7 +76,7 @@ const AboutPage = async () => {
           }}
         />
       </Head>
-      <div className="py-8 px-6 lg:px-36 lg:py-24 xl:px-100">
+      <div className="gn-page">
         <About experiences={experiences} stacks={stacks} />
       </div>
     </>

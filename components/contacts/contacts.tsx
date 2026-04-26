@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import ContainerAnimated from "../container-animated/container-animated";
-import GradientText from "../gradient-text/gradient-text";
 
 type ContactForm = {
   email: string;
@@ -28,7 +27,6 @@ const Contacts = () => {
         method: "POST",
         body: JSON.stringify(payload),
       });
-
       setSuccess(true);
       reset();
     } catch (err) {
@@ -39,49 +37,97 @@ const Contacts = () => {
   return (
     <>
       <ContainerAnimated>
-        <p className="h4">Reach out and let's chat.</p>
-        <h1 className="mt-3 lg:mt-7">
+        {/* <div className="eyebrow" style={{ marginBottom: 14 }}>
+          Reach out
+        </div> */}
+        <h1 className="glow-wrap" style={{ maxWidth: 900 }}>
           Got an idea?{" "}
-          <GradientText animationSpeed={3}>tell me about it.</GradientText>
+          <span className="grad">tell me about it.</span>
         </h1>
       </ContainerAnimated>
 
-      <div className="my-16">
+      <div style={{ marginTop: 60, maxWidth: 640, margin: "60px auto 0" }}>
         <ContainerAnimated>
-          <form onSubmit={handleSubmit(submit)} className="flex flex-col">
-            <div className="flex gap-2 mb-2">
-              <div className="flex-1">
-                <label>Firstname</label>
-                <input {...register("firstname")} className="w-full" />
-              </div>
-
-              <div className="flex-1">
-                <label>Surname</label>
-                <input {...register("surname")} className="w-full" />
-              </div>
-            </div>
-
-            <div className="flex flex-col mb-2">
-              <label>Email (*)</label>
-              <input {...register("email", { required: true })} />
-              {errors.email && <span>This field is required</span>}
-            </div>
-
-            <div className="flex flex-col mb-2">
-              <label>Message (*)</label>
-              <textarea {...register("message", { required: true })} />
-              {errors.message && <span>This field is required</span>}
-            </div>
-
-            {success && <p>Message sended succesfully!</p>}
-
-            <button
-              type="submit"
-              className="rounded-lg bg-white text-black py-3 font-semibold mt-3"
+          <div className="card" style={{ padding: "36px 32px" }}>
+            <form
+              onSubmit={handleSubmit(submit)}
+              style={{ display: "flex", flexDirection: "column", gap: 16 }}
             >
-              Send message
-            </button>
-          </form>
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                <div style={{ flex: 1, minWidth: 200 }}>
+                  <label>Firstname</label>
+                  <input
+                    {...register("firstname")}
+                    style={{ width: "100%", marginTop: 6 }}
+                  />
+                </div>
+                <div style={{ flex: 1, minWidth: 200 }}>
+                  <label>Surname</label>
+                  <input
+                    {...register("surname")}
+                    style={{ width: "100%", marginTop: 6 }}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label>Email *</label>
+                <input
+                  {...register("email", { required: true })}
+                  style={{ width: "100%", marginTop: 6 }}
+                />
+                {errors.email && (
+                  <span
+                    style={{
+                      fontSize: 12,
+                      color: "oklch(0.78 0.18 20)",
+                      marginTop: 4,
+                      display: "block",
+                    }}
+                  >
+                    This field is required
+                  </span>
+                )}
+              </div>
+
+              <div>
+                <label>Message *</label>
+                <textarea
+                  {...register("message", { required: true })}
+                  rows={5}
+                  style={{ width: "100%", marginTop: 6, resize: "vertical" }}
+                />
+                {errors.message && (
+                  <span
+                    style={{
+                      fontSize: 12,
+                      color: "oklch(0.78 0.18 20)",
+                      marginTop: 4,
+                      display: "block",
+                    }}
+                  >
+                    This field is required
+                  </span>
+                )}
+              </div>
+
+              {success && (
+                <p
+                  style={{
+                    color: "oklch(0.78 0.2 150)",
+                    fontSize: 14,
+                    fontFamily: "var(--font-mono)",
+                  }}
+                >
+                  ✓ Message sent successfully!
+                </p>
+              )}
+
+              <button type="submit" className="pill pill-primary">
+                Send message
+              </button>
+            </form>
+          </div>
         </ContainerAnimated>
       </div>
     </>

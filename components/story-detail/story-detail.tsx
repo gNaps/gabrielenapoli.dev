@@ -12,9 +12,7 @@ const StoryDetail = ({ writtenAt, title, content, preview }: Story) => {
     ),
     Card(props: any) {
       return (
-        <div className="my-8 p-6 rounded-lg shadow-md bg-neutral-900">
-          {props.children}
-        </div>
+        <div className="my-8 p-6 rounded-lg gn-card">{props.children}</div>
       );
     },
   };
@@ -22,32 +20,47 @@ const StoryDetail = ({ writtenAt, title, content, preview }: Story) => {
   return (
     <>
       <ContainerAnimated>
-        <p className="subtitle">{writtenAt}</p>
-        <h1 className="mt-3 lg:mt-7">{title}</h1>
+        <span
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: 11,
+            color: "var(--subtle)",
+            letterSpacing: "0.15em",
+            textTransform: "uppercase",
+          }}
+        >
+          {writtenAt}
+        </span>
+        <h1 className="mt-sm" style={{ marginTop: 12 }}>
+          {title}
+        </h1>
       </ContainerAnimated>
 
-      <div className="my-8 flex justify-center">
+      <div className="mt-md" style={{ marginTop: 28 }}>
         <ContainerAnimated>
-          <Image
-            src={preview.url ?? ""}
-            alt={preview.alt ?? ""}
-            width={1200}
-            height={600}
-            className="rounded-lg img-project"
-          />
+          <div className="card" style={{ overflow: "hidden" }}>
+            <Image
+              src={preview.url ?? ""}
+              alt={preview.alt ?? ""}
+              width={1200}
+              height={600}
+              style={{
+                width: "100%",
+                height: "auto",
+                display: "block",
+                aspectRatio: "2",
+                objectFit: "cover",
+              }}
+            />
+          </div>
         </ContainerAnimated>
       </div>
 
-      <div className="my-16 story-wrapper text-lg">
-        <ContainerAnimated>
-          {/* <MDXRemote
-            compiledSource={content.compiledSource}
-            frontmatter={content.frontmatter}
-            scope={content.scope}
-            components={components}
-          /> */}
-          {content}
-        </ContainerAnimated>
+      <div
+        className="story-wrapper mt-xl"
+        style={{ maxWidth: 760, margin: "80px auto 0" }}
+      >
+        <ContainerAnimated>{content}</ContainerAnimated>
       </div>
     </>
   );

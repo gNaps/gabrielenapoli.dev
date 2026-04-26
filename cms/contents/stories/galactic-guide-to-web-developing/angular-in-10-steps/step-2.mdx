@@ -1,0 +1,179 @@
+<Card>
+## 02 - Installazione e configurazione
+
+<br />
+Benvenuto nel secondo capitolo della nostra guida di Angular!
+<br />
+Prima di iniziare a scrivere codice, dobbiamo **preparare il nostro ambiente di sviluppo**. 
+Non ti preoccupare: seguiremo ogni passaggio insieme, sia che tu abbia un **Mac** che un 
+**PC Windows**.
+<br />
+Alla fine di questo capitolo avrai tutto l'occorrente per sviluppare con Angular come 
+un professionista: Node.js, Angular CLI, VS Code configurato e Git pronto all'uso.
+<br />
+### 📋 Cosa installeremo
+<br />
+Ecco gli strumenti che ci servono e perché sono fondamentali:
+<br />
+### 🟢 Node.js - Il motore di tutto
+<br />
+**Node.js** è un ambiente di runtime che permette di eseguire JavaScript anche **fuori dal browser**.
+Normalmente JavaScript gira solo nelle pagine web, ma Node.js lo porta sul tuo computer 
+permettendoti di:
+<br />
+- Usare strumenti di sviluppo scritti in JavaScript (come Angular CLI)
+- Eseguire script di build e automazione
+- Installare pacchetti e librerie
+<br />
+Perché ne abbiamo bisogno per Angular?
+Angular CLI (lo strumento per creare progetti) è scritto in JavaScript e ha bisogno di 
+Node.js per funzionare. Inoltre useremo Node.js per il server di sviluppo locale.
+<br />
+### 📦 npm - Il magazzino dei pacchetti
+<br />
+**npm** (Node Package Manager) è il "negozio" dove si trovano milioni di pacchetti JavaScript 
+pronti all'uso. Pensa a npm come all'App Store per sviluppatori: invece di scaricare app, 
+scarichi **librerie di codice** che altri hanno scritto e condiviso.
+<br />
+**Cosa faremo con npm?**
+- Installare Angular CLI
+- Aggiungere librerie al nostro progetto (icone, componenti UI, utilità)
+- Gestire le dipendenze automaticamente
+<br />
+### 🌿 Git - La macchina del tempo per il codice
+<br />
+**Git** è un sistema di **controllo versione**: ti permette di tenere traccia di ogni modifica al 
+tuo codice nel tempo.
+<br />
+**Cosa puoi fare con Git?**
+- **Salvare "snapshot"** del tuo progetto
+- **Tornare indietro** a versioni precedenti se qualcosa si rompe
+- **Lavorare in team** senza sovraporre il lavoro di altri
+- **Sperimentare** nuove funzionalità in "rami" separati
+<br />
+### 🛠 Gli altri strumenti
+<br />
+- **Angular CLI**: lo strumento ufficiale per creare e gestire progetti Angular
+- **VS Code**: l'editor di codice (con le estensioni giuste)
+<br />
+## 🍎 Installazione su macOS
+<br />
+### 1. Installare Node.js
+<br />
+**Opzione A: Download diretto (consigliata per principianti)**
+1. Vai su [nodejs.org](https://nodejs.org/)
+2. Scarica la versione **LTS** (Long Term Support) - quella raccomandata
+3. Apri il file `.pkg` scaricato e segui l'installazione guidata
+4. Riavvia il terminale
+<br />
+**Opzione B: Con Homebrew (se lo usi già)**
+```bash
+# Installa Homebrew se non ce l'hai
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Installa Node.js
+brew install node
+```
+Verifica l'installazione, apri il terminale e digita:
+<CodeViewer
+  codeString={`node --version
+  npm --version`
+  }
+  language="bash"
+  showLineNumbers={false}
+/>
+Dovresti vedere qualcosa tipo:
+<CodeViewer
+  codeString={`v20.15.0
+  10.7.0`
+  }
+  language="bash"
+  showLineNumbers={false}
+/>
+<br />
+### 2. Installare Angular CLI
+<br />
+Nel terminale, esegui:
+<CodeViewer
+  codeString="npm install -g @angular/cli"
+  language="bash"
+  showLineNumbers={false}
+/>
+Il flag `-g` installa Angular CLI **globalmente**, così lo puoi usare da qualsiasi cartella.
+**Verifica l'installazione:**
+<CodeViewer
+  codeString="ng version"
+  language="bash"
+  showLineNumbers={false}
+/>
+Dovresti vedere le informazioni sulla versione di Angular CLI.
+<br />
+### 3. Installare VS Code
+<br />
+1. Vai su [code.visualstudio.com](https://code.visualstudio.com/)
+2. Scarica la versione per macOS
+3. Apri il file `.zip` e trascina l'app nella cartella **Applicazioni**
+4. Avvia VS Code
+<br />
+### 4. Installare Git
+<br />
+**Opzione A: Download diretto**
+1. Vai su [git-scm.com](https://git-scm.com/)
+2. Scarica la versione per macOS
+3. Segui l'installazione guidata
+<br />
+**Opzione B: Con Homebrew**
+<CodeViewer
+  codeString="brew install git"
+  language="bash"
+  showLineNumbers={false}
+/>
+**Verifica l'installazione:**
+<CodeViewer
+  codeString="git --version"
+  language="bash"
+  showLineNumbers={false}
+/>
+<br />
+## 🪟 Installazione su Windows
+<br />
+### 1. Installare Node.js
+<br />
+1. Vai su [nodejs.org](https://nodejs.org/)
+2. Scarica la versione **LTS** per Windows
+3. Esegui il file `.msi` e segui l'installazione guidata
+4. ✅ **Importante**: Durante l'installazione, assicurati che sia selezionata l'opzione "Add to PATH"
+<br />
+Verifica l'installazione, apri il **Prompt dei comandi** (cmd) o **PowerShell** e digita:
+<CodeViewer
+  codeString={`node --version
+  npm --version`
+  }
+  language="powershell"
+  showLineNumbers={false}
+/>
+### 2. Installare Angular CLI
+<br />
+Nel prompt dei comandi:
+<CodeViewer
+  codeString={`npm install -g @angular/cli`}
+  language="powershell"
+  showLineNumbers={false}
+/>
+<br />
+**Possibili problemi su Windows**   
+Se ricevi errori di permessi, prova:
+<CodeViewer
+  codeString={`# Apri PowerShell come amministratore
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+npm install -g @angular/cli`}
+  language="powershell"
+  showLineNumbers={false}
+/>
+**Verifica l'installazione**
+<CodeViewer
+  codeString={`ng version`}
+  language="powershell"
+  showLineNumbers={false}
+/>
+</Card>

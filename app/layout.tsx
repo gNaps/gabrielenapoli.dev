@@ -1,12 +1,29 @@
 import Footer from "@/components/footer/footer";
 import Header from "@/components/header/header";
 import type { Metadata } from "next";
-import { Open_Sans } from "next/font/google";
+import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 
-const openSans = Open_Sans({
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
+  variable: "--font-space-grotesk",
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains-mono",
+  weight: ["400", "500", "600"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -31,7 +48,20 @@ export default function RootLayout({
         />
         <link rel="icon" href="/favicon.svg" />
       </head>
-      <body className={`${openSans.className} antialiased`}>
+      <body
+        className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}
+      >
+        {/* Background layers */}
+        <div className="bg-layer bg-base" />
+        <div className="bg-layer bg-grid" />
+        <div className="bg-layer bg-aurora">
+          <div className="aurora aurora--violet" />
+          <div className="aurora aurora--indigo" />
+          <div className="aurora aurora--cyan" />
+        </div>
+        <div className="bg-layer bg-grain" />
+        <div className="bg-layer bg-vignette" />
+
         <Header />
         <main>{children}</main>
         <Footer />

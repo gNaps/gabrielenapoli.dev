@@ -41,18 +41,18 @@ export default async function Home() {
           }}
         />
       </Head>
-      <div className="py-8 px-6 lg:px-36 lg:py-24 xl:px-100">
+      <div className="gn-page">
         <Hero />
 
-        <div className="mt-16">
+        <div className="mt-xl">
           <ListProjects projects={projects} homepage={true} />
         </div>
 
-        <div className="my-8">
+        <div className="mt-xl">
           <AboutHero />
         </div>
 
-        <div className="mt-16">
+        <div className="mt-xl">
           <ListStories stories={stories} homepage={true} />
         </div>
       </div>

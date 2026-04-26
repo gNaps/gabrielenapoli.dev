@@ -1,49 +1,53 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import Button from "../button/button";
 import ContainerAnimated from "../container-animated/container-animated";
-import GradientText from "../gradient-text/gradient-text";
 
 const AboutHero = () => {
   const router = useRouter();
 
-  const contacts = () => {
-    (window as any).goatcounter.count({
-      path: "click-contacts-header",
-      event: true,
-    });
-    router.push(`/contacts`);
-  };
-
   return (
     <ContainerAnimated>
-      <h2>
-        I’m a senior <GradientText animationSpeed={2}>Angular</GradientText> and{" "}
-        <GradientText animationSpeed={3}>React</GradientText> developer,
-        passionate about crafting seamless and performant web applications. On
-        the backend, I love working with{" "}
-        <GradientText animationSpeed={3}>Node.js</GradientText> especially when
-        using <GradientText animationSpeed={3}>Fastify</GradientText> for speed
-        and <GradientText animationSpeed={3}>Prisma</GradientText> for clarity
-        and structure.
-      </h2>
-
-      <p className="mt-4 lg:mt-6 subtitle">
-        I enjoy taking care of the entire development process: from designing
-        clean, intuitive interfaces to shaping robust database architectures.
-        Code is my medium, and building is what keeps me in flow. Outside of
-        work, I enjoy playing video games, reading books or comics and running.
-      </p>
-
-      <div className="mt-8">
-        <Button
-          value="About me"
-          type="outlined"
-          id={"button-about-me"}
-          name={"button-about-me"}
-          onClick={contacts}
-        />
+      <div
+        className="card"
+        style={{
+          padding: "clamp(28px, 4vw, 60px) clamp(24px, 4vw, 54px)",
+        }}
+      >
+        <h2 style={{ maxWidth: 900, fontWeight: 500, lineHeight: 1.35 }}>
+          I&apos;m a senior{" "}
+          <span className="h-indigo">Angular</span> and{" "}
+          <span className="h-violet">React</span> developer, passionate about
+          crafting <span className="shimmer">seamless</span> and performant web
+          applications. On the backend, I love working with{" "}
+          <span className="h-violet">Node.js</span> especially when using{" "}
+          <span className="h-violet">Fastify</span> for speed and{" "}
+          <span className="h-violet">Prisma</span> for clarity and structure.
+        </h2>
+        <p style={{ marginTop: 24, maxWidth: 700, fontSize: 15 }}>
+          I enjoy taking care of the entire development process: from designing
+          clean, intuitive interfaces to shaping robust database architectures.
+          Code is my medium, and building is what keeps me in flow. Outside of
+          work, I enjoy playing video games, reading books or comics, and
+          running.
+        </p>
+        <div style={{ marginTop: 28 }}>
+          <button className="pill" onClick={() => router.push("/about")}>
+            About me
+            <svg
+              width={13}
+              height={13}
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={1.6}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ fill: "none" }}
+            >
+              <path d="M5 12h14M13 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
       </div>
     </ContainerAnimated>
   );

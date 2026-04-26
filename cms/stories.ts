@@ -2,9 +2,21 @@ import { Story } from "@/models/story.model";
 
 export const allStories: Story[] = [
   {
+    slug: "galactic-guide-to-web-developing/angular-in-10-steps/step-2",
+    homepage: true,
+    id: 4,
+    title: "Angular in 10 steps - 2 of 10",
+    writtenAt: "2025-07-20",
+    preview: {
+      url: "/cms/angular_in_10_steps.webp",
+      title: "angular_in_10_steps_2_10",
+      alt: "angular in 10 steps 2 of 10",
+    },
+  },
+  {
     slug: "galactic-guide-to-web-developing/angular-in-10-steps/step-1",
     homepage: true,
-    id: "cSQ0T5_IQAKCcvUDccfsWg",
+    id: 3,
     title: "Angular in 10 steps - 1 of 10",
     writtenAt: "2025-07-13",
     preview: {
@@ -16,7 +28,7 @@ export const allStories: Story[] = [
   {
     slug: "nextjs-twitch-authentication",
     homepage: true,
-    id: "4f7XqM3xR2CQMJE9t-ew7g",
+    id: 2,
     title: "How to authenticate with Twitch and Next.js",
     writtenAt: "2023-08-25",
     preview: {
@@ -28,7 +40,7 @@ export const allStories: Story[] = [
   {
     slug: "rxjs-zip-vs-combinelast-vs-withlatestfrom-vs-forkJoin",
     homepage: true,
-    id: "X15K_Q86TqmYlb8YR2ogoA",
+    id: 1,
     title: "RxJS: zip vs combineLast vs withLatestFrom vs forkJoin",
     writtenAt: "2023-11-08",
     preview: {

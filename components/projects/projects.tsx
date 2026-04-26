@@ -2,7 +2,6 @@
 
 import { Project } from "@/models/project.model";
 import ContainerAnimated from "../container-animated/container-animated";
-import GradientText from "../gradient-text/gradient-text";
 import ListProjects from "../list-projects/list-projects";
 
 interface ProjectProps {
@@ -13,17 +12,20 @@ const Projects = ({ projects }: ProjectProps) => {
   return (
     <>
       <ContainerAnimated>
-        <p className="h4">My projects.</p>
-        <h1 className="mt-3 lg:mt-7">
-          Remember the words:{" "}
-          <GradientText animationSpeed={3}>coding is coming.</GradientText>
+        {/* <div className="eyebrow" style={{ marginBottom: 18 }}>
+          Projects
+        </div> */}
+        <h1 className="glow-wrap" style={{ maxWidth: 900 }}>
+          Things I&apos;ve{" "}
+          <span className="grad">designed &amp; shipped.</span>
         </h1>
-        <p className="mt-4 lg:mt-6 subtitle">
-          Here you can find some of my works, both personal of for work.
+        <p style={{ marginTop: 28, maxWidth: 620, fontSize: 16 }}>
+          A mix of client work, internal tools and passion projects. Each one
+          taught me something I still use today.
         </p>
       </ContainerAnimated>
 
-      <div className="my-16">
+      <div className="mt-xl">
         <ListProjects projects={projects} homepage={false} />
       </div>
     </>

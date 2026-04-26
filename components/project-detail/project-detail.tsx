@@ -1,6 +1,5 @@
 "use client";
 
-import Button from "@/components/button/button";
 import ContainerAnimated from "@/components/container-animated/container-animated";
 import { Project } from "@/models/project.model";
 import Image from "next/image";
@@ -20,25 +19,40 @@ const ProjectDetail = ({
   return (
     <>
       <ContainerAnimated>
-        <p className="h4">{title}</p>
-        <h1 className="mt-3 lg:mt-7">{subtitle}</h1>
+        {/* <div className="eyebrow" style={{ marginBottom: 14 }}>
+          Project
+        </div> */}
+        <h1>{title}</h1>
+        {subtitle && (
+          <p style={{ marginTop: 16, fontSize: 18, maxWidth: 680 }}>
+            {subtitle}
+          </p>
+        )}
       </ContainerAnimated>
 
-      <div className="my-8 flex justify-center">
+      <div style={{ marginTop: 28 }}>
         <ContainerAnimated>
-          <Image
-            src={preview.url ?? ""}
-            alt={preview.alt ?? ""}
-            width={1200}
-            height={600}
-            className="rounded-lg img-project"
-          />
+          <div className="card" style={{ overflow: "hidden" }}>
+            <Image
+              src={preview.url ?? ""}
+              alt={preview.alt ?? ""}
+              width={1200}
+              height={600}
+              style={{
+                width: "100%",
+                height: "auto",
+                display: "block",
+                aspectRatio: "2",
+                objectFit: "cover",
+              }}
+            />
+          </div>
         </ContainerAnimated>
       </div>
 
-      <div className="mb-16">
+      <div style={{ marginTop: 24 }}>
         <ContainerAnimated>
-          <div className="flex gap-5 justify-center">
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "center" }}>
             {skill.map((s, index) => (
               <SkillIcon name={s} key={index} />
             ))}
@@ -46,71 +60,78 @@ const ProjectDetail = ({
         </ContainerAnimated>
       </div>
 
-      <div className="my-16">
-        <ContainerAnimated>
-          {/* {contentChildren.map((c: any) => (
-            <RenderContent content={c} key={useId()} />
-          ))} */}
-          {/* <MDXRemote
-            compiledSource={content.compiledSource}
-            frontmatter={content.frontmatter}
-            scope={content.scope}
-            components={{
-              Card(props) {
-                return (
-                  <div className="my-8 p-6 rounded-lg shadow-md bg-neutral-900">
-                    {props.children}
-                  </div>
-                );
-              },
-            }}
-          /> */}
-          {content}
-        </ContainerAnimated>
-      </div>
-
-      <ContainerAnimated>
-        <div className="my-16 flex gap-3 flex-row">
-          {urlPreview && (
-            <Link href={urlPreview} target="blank">
-              <Button
-                value="Try it"
-                id={"button-try-it"}
-                name={"button-try-it"}
-              />
-            </Link>
-          )}
-          {urlGithub && (
-            <Link href={urlGithub} target="blank">
-              <Button
-                value="Github"
-                type="outlined"
-                id={"button-github"}
-                name={"button-github"}
-              />
-            </Link>
-          )}
+      {(urlPreview || urlGithub) && (
+        <div style={{ marginTop: 28, display: "flex", gap: 12, flexWrap: "wrap" }}>
+          <ContainerAnimated>
+            {urlPreview && (
+              <Link href={urlPreview} target="_blank">
+                <button className="pill pill-primary">
+                  Try it
+                  <svg
+                    width={13}
+                    height={13}
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={1.6}
+                    strokeLinecap="round"
+                    style={{ fill: "none" }}
+                  >
+                    <path d="M7 17 17 7M8 7h9v9" />
+                  </svg>
+                </button>
+              </Link>
+            )}
+            {urlGithub && (
+              <Link href={urlGithub} target="_blank" style={{ marginLeft: 12 }}>
+                <button className="pill">
+                  GitHub
+                  <svg
+                    width={13}
+                    height={13}
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={1.6}
+                    strokeLinecap="round"
+                    style={{ fill: "none" }}
+                  >
+                    <path d="M7 17 17 7M8 7h9v9" />
+                  </svg>
+                </button>
+              </Link>
+            )}
+          </ContainerAnimated>
         </div>
-      </ContainerAnimated>
+      )}
 
-      <div className="flex flex-col md:flex-row md:flexWrap">
-        {gallery?.map((g, index) => (
-          <div
-            className="mb-8 md:odd:pr-5 md:even:pl-5 w-full md:w-1/2"
-            key={index}
-          >
-            <ContainerAnimated>
-              <Image
-                src={g.url}
-                alt={g.alt}
-                width={800}
-                height={400}
-                className="roundedLg"
-              />
-            </ContainerAnimated>
-          </div>
-        ))}
+      <div
+        className="story-wrapper"
+        style={{ maxWidth: 760, margin: "60px auto 0" }}
+      >
+        <ContainerAnimated>{content}</ContainerAnimated>
       </div>
+
+      {gallery && gallery.length > 0 && (
+        <div className="grid-2" style={{ marginTop: 40 }}>
+          {gallery.map((g, index) => (
+            <ContainerAnimated key={index}>
+              <div className="card" style={{ overflow: "hidden" }}>
+                <Image
+                  src={g.url}
+                  alt={g.alt}
+                  width={800}
+                  height={400}
+                  style={{
+                    width: "100%",
+                    height: "auto",
+                    display: "block",
+                    objectFit: "cover",
+                  }}
+                />
+              </div>
+            </ContainerAnimated>
+          ))}
+        </div>
+      )}
     </>
   );
 };

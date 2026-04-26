@@ -1,7 +1,7 @@
 import type { Image } from "./image.model";
 
 export interface Story {
-  id: string;
+  id: number;
   homepage: boolean;
   title: string;
   slug: string;

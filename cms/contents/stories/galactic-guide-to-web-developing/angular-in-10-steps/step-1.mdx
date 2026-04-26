@@ -22,12 +22,14 @@ strumenti necessari** per costruire un’app da zero, senza dover aggiungere mil
 librerie esterne.
 <br />
 Angular è molto usato nel mondo enterprise, ma non solo. Il framework permette
-di creare ogni tipo di applicativo ed è molto portato per app come: - **Single
-Page Applications (SPA)**: cioè app che non ricaricano la pagina ogni volta che
-cambi sezione. - **Progressive Web App (PWA)**: app web che sembrano native. -
-**Applicazioni aziendali complesse**: con gestione dello stato, autenticazione,
-moduli e routing avanzato. - **Dashboard, CRM, gestionali, portali interni** e
-molto altro.
+di creare ogni tipo di applicativo ed è molto portato per app come: 
+
+- **Single Page Applications (SPA)**: cioè app che non ricaricano la pagina ogni volta che
+cambi sezione. 
+- **Progressive Web App (PWA)**: app web che sembrano native. 
+- **Applicazioni aziendali complesse**: con gestione dello stato, autenticazione,
+moduli e routing avanzato. 
+- **Dashboard, CRM, gestionali, portali interni** e molto altro.
 <br />
 ### 🕰 Un po’ di storia
 <br />
@@ -38,30 +40,29 @@ riscritto da zero e basato su **TypeScript**, con un’architettura più solida 
 moderna. Da lì in poi, il framework ha continuato a evolversi con rilasci
 regolari ogni 6 mesi. Ad oggi, Giugno 2025, siamo alla versione 20 e il
 framework è più potente e semplice che mai grazie a nuove feature introdotte
-nelle ultime release come i **signals** e gli **standalone components-**. In
+nelle ultime release come i **signals** e gli **standalone components**. In
 questa guida lavoreremo con le **ultime versioni**, sfruttando proprio queste
 nuove API.
 <br />
 ### 🔁 Cos’è una SPA e come funziona
 <br />
 Come dicevamo, Angular è pensato principalmente per creare **Single Page
-Applications (SPA)**. Una SPA è un'applicazione web che: - Viene **caricata una
-sola volta** dal browser. - Cambia il contenuto dinamicamente **senza ricaricare
-l’intera pagina**. - Utilizza **JavaScript** per gestire la navigazione interna.
+Applications (SPA)**. Una SPA è un'applicazione web che: 
+- Viene **caricata una sola volta** dal browser. 
+- Cambia il contenuto dinamicamente **senza ricaricare l’intera pagina**. 
+- Utilizza **JavaScript** per gestire la navigazione interna.
 <br />
 Questo metodo di renderizzazione delle pagina viene anche chiamato CSR, ovvero
 client-side rendering, che si differenzia dai SSR e SSG.
 <br />
-### 🧠 CSR, SSR e SSG: che significa?
-<br />
-Per capire meglio, facciamo chiarezza su **come viene renderizzata una pagina
-web**:
+Per capire meglio, facciamo chiarezza su **come viene renderizzata una pagina web**:
 <br />
 ### 📦 CSR (Client-Side Rendering)
 <br />
-- È il metodo usato **di default da Angular** - Tutta l'app è caricata nel
-browser - Più veloce dopo il primo caricamento - Ottimo per app interattive, ma
-penalizza la SEO
+- È il metodo usato **di default da Angular** 
+- Tutta l'app è caricata nel browser 
+- Più veloce dopo il primo caricamento 
+- Ottimo per app interattive, ma penalizza la SEO
 <br />
 Nell’approccio CSR il server quindi manderà al client un unico file HTML (in
 angular è il file index.html) che conterrà tutto il javascript necessario per
@@ -73,26 +74,38 @@ ripassare dal server.
 ### 🛠 SSR (Server-Side Rendering)
 <br />
 - La prima pagina viene renderizzata **dal server**, poi il client "prende il
-controllo" - Migliora SEO e tempo di caricamento iniziale - Angular supporta SSR
-con **Angular Universal**
+controllo" 
+- Migliora SEO e tempo di caricamento iniziale 
+- Angular supporta SSR con **Angular Universal**
 <br />
 Quando utilizziamo la strategia di rendering SSR la generazione dell’HTML
 visualizzato dal browser è in carico al server, questo permette di poter
 caricare la pagina iniziale in maniera molto più veloce anche se il Javascript
 non è ancora stato caricato del tutto. Una volta che il JS è pronto la pagina
-diventa interattiva, questo processo è chiamato Hydretion.
+diventa interattiva, questo processo è chiamato Hydration.
 <br />
 ### 📄 SSG (Static Site Generation)
 <br />
-- Pagine pre-generate in fase di build - Ideale per blog e contenuti poco
-dinamici - Angular può fare SSG con il supporto giusto (anche se non è il suo
-punto forte)
+- Pagine pre-generate in fase di build 
+- Ideale per blog e contenuti poco dinamici 
+- Angular può fare SSG con librerie di terze parti (non è il suo punto forte)
 <br />
 La Static site generation è un metodo che prevede la generazione dell’HTML in
-fase di build anzichè ad ogni richiesta. Questo permette di pre-renderizzate
-tutte le pagine del tuo sito in file statici. Quando un utente accede su una
+fase di build anzichè ad ogni richiesta. Questo permette di pre-renderizzare
+tutte le pagine del sito in file statici. Quando un utente accede su una
 pagina il server si limita a rispondere col file pre-renderizzato risultando un
 tempo di caricamento estremamente rapido.
+<br />
+### 💡 Quando usare cosa?
+<br />
+<Table
+  columns={[{key: "tech", label: "Tecnica"}, {key: "case", label: "Caso d'uso"}, {key: "pro", label: "✅"}, {key: "cons", label: "❌"}]}
+  data={[
+    { tech: "CSR", case: "Applicazioni molto dinamiche. Quando non è necessaria la SEO.", pro: "Quando è richiesta un’alta interazione dell’utente. Miglior performance in aggiornamenti dinamici del DOM.", cons: "SEO scarsa. Caricamento iniziale più lento." },
+    { tech: "SSR", case: "Serve SEO. Sito con tanti contenuti. Cruciale avere un caricamento rapido del sito.", pro: "SEO è OK. Caricamento iniziale veloce.", cons: "Incrementa il carico del server. Implementazione più complessa." },
+    { tech: "SSG", case: "Documentazione. Landing pages. Blog.", pro: "SEO è ottimo. Caricamento velocissimo.", cons: "Non adatto a contenuti altamente dinamici. Richiesta building per aggiornare contenuti." },
+  ]}
+/>
 <br />
 ### 🧩 E i componenti?
 <br />
@@ -100,7 +113,9 @@ In Angular tutto ruota attorno ai **componenti**. Un componente è un pezzetto
 riutilizzabile dell’interfaccia utente, con il suo **HTML**, il suo **CSS** e la
 sua **logica**.
 
-> Pensa a un bottone, una card, un form, una pagina: sono tutti componenti.
+<Callout type="info">
+Pensa a un bottone, una card, un form, una pagina: sono tutti componenti.
+</Callout>
 
 Con Angular è possibile creare componenti standalone (cioè indipendenti), e **comporre la tua
 app come un puzzle**: ogni pezzo ha un ruolo e si incastra con gli altri. Le pagine stesse che

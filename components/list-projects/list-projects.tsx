@@ -2,7 +2,6 @@
 
 import { Project } from "@/models/project.model";
 import { useRouter } from "next/navigation";
-import Button from "../button/button";
 import ContainerAnimated from "../container-animated/container-animated";
 import ItemProject from "./item-project/item-project";
 
@@ -14,48 +13,42 @@ interface ListProjectsProps {
 const ListProjects = ({ projects, homepage }: ListProjectsProps) => {
   const router = useRouter();
 
-  const openProjects = () => {
-    router.push(`/projects`);
-  };
-
   return (
     <>
       {homepage && (
         <ContainerAnimated>
-          <div className="flex justify-between mb-6">
-            <p className="h4">LATEST PROJECTS</p>
-            <div className="hidden md:block">
-              <Button
-                type="outlined"
-                value="View all"
-                size="small"
-                onClick={openProjects}
-                id={"button-view-all-projects"}
-                name={"button-view-all-projects"}
-              />
+          <div className="section-head">
+            <div>
+              {/* <div className="eyebrow">Latest work</div> */}
+              <h2 style={{ marginTop: 10 }}>
+                Selected <span className="grad-violet">projects</span>.
+              </h2>
             </div>
+            <button className="pill" onClick={() => router.push("/projects")}>
+              View all
+              <svg
+                width={13}
+                height={13}
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={1.6}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ fill: "none" }}
+              >
+                <path d="M7 17 17 7M8 7h9v9" />
+              </svg>
+            </button>
           </div>
         </ContainerAnimated>
       )}
-      <div className="flex flex-col md:flex-row md:flex-wrap">
+      <div className="grid-2">
         {projects.map((p) => (
-          <div
-            className="mb-8 md:odd:pr-5 md:even:pl-5 w-full md:w-1/2"
-            key={p.id}
-          >
-            <ContainerAnimated>
-              <ItemProject {...p} />
-            </ContainerAnimated>
-          </div>
+          <ContainerAnimated key={p.id}>
+            <ItemProject {...p} />
+          </ContainerAnimated>
         ))}
       </div>
-      {homepage && (
-        <ContainerAnimated>
-          <div className="md:hidden flex justify-center">
-            <Button type="outlined" value="View all" onClick={openProjects} />
-          </div>
-        </ContainerAnimated>
-      )}
     </>
   );
 };

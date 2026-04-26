@@ -2,7 +2,6 @@
 
 import { Story } from "@/models/story.model";
 import { useRouter } from "next/navigation";
-import Button from "../button/button";
 import ContainerAnimated from "../container-animated/container-animated";
 import ItemStory from "./item-story/item-story";
 
@@ -14,53 +13,43 @@ interface ListStoriesProps {
 const ListStories = ({ stories, homepage }: ListStoriesProps) => {
   const router = useRouter();
 
-  const openStories = () => {
-    router.push(`/stories`);
-  };
-
   return (
     <>
       {homepage && (
         <ContainerAnimated>
-          <div className="flex justify-between mb-6">
-            <p className="h4">STORIES</p>
-            <div className="hidden md:block">
-              <Button
-                type="outlined"
-                value="View all"
-                size="small"
-                onClick={openStories}
-                id={"button-view-all-stories"}
-                name={"button-view-all-stories"}
-              />
+          <div className="section-head">
+            <div>
+              {/* <div className="eyebrow">Writing</div> */}
+              <h2 style={{ marginTop: 10 }}>
+                Recent <span className="grad-violet">stories</span>.
+              </h2>
             </div>
+            <button className="pill" onClick={() => router.push("/stories")}>
+              View all
+              <svg
+                width={13}
+                height={13}
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={1.6}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ fill: "none" }}
+              >
+                <path d="M7 17 17 7M8 7h9v9" />
+              </svg>
+            </button>
           </div>
         </ContainerAnimated>
       )}
 
-      <div className="flex flex-col md:flex-row md:flex-wrap">
+      <div className="grid-2">
         {stories.map((s) => (
-          <div
-            className="mb-8 md:mb-0 md:odd:pr-5 md:even:pl-5 w-full md:w-1/2"
-            key={s.id}
-          >
+          <ContainerAnimated key={s.id}>
             <ItemStory {...s} />
-          </div>
+          </ContainerAnimated>
         ))}
       </div>
-      {homepage && (
-        <ContainerAnimated>
-          <div className="md:hidden flex justify-center">
-            <Button
-              type="outlined"
-              value="View all"
-              onClick={openStories}
-              id={"button-open-stories"}
-              name={"button-open-stories"}
-            />
-          </div>
-        </ContainerAnimated>
-      )}
     </>
   );
 };

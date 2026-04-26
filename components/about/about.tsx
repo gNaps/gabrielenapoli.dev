@@ -4,127 +4,231 @@ import { Experience } from "@/models/experience.model";
 import { Stack } from "@/models/stack.model";
 import Image from "next/image";
 import ContainerAnimated from "../container-animated/container-animated";
-import GradientText from "../gradient-text/gradient-text";
 
-interface AbuoutProps {
+interface AboutProps {
   experiences: Experience[];
   stacks: Stack[];
 }
 
-const About = ({ experiences, stacks }: AbuoutProps) => {
+const About = ({ experiences, stacks }: AboutProps) => {
   return (
     <>
       <ContainerAnimated>
-        <p className="h4">About me.</p>
-        <div className="flex flex-col">
-          <h1 className="mt-3 lg:mt-7">
-            In the world of the digital era,{" "}
-            <GradientText animationSpeed={3}>
-              it's innovate or die.
-            </GradientText>
-          </h1>
-          <div className="flex flex-col">
-            <p className="mt-4 lg:mt-6 subtitle">
-              Hello universe! I’m Gabriele. Find out a little more about me
-              here.
-            </p>
-          </div>
-        </div>
-        <div className="flex justify-center my-8">
-          <div
-            className="rounded-full w-56 h-56 lg:w-64 lg:h-64"
-            style={{
-              backgroundImage: `url(/cms/about_me.webp)`,
-              backgroundSize: "cover",
-              backgroundPosition: "center 70%",
-            }}
-          ></div>
-        </div>
-        <h2>
-          I’m a senior <GradientText animationSpeed={3}>Angular</GradientText>{" "}
-          and <GradientText animationSpeed={3}>React</GradientText> developer,
-          passionate about crafting seamless and performant web applications. On
-          the backend, I love working with{" "}
-          <GradientText animationSpeed={3}>Node.js</GradientText> especially
-          when using <GradientText animationSpeed={3}>Fastify</GradientText> for
-          speed and <GradientText animationSpeed={3}>Prisma</GradientText> for
-          clarity and structure.
-        </h2>
+        {/* <div className="eyebrow" style={{ marginBottom: 18 }}>
+          About me
+        </div> */}
+        <h1 className="glow-wrap" style={{ textWrap: "initial" }}>
+          A developer who cares{" "}
+          <span className="grad">about every detail.</span>
+        </h1>
+        <p style={{ marginTop: 28, maxWidth: 620, fontSize: 16 }}>
+          Hello universe! I&apos;m Gabriele. Find out a little more about me
+          here.
+        </p>
       </ContainerAnimated>
 
-      <div className="my-16">
+      {/* Avatar + bio */}
+      <div className="mt-lg">
         <ContainerAnimated>
-          <p className="mt-4 lg:mt-6 subtitle">
-            I enjoy taking care of the entire development process: from
-            designing clean, intuitive interfaces to shaping robust database
-            architectures. Code is my medium, and building is what keeps me in
-            flow. Outside of work, I enjoy playing video games, reading books or
-            comics and running.
-          </p>
-        </ContainerAnimated>
-      </div>
-
-      <div className="my-16">
-        <ContainerAnimated>
-          <h4>EXPERIENCES</h4>
-        </ContainerAnimated>
-
-        {experiences.map((exp) => (
-          <ContainerAnimated key={exp.id}>
-            <div className="flex my-10 pb-3 rounded-lg bg-neutral-900 p-4">
-              <div className="flex flex-col w-full">
-                <div className="flex items-center">
-                  <Image
-                    src={exp.logo}
-                    alt={exp.slug}
-                    width={100}
-                    height={100}
-                    className="w-16 h-16 mr-4 rounded-md object-contain"
-                  />
-                  <div>
-                    <p className="text-2xl mb-2">{exp.jobTitle}</p>
-                    <p className="mb-2">
-                      @{exp.company} | {exp.yearStart} - {exp.yearEnd || "Now"}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex gap-3 my-3">
-                  {exp.skills.map((s) => (
-                    <div
-                      dangerouslySetInnerHTML={{ __html: s.icon! }}
-                      key={s.id}
-                      className="w-8 h-8"
-                    ></div>
-                  ))}
-                </div>
-                <div className="text-sm">{exp.description}</div>
+          <div className="bio-grid">
+            <div
+              className="avatar-ring"
+              style={{
+                width: "clamp(100px, 14vw, 180px)",
+                height: "clamp(100px, 14vw, 180px)",
+              }}
+            >
+              <div className="avatar-inner">
+                <Image
+                  src="/cms/about_me.webp"
+                  alt="Gabriele Napoli"
+                  width={180}
+                  height={180}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    objectPosition: "center 70%",
+                  }}
+                />
               </div>
             </div>
-          </ContainerAnimated>
-        ))}
+
+            <div>
+              <h2
+                style={{
+                  maxWidth: 760,
+                  fontWeight: 500,
+                  fontSize: "clamp(17px, 2vw, 26px)",
+                  lineHeight: 1.45,
+                }}
+              >
+                I&apos;m a senior{" "}
+                <span className="h-indigo">Angular</span> and{" "}
+                <span className="h-violet">React</span> developer, passionate
+                about crafting seamless and performant web applications. On the
+                backend, I love working with{" "}
+                <span className="h-violet">Node.js</span> especially when using{" "}
+                <span className="h-violet">Fastify</span> for speed and{" "}
+                <span className="h-violet">Prisma</span> for clarity and
+                structure.
+              </h2>
+              <p style={{ marginTop: 20, maxWidth: 680, fontSize: 15 }}>
+                I enjoy the entire development process: from designing clean,
+                intuitive interfaces to shaping robust database architectures.
+                Code is my medium, building is what keeps me in flow. Outside of
+                work, I enjoy playing video games, reading books or comics, and
+                running.
+              </p>
+            </div>
+          </div>
+        </ContainerAnimated>
       </div>
 
-      <div className="my-16">
+      {/* Experience */}
+      <div className="mt-xl">
         <ContainerAnimated>
-          <h4 className="mb-6">STACK</h4>
-          <div className="w-full grid grid-cols-2 lg:grid-cols-4 px-10">
+          {/* <div className="eyebrow" style={{ marginBottom: 18 }}>
+            Experience
+          </div> */}
+          <h2 style={{ marginBottom: 30 }}>
+            Where I&apos;ve <span className="grad-violet">built.</span>
+          </h2>
+        </ContainerAnimated>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+          {experiences.map((exp) => (
+            <ContainerAnimated key={exp.id}>
+              <div className="card">
+                <div className="job">
+                  <div className="job-logo">
+                    <Image
+                      src={exp.logo}
+                      alt={exp.slug}
+                      width={58}
+                      height={58}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "contain",
+                      }}
+                    />
+                  </div>
+                  <div className="job-head">
+                    <div className="job-title">{exp.jobTitle}</div>
+                    <div className="job-meta">@{exp.company}</div>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: 8,
+                        marginTop: 10,
+                        flexWrap: "wrap",
+                        alignItems: "center",
+                      }}
+                    >
+                      {exp.skills.map((s) => (
+                        <div
+                          key={s.id}
+                          dangerouslySetInnerHTML={{ __html: s.icon! }}
+                          style={{ width: 24, height: 24 }}
+                          title={s.name}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <div className="job-date">
+                    {exp.yearStart} — {exp.yearEnd || "Now"}
+                  </div>
+                  <div className="job-body">{exp.description}</div>
+                </div>
+              </div>
+            </ContainerAnimated>
+          ))}
+        </div>
+      </div>
+
+      {/* Stack */}
+      <div className="mt-xl">
+        <ContainerAnimated>
+          {/* <div className="eyebrow" style={{ marginBottom: 18 }}>
+            Stack
+          </div> */}
+          <h2 style={{ marginBottom: 30 }}>
+            Tools I <span className="grad-violet">reach for.</span>
+          </h2>
+          <div className="stack-grid">
             {stacks.map((s) => (
-              <div
-                className="flex flex-col items-center justify-center gap-2 my-6"
-                key={s.id}
-              >
+              <div key={s.id} className="stack-tile" title={s.skill.name}>
                 <div
-                  dangerouslySetInnerHTML={{ __html: s.skill.icon! }}
-                  key={s.id}
-                  className="w-16 h-16"
-                ></div>
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 8,
+                  }}
+                >
+                  <div
+                    dangerouslySetInnerHTML={{ __html: s.skill.icon! }}
+                    style={{ width: 40, height: 40 }}
+                  />
+                  <span style={{ fontSize: 11, color: "var(--muted)" }}>
+                    {s.skill.name}
+                  </span>
+                </div>
                 {s.learning && (
-                  <p className="gradient-no-text px-2 rounded-full">Learning</p>
+                  <div
+                    style={{
+                      position: "absolute",
+                      bottom: 6,
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      fontSize: 8,
+                      letterSpacing: "0.15em",
+                      padding: "2px 6px",
+                      borderRadius: 4,
+                      background:
+                        "linear-gradient(90deg, oklch(0.55 0.23 290), oklch(0.55 0.18 250))",
+                      color: "white",
+                      textTransform: "uppercase",
+                      fontFamily: "var(--font-mono)",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    Learning
+                  </div>
                 )}
               </div>
             ))}
           </div>
+        </ContainerAnimated>
+      </div>
+
+      {/* CTA */}
+      <div
+        className="mt-xl"
+        style={{ textAlign: "center", paddingBottom: 40 }}
+      >
+        <ContainerAnimated>
+          <p
+            style={{ fontSize: 18, color: "var(--fg)", marginBottom: 14 }}
+          >
+            Let&apos;s work together.
+          </p>
+          <a href="mailto:gabrielenap@gmail.com" className="pill pill-primary">
+            gabrielenap@gmail.com
+            <svg
+              width={13}
+              height={13}
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={1.6}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ fill: "none" }}
+            >
+              <path d="M7 17 17 7M8 7h9v9" />
+            </svg>
+          </a>
         </ContainerAnimated>
       </div>
     </>

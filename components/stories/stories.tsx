@@ -2,7 +2,6 @@
 
 import { Story } from "@/models/story.model";
 import ContainerAnimated from "../container-animated/container-animated";
-import GradientText from "../gradient-text/gradient-text";
 import ListStories from "../list-stories/list-stories";
 
 interface StoryProps {
@@ -13,21 +12,21 @@ const Stories = ({ stories }: StoryProps) => {
   return (
     <>
       <ContainerAnimated>
-        <p className="h4">A collection of my stories.</p>
-        <h1 className="mt-3 lg:mt-7">
-          Sharing and insight:
-          <GradientText animationSpeed={3}>
-            code wings, code words.
-          </GradientText>
+        {/* <div className="eyebrow" style={{ marginBottom: 18 }}>
+          Stories
+        </div> */}
+        <h1 className="glow-wrap" style={{ textWrap: "initial" }}>
+          Writing about code,{" "}
+          <span className="grad">tools, and what I learn.</span>
         </h1>
-
-        <p className="mt-4 lg:mt-6 subtitle">
+        <p style={{ marginTop: 28, maxWidth: 620, fontSize: 16 }}>
           Here you can find articles, guides and tutorials about web
-          development.
+          development — the things I wish someone had written down for me when I
+          started.
         </p>
       </ContainerAnimated>
 
-      <div className="my-16">
+      <div className="mt-xl">
         <ListStories stories={stories} homepage={false} />
       </div>
     </>

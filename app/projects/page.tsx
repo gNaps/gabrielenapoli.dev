@@ -11,7 +11,7 @@ const ProjectsPage = async () => {
   const projects = await useProjects();
   return (
     <>
-      <div className="py-8 px-6 lg:px-36 lg:py-24 xl:px-100">
+      <div className="gn-page">
         <Projects projects={projects} />
       </div>
     </>

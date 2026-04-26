@@ -4,7 +4,7 @@ import { Metadata } from "next";
 const ContactsPage = () => {
   return (
     <>
-      <div className="py-8 px-6 lg:px-36 lg:py-24 xl:px-100">
+      <div className="gn-page">
         <Contacts />
       </div>
     </>

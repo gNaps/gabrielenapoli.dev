@@ -11,7 +11,7 @@ const StoriesPage = async () => {
   const stories = await useStories();
   return (
     <>
-      <div className="py-8 px-6 lg:px-36 lg:py-24 xl:px-100">
+      <div className="gn-page">
         <Stories stories={stories} />
       </div>
     </>

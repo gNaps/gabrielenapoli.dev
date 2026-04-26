@@ -20,23 +20,17 @@ const GNButton = ({
   id,
   children,
 }: ButtonProps) => {
-  const bg = type === "basic" ? "bg-white" : "bg-black";
-  const textColor = type === "basic" ? "text-black" : "text-white";
+  const isPrimary = type === "basic";
+  const isSmall = size === "small";
 
-  const hoverBg =
-    type === "basic"
-      ? "hover:bg-gradient-to-r from-[#ff33bb] to-[#00d5ff] hover:text-black"
-      : "hover:bg-white hover:text-black";
   return (
     <button
-      className={`flex items-center gap-2 ${
-        size === "medium" ? "py-2 px-7" : size === "small" ? "py-2 px-4" : ""
-      } rounded-full border border-white ${bg} ${textColor} ${hoverBg} cursor-pointer font-semibold transition-all duration-300`}
+      className={`pill ${isPrimary ? "pill-primary" : ""} ${isSmall ? "pill-sm" : ""}`}
       onClick={onClick}
       aria-label={value}
       id={id}
     >
-      {value && value.toLocaleUpperCase()}
+      {value}
       {children}
     </button>
   );
