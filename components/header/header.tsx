@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import ThemeToggle from "../theme-toggle/theme-toggle";
 
 const NAV_ITEMS = [
   { href: "/", label: "Home" },
@@ -55,26 +56,28 @@ const Navbar = () => {
           top: 0,
           left: 0,
           right: 0,
-          height: 80,
+          height: 72,
           zIndex: 49,
           pointerEvents: "none",
-          background: "oklch(0.12 0.04 280 / 0.55)",
-          backdropFilter: "blur(22px) saturate(1.3)",
-          WebkitBackdropFilter: "blur(22px) saturate(1.3)",
-          borderBottom: "1px solid oklch(0.28 0.04 280 / 0.25)",
-          transition: "opacity 0.35s ease",
+          background: "var(--glass-bg)",
+          backdropFilter: "blur(18px) saturate(1.6)",
+          WebkitBackdropFilter: "blur(18px) saturate(1.6)",
+          borderBottom: "1px solid var(--line-soft)",
+          transition: "opacity 0.3s ease",
           opacity: scrolled ? 1 : 0,
         }}
       />
       <header
         style={{
           position: "fixed",
-          top: 22,
+          top: 0,
           left: 0,
           right: 0,
+          height: 72,
           zIndex: 50,
           display: "flex",
           justifyContent: "center",
+          alignItems: "center",
           pointerEvents: "none",
         }}
       >
@@ -83,8 +86,11 @@ const Navbar = () => {
           href="/"
           style={{
             position: "fixed",
-            top: 28,
+            top: 0,
             left: 32,
+            height: 72,
+            display: "inline-flex",
+            alignItems: "center",
             pointerEvents: "auto",
             fontFamily: "var(--font-display)",
             fontWeight: 700,
@@ -111,14 +117,15 @@ const Navbar = () => {
             pointerEvents: "auto",
             alignItems: "center",
             gap: 4,
-            padding: "6px",
+            padding: "5px",
             borderRadius: 999,
-            border: "1px solid var(--line)",
-            background: "oklch(0.14 0.04 280 / 0.55)",
-            backdropFilter: "blur(22px) saturate(1.4)",
-            WebkitBackdropFilter: "blur(22px) saturate(1.4)",
-            boxShadow:
-              "0 10px 40px -10px oklch(0.3 0.2 290 / 0.4), inset 0 1px 0 oklch(0.9 0.1 290 / 0.08)",
+            border: `1px solid ${scrolled ? "transparent" : "var(--line)"}`,
+            background: scrolled ? "transparent" : "var(--glass-bg)",
+            backdropFilter: scrolled ? "none" : "blur(18px) saturate(1.6)",
+            WebkitBackdropFilter: scrolled ? "none" : "blur(18px) saturate(1.6)",
+            boxShadow: scrolled ? "none" : "var(--shadow)",
+            transition:
+              "background .3s ease, border-color .3s ease, box-shadow .3s ease",
           }}
         >
           {NAV_ITEMS.map((item) => {
@@ -131,15 +138,15 @@ const Navbar = () => {
                   position: "relative",
                   padding: "8px 18px",
                   borderRadius: 999,
-                  fontFamily: "var(--font-mono)",
-                  fontSize: 11,
-                  letterSpacing: "0.18em",
-                  textTransform: "uppercase",
-                  color: active ? "white" : "oklch(0.72 0.03 280)",
+                  fontFamily: "var(--font-body)",
+                  fontSize: 14,
+                  fontWeight: 500,
+                  letterSpacing: "-0.01em",
+                  color: active ? "var(--accent-contrast)" : "var(--muted)",
                   textDecoration: "none",
                   display: "inline-flex",
                   alignItems: "center",
-                  transition: "color .25s",
+                  transition: "color .2s",
                 }}
               >
                 {active && (
@@ -148,10 +155,7 @@ const Navbar = () => {
                       position: "absolute",
                       inset: 0,
                       borderRadius: 999,
-                      background:
-                        "linear-gradient(135deg, oklch(0.55 0.25 295 / 0.8), oklch(0.45 0.23 255 / 0.6))",
-                      boxShadow:
-                        "0 0 20px oklch(0.6 0.25 290 / 0.6), inset 0 1px 0 oklch(0.9 0.1 290 / 0.3)",
+                      background: "var(--accent)",
                       zIndex: -1,
                     }}
                   />
@@ -166,14 +170,18 @@ const Navbar = () => {
         <div
           style={{
             position: "fixed",
-            top: 20,
+            top: 0,
             right: 32,
+            height: 72,
             pointerEvents: "auto",
             display: "flex",
             alignItems: "center",
             gap: 10,
           }}
         >
+          {/* Theme toggle — always visible */}
+          <ThemeToggle />
+
           {/* Desktop: Let's talk */}
           <button
             className="pill hidden lg:inline-flex"

@@ -104,9 +104,9 @@ const About = ({ experiences, stacks }: AboutProps) => {
                   <div className="job-logo">
                     <Image
                       src={exp.logo}
-                      alt={exp.slug}
-                      width={58}
-                      height={58}
+                      alt={exp.company}
+                      width={54}
+                      height={54}
                       style={{
                         width: "100%",
                         height: "100%",
@@ -116,30 +116,25 @@ const About = ({ experiences, stacks }: AboutProps) => {
                   </div>
                   <div className="job-head">
                     <div className="job-title">{exp.jobTitle}</div>
-                    <div className="job-meta">@{exp.company}</div>
-                    <div
-                      style={{
-                        display: "flex",
-                        gap: 8,
-                        marginTop: 10,
-                        flexWrap: "wrap",
-                        alignItems: "center",
-                      }}
-                    >
+                    <div className="job-meta">{exp.company}</div>
+                  </div>
+                  <div className="job-date">
+                    {exp.yearStart} — {exp.yearEnd || "Present"}
+                  </div>
+                  {exp.description && (
+                    <div className="job-body">{exp.description}</div>
+                  )}
+                  {exp.skills?.length > 0 && (
+                    <div className="job-skills">
                       {exp.skills.map((s) => (
                         <div
                           key={s.id}
                           dangerouslySetInnerHTML={{ __html: s.icon! }}
-                          style={{ width: 24, height: 24 }}
                           title={s.name}
                         />
                       ))}
                     </div>
-                  </div>
-                  <div className="job-date">
-                    {exp.yearStart} — {exp.yearEnd || "Now"}
-                  </div>
-                  <div className="job-body">{exp.description}</div>
+                  )}
                 </div>
               </div>
             </ContainerAnimated>
@@ -186,9 +181,8 @@ const About = ({ experiences, stacks }: AboutProps) => {
                       letterSpacing: "0.15em",
                       padding: "2px 6px",
                       borderRadius: 4,
-                      background:
-                        "linear-gradient(90deg, oklch(0.55 0.23 290), oklch(0.55 0.18 250))",
-                      color: "white",
+                      background: "var(--accent)",
+                      color: "var(--accent-contrast)",
                       textTransform: "uppercase",
                       fontFamily: "var(--font-mono)",
                       whiteSpace: "nowrap",
@@ -203,34 +197,6 @@ const About = ({ experiences, stacks }: AboutProps) => {
         </ContainerAnimated>
       </div>
 
-      {/* CTA */}
-      <div
-        className="mt-xl"
-        style={{ textAlign: "center", paddingBottom: 40 }}
-      >
-        <ContainerAnimated>
-          <p
-            style={{ fontSize: 18, color: "var(--fg)", marginBottom: 14 }}
-          >
-            Let&apos;s work together.
-          </p>
-          <a href="mailto:gabrielenap@gmail.com" className="pill pill-primary">
-            gabrielenap@gmail.com
-            <svg
-              width={13}
-              height={13}
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={1.6}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              style={{ fill: "none" }}
-            >
-              <path d="M7 17 17 7M8 7h9v9" />
-            </svg>
-          </a>
-        </ContainerAnimated>
-      </div>
     </>
   );
 };

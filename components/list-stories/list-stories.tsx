@@ -19,9 +19,9 @@ const ListStories = ({ stories, homepage }: ListStoriesProps) => {
         <ContainerAnimated>
           <div className="section-head">
             <div>
-              {/* <div className="eyebrow">Writing</div> */}
-              <h2 style={{ marginTop: 10 }}>
-                Recent <span className="grad-violet">stories</span>.
+              <div className="eyebrow">Writing</div>
+              <h2 style={{ marginTop: 14 }}>
+                Recent <span className="grad-violet">articles</span>.
               </h2>
             </div>
             <button className="pill" onClick={() => router.push("/stories")}>

@@ -49,22 +49,22 @@ export const allStacks: Stack[] = [
       id: 12,
     },
   },
-  {
-    id: "0_UPsR8RQE2lk-MCn1VNvw",
-    end: "frontend",
-    learning: true,
-    skill: {
-      id: 1,
-    },
-  },
-  {
-    id: "MNxXfQU4QJiwySOnr4g2bQ",
-    end: "frontend",
-    learning: true,
-    skill: {
-      id: 2,
-    },
-  },
+  // {
+  //   id: "0_UPsR8RQE2lk-MCn1VNvw",
+  //   end: "frontend",
+  //   learning: true,
+  //   skill: {
+  //     id: 1,
+  //   },
+  // },
+  // {
+  //   id: "MNxXfQU4QJiwySOnr4g2bQ",
+  //   end: "frontend",
+  //   learning: true,
+  //   skill: {
+  //     id: 2,
+  //   },
+  // },
   {
     id: "oj0IgBdyRy2lbaKl7J-6eQ",
     end: "frontend",

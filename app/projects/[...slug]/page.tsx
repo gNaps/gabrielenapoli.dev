@@ -11,11 +11,11 @@ const useProject = async (slug: string) => {
 
 const postsDirectory = path.join(process.cwd(), "cms/contents/projects");
 
-async function generateStaticParams() {
+export async function generateStaticParams() {
   const slugs = fs
     .readdirSync(postsDirectory)
     .filter((file) => file.endsWith(".mdx"))
-    .map((file) => ({ slug: file.replace(/\.mdx$/, "") }));
+    .map((file) => ({ slug: [file.replace(/\.mdx$/, "")] }));
 
   return slugs;
 }

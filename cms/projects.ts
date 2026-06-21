@@ -3,6 +3,36 @@ import { Project } from "@/models/project.model";
 export const allProjects: Project[] = [
   {
     homepage: true,
+    id: "napsql",
+    preview: {
+      url: "/cms/napsql.webp",
+      title: "napsql",
+      alt: "NapSQL — a modern SQL client",
+    },
+    skill: ["React", "Electron", "MSSQLS"],
+    slug: "napsql",
+    subtitle: "🗄️ A fast, modern SQL client — the SSMS alternative.",
+    title: "NapSQL",
+    urlGithub: "",
+    urlPreview: "",
+  },
+  {
+    homepage: true,
+    id: "venticritico",
+    preview: {
+      url: "/cms/venticritico.webp",
+      title: "venticritico",
+      alt: "VentiCritico — D&D campaign manager",
+    },
+    skill: ["NextJS", "Convex"],
+    slug: "venticritico",
+    subtitle: "🎲 Run your D&D campaigns with a natural 20.",
+    title: "VentiCritico",
+    urlGithub: "",
+    urlPreview: "",
+  },
+  {
+    homepage: true,
     id: "NUw5jIAVSrieCJRpXsvRcA",
     preview: {
       url: "/cms/oakbot-preview.webp",

@@ -5,7 +5,7 @@ import { Project } from "@/models/project.model";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-const ItemProject = ({ preview, title, skill, slug }: Project) => {
+const ItemProject = ({ preview, title, subtitle, skill, slug }: Project) => {
   const router = useRouter();
 
   const openDetailProject = () => {
@@ -39,20 +39,33 @@ const ItemProject = ({ preview, title, skill, slug }: Project) => {
         />
       </div>
       <div className="project-body">
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          <h3 style={{ fontFamily: "var(--font-display)" }}>{title}</h3>
-          <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
-            {skill.slice(0, 3).map((s, index) => (
+        <div className="project-head">
+          <h3>{title}</h3>
+          <span className="card-arrow" aria-hidden>
+            <svg
+              width={14}
+              height={14}
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={1.8}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              style={{ fill: "none" }}
+            >
+              <path d="M7 17 17 7M8 7h9v9" />
+            </svg>
+          </span>
+        </div>
+        {subtitle && <p className="project-sub">{subtitle}</p>}
+        <div className="project-foot">
+          <div className="stack">
+            {skill.slice(0, 4).map((s, index) => (
               <SkillIcon name={s} key={index} />
             ))}
           </div>
+          {skill.length > 4 && (
+            <span className="kicker">+{skill.length - 4}</span>
+          )}
         </div>
       </div>
     </article>

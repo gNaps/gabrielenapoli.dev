@@ -1,30 +1,8 @@
 import Footer from "@/components/footer/footer";
 import Header from "@/components/header/header";
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-space-grotesk",
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  weight: ["300", "400", "500", "600", "700"],
-  display: "swap",
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jetbrains-mono",
-  weight: ["400", "500", "600"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -37,8 +15,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light'){document.documentElement.dataset.theme=t;}}catch(e){}})();`,
+          }}
+        />
         <Script
           id="goatcounter"
           strategy="afterInteractive"
@@ -48,20 +31,7 @@ export default function RootLayout({
         />
         <link rel="icon" href="/favicon.svg" />
       </head>
-      <body
-        className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}
-      >
-        {/* Background layers */}
-        <div className="bg-layer bg-base" />
-        <div className="bg-layer bg-grid" />
-        <div className="bg-layer bg-aurora">
-          <div className="aurora aurora--violet" />
-          <div className="aurora aurora--indigo" />
-          <div className="aurora aurora--cyan" />
-        </div>
-        <div className="bg-layer bg-grain" />
-        <div className="bg-layer bg-vignette" />
-
+      <body>
         <Header />
         <main>{children}</main>
         <Footer />

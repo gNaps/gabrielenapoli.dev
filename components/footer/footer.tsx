@@ -19,7 +19,6 @@ const Footer = () => {
         </div> */}
 
         <h2
-          className="glow-wrap"
           style={{
             marginTop: 16,
             fontSize: "clamp(28px, 3.5vw, 42px)",
@@ -33,21 +32,16 @@ const Footer = () => {
 
         <a
           href="mailto:gabrielenap@gmail.com"
+          className="link"
           style={{
             display: "inline-block",
-            fontSize: "clamp(15px, 2.2vw, 22px)",
-            color: "white",
+            fontSize: "clamp(16px, 2.2vw, 22px)",
+            color: "var(--fg)",
             marginTop: 28,
-            letterSpacing: "0.02em",
+            letterSpacing: "-0.01em",
             textDecoration: "none",
-            padding: "12px 28px",
-            borderRadius: 999,
-            border: "1px solid var(--line)",
-            background: "oklch(0.14 0.04 280 / 0.6)",
-            backdropFilter: "blur(14px)",
-            boxShadow: "0 0 40px oklch(0.5 0.25 290 / 0.25)",
-            fontFamily: "var(--font-mono)",
-            transition: "box-shadow .3s, transform .3s",
+            fontFamily: "var(--font-body)",
+            fontWeight: 500,
           }}
         >
           gabrielenap@gmail.com
@@ -147,8 +141,7 @@ const Footer = () => {
               color: "var(--subtle)",
             }}
           >
-            Designed with{" "}
-            <span style={{ color: "oklch(0.78 0.2 340)" }}>💜</span>.
+            Designed &amp; built in Milan.
           </span>
         </div>
       </div>

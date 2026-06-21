@@ -45,11 +45,11 @@ export default async function Home() {
         <Hero />
 
         <div className="mt-xl">
-          <ListProjects projects={projects} homepage={true} />
+          <AboutHero />
         </div>
 
         <div className="mt-xl">
-          <AboutHero />
+          <ListProjects projects={projects} homepage={true} />
         </div>
 
         <div className="mt-xl">

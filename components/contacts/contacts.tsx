@@ -80,7 +80,7 @@ const Contacts = () => {
                   <span
                     style={{
                       fontSize: 12,
-                      color: "oklch(0.78 0.18 20)",
+                      color: "var(--danger)",
                       marginTop: 4,
                       display: "block",
                     }}
@@ -101,7 +101,7 @@ const Contacts = () => {
                   <span
                     style={{
                       fontSize: 12,
-                      color: "oklch(0.78 0.18 20)",
+                      color: "var(--danger)",
                       marginTop: 4,
                       display: "block",
                     }}
@@ -114,7 +114,7 @@ const Contacts = () => {
               {success && (
                 <p
                   style={{
-                    color: "oklch(0.78 0.2 150)",
+                    color: "var(--success)",
                     fontSize: 14,
                     fontFamily: "var(--font-mono)",
                   }}

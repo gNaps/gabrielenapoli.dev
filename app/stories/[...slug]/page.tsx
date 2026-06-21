@@ -11,13 +11,23 @@ const useStory = async (slug: string) => {
 
 const postsDirectory = path.join(process.cwd(), "cms/contents/stories");
 
-async function generateStaticParams() {
-  const slugs = fs
-    .readdirSync(postsDirectory)
-    .filter((file) => file.endsWith(".mdx"))
-    .map((file) => ({ slug: file.replace(/\.mdx$/, "") }));
+// Recursively collect every .mdx, including nested folders (e.g. multi-step
+// guides), returning each as an array of path segments for the catch-all route.
+function collectSlugs(dir: string, base: string[] = []): { slug: string[] }[] {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  return entries.flatMap((entry) => {
+    if (entry.isDirectory()) {
+      return collectSlugs(path.join(dir, entry.name), [...base, entry.name]);
+    }
+    if (entry.name.endsWith(".mdx")) {
+      return [{ slug: [...base, entry.name.replace(/\.mdx$/, "")] }];
+    }
+    return [];
+  });
+}
 
-  return slugs;
+export async function generateStaticParams() {
+  return collectSlugs(postsDirectory);
 }
 
 export const dynamicParams = false;
