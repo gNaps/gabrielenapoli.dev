@@ -12,9 +12,9 @@ const Projects = ({ projects }: ProjectProps) => {
   return (
     <>
       <ContainerAnimated>
-        {/* <div className="eyebrow" style={{ marginBottom: 18 }}>
-          Projects
-        </div> */}
+        <div className="eyebrow" style={{ marginBottom: 20 }}>
+          制作 · Projects
+        </div>
         <h1 className="glow-wrap" style={{ maxWidth: 900 }}>
           Things I&apos;ve{" "}
           <span className="grad">designed &amp; shipped.</span>

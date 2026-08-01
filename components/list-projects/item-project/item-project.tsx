@@ -37,6 +37,7 @@ const ItemProject = ({ preview, title, subtitle, skill, slug }: Project) => {
             objectFit: "cover",
           }}
         />
+        <span className="speed-lines" aria-hidden />
       </div>
       <div className="project-body">
         <div className="project-head">

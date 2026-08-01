@@ -20,17 +20,7 @@ const StoryDetail = ({ writtenAt, title, content, preview }: Story) => {
   return (
     <>
       <ContainerAnimated>
-        <span
-          style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: 11,
-            color: "var(--subtle)",
-            letterSpacing: "0.15em",
-            textTransform: "uppercase",
-          }}
-        >
-          {writtenAt}
-        </span>
+        <div className="eyebrow">物語 · {writtenAt}</div>
         <h1 className="mt-sm" style={{ marginTop: 12 }}>
           {title}
         </h1>

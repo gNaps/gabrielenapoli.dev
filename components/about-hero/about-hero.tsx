@@ -9,12 +9,22 @@ const AboutHero = () => {
   return (
     <ContainerAnimated>
       <div
-        className="card"
+        className="card tone"
         style={{
           padding: "clamp(28px, 4vw, 60px) clamp(24px, 4vw, 54px)",
         }}
       >
-        <h2 style={{ maxWidth: 900, fontWeight: 500, lineHeight: 1.35 }}>
+        <div className="eyebrow" style={{ marginBottom: 22 }}>
+          自己紹介 · Who I am
+        </div>
+        <h2
+          className="prose-lead"
+          style={{
+            maxWidth: 900,
+            fontSize: "clamp(18px, 2vw, 25px)",
+            lineHeight: 1.5,
+          }}
+        >
           I&apos;m a senior{" "}
           <span className="h-indigo">Angular</span> and{" "}
           <span className="h-violet">React</span> developer, passionate about
@@ -33,6 +43,9 @@ const AboutHero = () => {
         </p>
         <div style={{ marginTop: 28 }}>
           <button className="pill" onClick={() => router.push("/about")}>
+            <span className="kana" aria-hidden style={{ fontSize: 11 }}>
+              経歴
+            </span>
             About me
             <svg
               width={13}

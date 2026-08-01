@@ -11,23 +11,24 @@ const Footer = () => {
   return (
     <footer className="gn-footer">
       <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center" }}>
-        {/* <div
+        <div
           className="eyebrow"
           style={{ justifyContent: "center", display: "inline-flex" }}
         >
-          Reach out
-        </div> */}
+          連絡 · Reach out
+        </div>
 
         <h2
           style={{
-            marginTop: 16,
-            fontSize: "clamp(28px, 3.5vw, 42px)",
-            lineHeight: 1.2,
+            marginTop: 20,
+            fontSize: "clamp(28px, 3.8vw, 48px)",
+            lineHeight: 1.05,
           }}
         >
           Let&apos;s work together creating
           <br />
-          <span className="grad">unique and incredible applications.</span>
+          <span className="grad-violet">unique and incredible</span>{" "}
+          <span className="grad">applications.</span>
         </h2>
 
         <a
@@ -113,11 +114,25 @@ const Footer = () => {
           </Link>
         </div>
 
+        {/* Signature seal, set on a brush rule like the last panel of a chapter */}
         <div
           style={{
-            marginTop: 60,
-            paddingTop: 24,
-            borderTop: "1px solid var(--line-soft)",
+            marginTop: 56,
+            display: "flex",
+            alignItems: "center",
+            gap: 18,
+          }}
+        >
+          <hr className="brush-rule" style={{ flex: 1 }} />
+          <span className="hanko hanko-fill" aria-hidden>
+            竜
+          </span>
+          <hr className="brush-rule" style={{ flex: 1 }} />
+        </div>
+
+        <div
+          style={{
+            marginTop: 28,
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
@@ -127,8 +142,9 @@ const Footer = () => {
         >
           <span
             style={{
-              fontFamily: "var(--font-mono)",
+              fontFamily: "var(--font-jp)",
               fontSize: 11,
+              letterSpacing: "0.1em",
               color: "var(--subtle)",
             }}
           >
@@ -136,12 +152,13 @@ const Footer = () => {
           </span>
           <span
             style={{
-              fontFamily: "var(--font-mono)",
+              fontFamily: "var(--font-jp)",
               fontSize: 11,
+              letterSpacing: "0.1em",
               color: "var(--subtle)",
             }}
           >
-            Designed &amp; built in Milan.
+            設計・製作 ミラノにて · Designed &amp; built in Milan.
           </span>
         </div>
       </div>

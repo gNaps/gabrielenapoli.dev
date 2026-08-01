@@ -45,7 +45,7 @@ const ProjectDetail = ({
           <div className="detail-meta">
             {hasStack && (
               <div className="detail-stack">
-                <span className="kicker">Built with</span>
+                <span className="kicker">道具 · Built with</span>
                 <div className="stack">
                   {skill.map((s, index) => (
                     <SkillIcon name={s} key={index} />
@@ -117,7 +117,7 @@ const ProjectDetail = ({
         <div className="detail-gallery">
           <ContainerAnimated>
             <div className="eyebrow" style={{ marginBottom: 20 }}>
-              Gallery
+              画集 · Gallery
             </div>
           </ContainerAnimated>
           <div className="grid-2">

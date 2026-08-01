@@ -12,9 +12,9 @@ const Stories = ({ stories }: StoryProps) => {
   return (
     <>
       <ContainerAnimated>
-        {/* <div className="eyebrow" style={{ marginBottom: 18 }}>
-          Stories
-        </div> */}
+        <div className="eyebrow" style={{ marginBottom: 20 }}>
+          物語 · Stories
+        </div>
         <h1 className="glow-wrap" style={{ textWrap: "initial" }}>
           Writing about code,{" "}
           <span className="grad">tools, and what I learn.</span>

@@ -6,10 +6,10 @@ import { useEffect, useState } from "react";
 import ThemeToggle from "../theme-toggle/theme-toggle";
 
 const NAV_ITEMS = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/projects", label: "Projects" },
-  { href: "/stories", label: "Stories" },
+  { href: "/", label: "Home", kana: "ホーム" },
+  { href: "/about", label: "About", kana: "経歴" },
+  { href: "/projects", label: "Projects", kana: "制作" },
+  { href: "/stories", label: "Stories", kana: "物語" },
 ];
 
 const Navbar = () => {
@@ -59,10 +59,8 @@ const Navbar = () => {
           height: 72,
           zIndex: 49,
           pointerEvents: "none",
-          background: "var(--glass-bg)",
-          backdropFilter: "blur(18px) saturate(1.6)",
-          WebkitBackdropFilter: "blur(18px) saturate(1.6)",
-          borderBottom: "1px solid var(--line-soft)",
+          background: "var(--overlay-bg)",
+          borderBottom: "var(--ink-w) solid var(--line)",
           transition: "opacity 0.3s ease",
           opacity: scrolled ? 1 : 0,
         }}
@@ -81,7 +79,7 @@ const Navbar = () => {
           pointerEvents: "none",
         }}
       >
-        {/* Logo — top left */}
+        {/* Logo — top left. The seal reads 竜 (ryu), from the "napsryu" handle. */}
         <Link
           href="/"
           style={{
@@ -91,15 +89,19 @@ const Navbar = () => {
             height: 72,
             display: "inline-flex",
             alignItems: "center",
+            gap: 11,
             pointerEvents: "auto",
             fontFamily: "var(--font-display)",
-            fontWeight: 700,
-            fontSize: 14,
-            letterSpacing: "0.08em",
+            fontWeight: 400,
+            fontSize: 17,
+            letterSpacing: "0.14em",
             textDecoration: "none",
             color: "var(--fg)",
           }}
         >
+          <span className="hanko hanko-fill hanko-sm" aria-hidden>
+            竜
+          </span>
           <span className="hidden lg:inline">
             <span className="grad">GABRIELE</span>
             <span className="grad-violet"> NAPOLI</span>
@@ -116,14 +118,14 @@ const Navbar = () => {
           style={{
             pointerEvents: "auto",
             alignItems: "center",
-            gap: 4,
-            padding: "5px",
-            borderRadius: 999,
-            border: `1px solid ${scrolled ? "transparent" : "var(--line)"}`,
-            background: scrolled ? "transparent" : "var(--glass-bg)",
-            backdropFilter: scrolled ? "none" : "blur(18px) saturate(1.6)",
-            WebkitBackdropFilter: scrolled ? "none" : "blur(18px) saturate(1.6)",
-            boxShadow: scrolled ? "none" : "var(--shadow)",
+            gap: 2,
+            padding: "4px",
+            borderRadius: "var(--radius)",
+            border: `var(--ink-w) solid ${
+              scrolled ? "transparent" : "var(--line)"
+            }`,
+            background: scrolled ? "transparent" : "var(--surface)",
+            boxShadow: scrolled ? "none" : "3px 3px 0 var(--plate)",
             transition:
               "background .3s ease, border-color .3s ease, box-shadow .3s ease",
           }}
@@ -136,16 +138,19 @@ const Navbar = () => {
                 href={item.href}
                 style={{
                   position: "relative",
-                  padding: "8px 18px",
-                  borderRadius: 999,
+                  padding: "6px 17px",
+                  borderRadius: "var(--radius-sm)",
                   fontFamily: "var(--font-body)",
                   fontSize: 14,
                   fontWeight: 500,
-                  letterSpacing: "-0.01em",
+                  letterSpacing: "0.02em",
                   color: active ? "var(--accent-contrast)" : "var(--muted)",
                   textDecoration: "none",
                   display: "inline-flex",
+                  flexDirection: "column",
                   alignItems: "center",
+                  gap: 1,
+                  lineHeight: 1.2,
                   transition: "color .2s",
                 }}
               >
@@ -154,12 +159,23 @@ const Navbar = () => {
                     style={{
                       position: "absolute",
                       inset: 0,
-                      borderRadius: 999,
+                      borderRadius: "var(--radius-sm)",
                       background: "var(--accent)",
                       zIndex: -1,
                     }}
                   />
                 )}
+                <span
+                  className="kana"
+                  aria-hidden
+                  style={{
+                    fontSize: 9,
+                    letterSpacing: "0.22em",
+                    opacity: active ? 0.9 : 0.65,
+                  }}
+                >
+                  {item.kana}
+                </span>
                 {item.label}
               </Link>
             );
@@ -232,16 +248,23 @@ const Navbar = () => {
             onClick={closeMenu}
             style={{
               position: "fixed",
-              top: 32,
+              top: 28,
               left: 32,
+              height: 44,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 10,
               fontFamily: "var(--font-display)",
-              fontWeight: 700,
-              fontSize: 16,
+              fontWeight: 400,
+              fontSize: 18,
               color: "var(--fg)",
               textDecoration: "none",
-              letterSpacing: "0.06em",
+              letterSpacing: "0.12em",
             }}
           >
+            <span className="hanko hanko-fill hanko-sm" aria-hidden>
+              竜
+            </span>
             <span className="grad">G</span>
             <span className="grad-violet">N</span>
           </Link>
@@ -273,28 +296,31 @@ const Navbar = () => {
             </svg>
           </button>
 
-          {NAV_ITEMS.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={closeMenu}
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "clamp(28px, 8vw, 48px)",
-                fontWeight: 600,
-                color: isActive(item.href) ? "var(--fg)" : "var(--muted)",
-                textDecoration: "none",
-                letterSpacing: "-0.02em",
-                transition: "color .25s",
-              }}
-            >
-              {isActive(item.href) ? (
-                <span className="shimmer">{item.label}</span>
-              ) : (
-                item.label
-              )}
-            </Link>
-          ))}
+          {NAV_ITEMS.map((item) => {
+            const active = isActive(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={closeMenu}
+                className="menu-entry"
+                style={{
+                  fontFamily: "var(--font-display)",
+                  fontSize: "clamp(30px, 9vw, 52px)",
+                  fontWeight: 400,
+                  textTransform: "uppercase",
+                  color: active ? "var(--fg)" : "var(--muted)",
+                  letterSpacing: "0.02em",
+                  transition: "color .25s",
+                }}
+              >
+                <span className="menu-kana" aria-hidden>
+                  {item.kana}
+                </span>
+                {item.label}
+              </Link>
+            );
+          })}
 
           <button
             className="pill pill-primary"
@@ -304,6 +330,9 @@ const Navbar = () => {
             }}
             style={{ marginTop: 16 }}
           >
+            <span className="kana" aria-hidden style={{ fontSize: 11 }}>
+              連絡
+            </span>
             Let&apos;s talk
           </button>
         </nav>

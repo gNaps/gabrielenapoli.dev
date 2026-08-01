@@ -8,121 +8,161 @@
 }
 
 /* ================================================================
-   Gabriele Napoli — Clean & Professional Design System
-   SF Pro typography · auto light/dark · soft indigo accent
+   Gabriele Napoli — 墨と朱 (sumi to shu) · "Ink & Vermilion"
+   Editorial manga design system.
+
+   Rules of the system:
+   · Panels, not cards — sharp corners, ink outline, hard offset plate.
+   · Two inks only: sumi (near-black) and shu (vermilion). No gradients.
+   · Paper is never pure white — washi in light, sumi night in dark.
+   · Screentone and speed lines carry texture; nothing blurs.
+   · Kana labels sit beside Latin type, never replace it.
    ================================================================ */
 
 :root {
-  /* Typography — San Francisco Pro via the Apple system stack */
-  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display",
-    "SF Pro Text", "Helvetica Neue", "Segoe UI", Roboto, Helvetica, Arial,
-    sans-serif;
-  --font-body: -apple-system, BlinkMacSystemFont, "SF Pro Text",
-    "SF Pro Display", "Helvetica Neue", "Segoe UI", Roboto, Helvetica, Arial,
-    sans-serif;
+  /* ---- Typography ----
+     Display: Anton for Latin (heavy condensed — the manga title idiom), then
+     the system gothic faces, which pick up kana and match its flat strokes.
+     Body / kana labels: the system gothic stack.
+     Mincho survives where the tone is literary — pull quotes.
+     Nothing Japanese ships over the wire; see the note in app/layout.tsx. */
+  --font-display: var(--font-anton), "Hiragino Kaku Gothic ProN", "Yu Gothic",
+    YuGothic, "Noto Sans JP", "Arial Narrow", Impact, sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", "Hiragino Kaku Gothic ProN", "Yu Gothic", YuGothic,
+    "Noto Sans JP", Arial, sans-serif;
+  --font-jp: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
+    "Yu Gothic", YuGothic, "Noto Sans JP", "Segoe UI", Roboto, sans-serif;
+  --font-mincho: "Hiragino Mincho ProN", "Yu Mincho", YuMincho, "Noto Serif JP",
+    Georgia, "Times New Roman", serif;
   --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas,
     "Liberation Mono", monospace;
 
-  /* Radii */
-  --radius-sm: 8px;
-  --radius: 14px;
-  --radius-lg: 20px;
+  /* Radii — a printed panel is square. 2px keeps edges from looking broken. */
+  --radius-sm: 2px;
+  --radius: 2px;
+  --radius-lg: 3px;
 
-  /* ---- Light theme (default) ---- */
-  --bg: #ffffff;
-  --bg-soft: #f5f5f7;
-  --fg: #1d1d1f;
-  --muted: #515154;
-  --subtle: #86868b;
+  /* Panel outline weight */
+  --ink-w: 1.5px;
+  --ink-w-bold: 2px;
 
-  --line: rgba(0, 0, 0, 0.12);
-  --line-soft: rgba(0, 0, 0, 0.07);
+  /* ---- Light theme — washi paper, sumi ink ---- */
+  --bg: #f4f0e6;
+  --bg-soft: #eae4d4;
+  --fg: #16120d;
+  --muted: #4b4439;
+  --subtle: #857b6a;
 
-  --surface: #ffffff;
-  --surface-2: #fbfbfd;
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 28px -12px rgba(0, 0, 0, 0.18);
-  --shadow-hover: 0 2px 4px rgba(0, 0, 0, 0.05),
-    0 18px 44px -16px rgba(0, 0, 0, 0.24);
+  --ink: #16120d;
+  --line: rgba(22, 18, 13, 0.88);
+  --line-soft: rgba(22, 18, 13, 0.16);
 
-  --glass-bg: rgba(255, 255, 255, 0.72);
-  --glass-border: rgba(0, 0, 0, 0.08);
-  --overlay-bg: rgba(255, 255, 255, 0.96);
+  --surface: #fcfaf3;
+  --surface-2: #f6f2e6;
 
-  /* Soft indigo accent */
-  --accent: #5b5bd6;
-  --accent-hover: #4a4ac2;
-  --accent-soft: rgba(91, 91, 214, 0.1);
-  --accent-contrast: #ffffff;
+  /* Hard offset plate instead of a blurred drop shadow */
+  --plate: rgba(22, 18, 13, 0.9);
+  --shadow: 4px 4px 0 var(--plate);
+  --shadow-hover: 7px 7px 0 var(--plate);
 
-  --success: #1a7f4b;
-  --danger: #c0392b;
+  /* Screentone dot + speed line ink */
+  --tone: rgba(22, 18, 13, 0.17);
+  --ink-soft: rgba(22, 18, 13, 0.3);
+  --grain: 0.05;
 
-  --selection: rgba(91, 91, 214, 0.18);
+  --glass-bg: rgba(244, 240, 230, 0.86);
+  --glass-border: rgba(22, 18, 13, 0.88);
+  --overlay-bg: rgba(244, 240, 230, 0.97);
+
+  /* 朱 shu — vermilion, the seal-ink red */
+  --accent: #c2352b;
+  --accent-hover: #a72a21;
+  --accent-soft: rgba(194, 53, 43, 0.12);
+  --accent-contrast: #fcfaf3;
+
+  --success: #1f6b45;
+  --danger: #a72a21;
+
+  --selection: rgba(194, 53, 43, 0.22);
 }
 
 /* Dark theme tokens — shared by system preference (auto) and manual override */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0b0b0c;
-    --bg-soft: #161618;
-    --fg: #f5f5f7;
-    --muted: #a1a1a6;
-    --subtle: #6e6e73;
+    --bg: #0f0d0a;
+    --bg-soft: #191510;
+    --fg: #f2ece0;
+    --muted: #a9a091;
+    --subtle: #776e5f;
 
-    --line: rgba(255, 255, 255, 0.14);
-    --line-soft: rgba(255, 255, 255, 0.07);
+    --ink: #f2ece0;
+    --line: rgba(242, 236, 224, 0.82);
+    --line-soft: rgba(242, 236, 224, 0.15);
 
-    --surface: #161617;
-    --surface-2: #1c1c1e;
-    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 30px -12px rgba(0, 0, 0, 0.7);
-    --shadow-hover: 0 2px 4px rgba(0, 0, 0, 0.5),
-      0 20px 50px -16px rgba(0, 0, 0, 0.8);
+    --surface: #16130e;
+    --surface-2: #1d1913;
 
-    --glass-bg: rgba(22, 22, 24, 0.7);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --overlay-bg: rgba(11, 11, 12, 0.96);
+    /* On dark paper the offset plate reads as a lighter block behind */
+    --plate: #2c2519;
+    --shadow: 4px 4px 0 var(--plate);
+    --shadow-hover: 7px 7px 0 var(--plate);
 
-    --accent: #8c8cf0;
-    --accent-hover: #a3a3f5;
-    --accent-soft: rgba(140, 140, 240, 0.14);
-    --accent-contrast: #0b0b0c;
+    --tone: rgba(242, 236, 224, 0.14);
+    --ink-soft: rgba(242, 236, 224, 0.26);
+    --grain: 0.04;
+
+    --glass-bg: rgba(15, 13, 10, 0.86);
+    --glass-border: rgba(242, 236, 224, 0.82);
+    --overlay-bg: rgba(15, 13, 10, 0.97);
+
+    --accent: #e2574a;
+    --accent-hover: #f06d5f;
+    --accent-soft: rgba(226, 87, 74, 0.16);
+    --accent-contrast: #0f0d0a;
 
     --success: #4cc38a;
     --danger: #ef6b5e;
 
-    --selection: rgba(140, 140, 240, 0.2);
+    --selection: rgba(226, 87, 74, 0.26);
   }
 }
 
 :root[data-theme="dark"] {
-  --bg: #0b0b0c;
-  --bg-soft: #161618;
-  --fg: #f5f5f7;
-  --muted: #a1a1a6;
-  --subtle: #6e6e73;
+  --bg: #0f0d0a;
+  --bg-soft: #191510;
+  --fg: #f2ece0;
+  --muted: #a9a091;
+  --subtle: #776e5f;
 
-  --line: rgba(255, 255, 255, 0.14);
-  --line-soft: rgba(255, 255, 255, 0.07);
+  --ink: #f2ece0;
+  --line: rgba(242, 236, 224, 0.82);
+  --line-soft: rgba(242, 236, 224, 0.15);
 
-  --surface: #161617;
-  --surface-2: #1c1c1e;
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 30px -12px rgba(0, 0, 0, 0.7);
-  --shadow-hover: 0 2px 4px rgba(0, 0, 0, 0.5),
-    0 20px 50px -16px rgba(0, 0, 0, 0.8);
+  --surface: #16130e;
+  --surface-2: #1d1913;
 
-  --glass-bg: rgba(22, 22, 24, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --overlay-bg: rgba(11, 11, 12, 0.96);
+  --plate: #2c2519;
+  --shadow: 4px 4px 0 var(--plate);
+  --shadow-hover: 7px 7px 0 var(--plate);
 
-  --accent: #8c8cf0;
-  --accent-hover: #a3a3f5;
-  --accent-soft: rgba(140, 140, 240, 0.14);
-  --accent-contrast: #0b0b0c;
+  --tone: rgba(242, 236, 224, 0.14);
+  --ink-soft: rgba(242, 236, 224, 0.26);
+  --grain: 0.04;
+
+  --glass-bg: rgba(15, 13, 10, 0.86);
+  --glass-border: rgba(242, 236, 224, 0.82);
+  --overlay-bg: rgba(15, 13, 10, 0.97);
+
+  --accent: #e2574a;
+  --accent-hover: #f06d5f;
+  --accent-soft: rgba(226, 87, 74, 0.16);
+  --accent-contrast: #0f0d0a;
 
   --success: #4cc38a;
   --danger: #ef6b5e;
 
-  --selection: rgba(140, 140, 240, 0.2);
+  --selection: rgba(226, 87, 74, 0.26);
 }
 
 /* Smooth theme transition (skipped for motion-sensitive users) */
@@ -157,9 +197,20 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  letter-spacing: -0.011em;
+  letter-spacing: -0.005em;
   display: flex;
   flex-direction: column;
+}
+
+/* Paper grain — washi fibre in light, printing tooth in dark */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: var(--grain);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 button {
@@ -211,56 +262,118 @@ main {
   }
 }
 
-/* ---- Typography ---- */
+/* ---- Typography ----
+   Anton carries a single weight, so every heading stays at 400 — asking for
+   700 or 900 would only get a synthesised fake bold. Being condensed it also
+   wants tighter leading and a touch of positive tracking to open up the caps. */
 h1,
 h2,
 h3,
 h4 {
   font-family: var(--font-display);
-  font-weight: 600;
-  letter-spacing: -0.022em;
+  font-weight: 400;
+  letter-spacing: 0.015em;
   margin: 0;
-  line-height: 1.08;
+  line-height: 1.1;
   text-wrap: balance;
   color: var(--fg);
 }
+
+/* h1 and h2 are titles — set as cover mastheads */
+h1,
+h2 {
+  text-transform: uppercase;
+}
 h1 {
-  font-size: clamp(34px, 4.6vw, 58px);
-  letter-spacing: -0.03em;
+  font-size: clamp(38px, 5.6vw, 74px);
+  line-height: 0.98;
+  letter-spacing: 0.012em;
 }
 h2 {
-  font-size: clamp(25px, 3vw, 38px);
-  letter-spacing: -0.025em;
+  font-size: clamp(26px, 3.2vw, 42px);
+  line-height: 1.04;
 }
 h3 {
-  font-size: clamp(17px, 1.5vw, 21px);
+  font-size: clamp(18px, 1.6vw, 22px);
+  letter-spacing: 0.02em;
 }
 p {
   margin: 0;
-  line-height: 1.6;
+  line-height: 1.75;
   color: var(--muted);
 }
 
+/* Long-form sentences that happen to be marked up as headings (the about
+   intros) are prose, not titles: keep them in the body face, mixed case. */
+.prose-lead {
+  font-family: var(--font-body);
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: -0.005em;
+}
+
+/* Furigana — kana set above a Latin word via <ruby>/<rt> */
+ruby {
+  ruby-position: over;
+  -webkit-ruby-position: before;
+}
+rt {
+  font-family: var(--font-jp);
+  font-size: 0.34em;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  transform: translateY(2px);
+}
+
+/* Kana label — used inline next to Latin copy */
+.kana {
+  font-family: var(--font-jp);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+}
+
+/* Vertical writing, right to left — 縦書き */
+.tategaki {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  letter-spacing: 0.24em;
+  font-family: var(--font-jp);
+  font-weight: 500;
+}
+
+/* Chapter marker — 第 01 話. Kanji come from the gothic stack, not Anton. */
+.chapter {
+  font-family: var(--font-jp);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+}
+
+/* ---- Section eyebrow — vermilion tick + spaced kana/Latin ---- */
 .eyebrow {
-  font-family: var(--font-mono);
+  font-family: var(--font-jp);
   font-size: 11px;
-  letter-spacing: 0.16em;
+  font-weight: 500;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--subtle);
+  color: var(--muted);
   display: inline-flex;
   align-items: center;
   gap: 10px;
 }
 .eyebrow::before {
   content: "";
-  width: 18px;
-  height: 1px;
+  width: 3px;
+  height: 13px;
   background: var(--accent);
+  flex-shrink: 0;
 }
 
-/* ---- Highlight text (replaces old gradient/shimmer classes) ----
-   .grad / .shimmer → solid foreground for clean two-tone headings
-   .grad-violet + accent helpers → soft indigo accent pop          */
+/* ---- Highlight text ----
+   Legacy class names from the previous design system are kept so component
+   markup stays untouched: the "gradient" helpers now paint vermilion. */
 .grad,
 .shimmer {
   color: var(--fg);
@@ -273,90 +386,219 @@ p {
   color: var(--accent);
 }
 
-/* No glow halo — kept as a no-op so existing markup stays valid */
+/* Emphasis wash — a vermilion highlighter stroke under a word */
+.ink-mark {
+  position: relative;
+  display: inline;
+  background: linear-gradient(
+    to top,
+    var(--accent-soft) 0 34%,
+    transparent 34%
+  );
+}
+
 .glow-wrap {
   position: relative;
   display: inline-block;
 }
 
-/* ---- Buttons ---- */
+/* ---- Screentone (網点) ---- */
+.tone {
+  background-image: radial-gradient(var(--tone) 1.05px, transparent 1.05px);
+  background-size: 4px 4px;
+}
+.tone-lg {
+  background-image: radial-gradient(var(--tone) 1.4px, transparent 1.4px);
+  background-size: 7px 7px;
+}
+.tone-fade {
+  -webkit-mask-image: linear-gradient(to bottom, #000, transparent);
+  mask-image: linear-gradient(to bottom, #000, transparent);
+}
+
+/* ---- Seigaiha (青海波) — the overlapping wave pattern ---- */
+.seigaiha {
+  background-image: radial-gradient(
+    circle at 50% 100%,
+    transparent 20%,
+    var(--tone) 21%,
+    var(--tone) 23%,
+    transparent 24%,
+    transparent 33%,
+    var(--tone) 34%,
+    var(--tone) 36%,
+    transparent 37%,
+    transparent 46%,
+    var(--tone) 47%,
+    var(--tone) 49%,
+    transparent 50%
+  );
+  background-size: 56px 28px;
+  background-repeat: repeat-x;
+}
+
+/* ---- Speed lines (集中線) — revealed on panel hover ---- */
+.speed-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background-image: repeating-linear-gradient(
+    114deg,
+    var(--ink-soft) 0 1px,
+    transparent 1px 8px
+  );
+  -webkit-mask-image: linear-gradient(114deg, #000, transparent 55%);
+  mask-image: linear-gradient(114deg, #000, transparent 55%);
+}
+.card:hover .speed-lines,
+.panel-hover:hover .speed-lines {
+  opacity: 1;
+}
+
+/* ---- Brush rule — a tapered sumi stroke ---- */
+.brush-rule {
+  height: 2px;
+  border: 0;
+  margin: 0;
+  background: var(--ink);
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 5%,
+    #000 92%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 5%,
+    #000 92%,
+    transparent
+  );
+}
+
+/* ---- Hanko (判子) — the vermilion signature seal ---- */
+.hanko {
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border: var(--ink-w-bold) solid var(--accent);
+  border-radius: 3px;
+  color: var(--accent);
+  font-family: var(--font-jp);
+  font-weight: 700;
+  font-size: 19px;
+  line-height: 1;
+  transform: rotate(-7deg);
+  user-select: none;
+}
+.hanko-fill {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+.hanko-sm {
+  width: 24px;
+  height: 24px;
+  font-size: 13px;
+  border-width: var(--ink-w);
+}
+
+/* ---- Buttons — inked plates that press into the page ---- */
 .pill {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  gap: 9px;
   height: 42px;
   padding: 0 20px;
-  border-radius: 999px;
-  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  border: var(--ink-w) solid var(--line);
   background: var(--surface);
   color: var(--fg);
   font-family: var(--font-body);
   font-size: 14px;
   font-weight: 500;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.02em;
   cursor: pointer;
   position: relative;
-  transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.2s,
-    box-shadow 0.2s;
+  box-shadow: 3px 3px 0 var(--plate);
+  transition: transform 0.14s ease, box-shadow 0.14s ease, background 0.2s,
+    color 0.2s;
   text-decoration: none;
   white-space: nowrap;
 }
 .pill:hover {
-  border-color: var(--accent);
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 var(--plate);
   color: var(--accent);
-  transform: translateY(-1px);
+}
+.pill:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--plate);
 }
 
 .pill-primary {
   background: var(--accent);
-  border-color: var(--accent);
   color: var(--accent-contrast);
 }
 .pill-primary:hover {
   background: var(--accent-hover);
-  border-color: var(--accent-hover);
   color: var(--accent-contrast);
-  transform: translateY(-1px);
 }
 
 .pill-sm {
   height: 34px;
   font-size: 13px;
-  padding: 0 16px;
+  padding: 0 15px;
+  box-shadow: 2px 2px 0 var(--plate);
 }
 
-/* ---- Surfaces ---- */
+/* Quiet variant — no plate, for dense toolbars */
+.pill-flat {
+  box-shadow: none;
+}
+.pill-flat:hover,
+.pill-flat:active {
+  box-shadow: none;
+  transform: none;
+}
+
+/* ---- Surfaces — manga panels ---- */
 .glass,
 .card {
   position: relative;
   border-radius: var(--radius);
   background: var(--surface);
-  border: 1px solid var(--line);
+  border: var(--ink-w) solid var(--line);
   overflow: hidden;
 }
 .card {
   box-shadow: var(--shadow);
-  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
-    box-shadow 0.25s, border-color 0.25s;
+  transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 .card:hover {
-  transform: translateY(-2px);
+  transform: translate(-3px, -3px);
   box-shadow: var(--shadow-hover);
-  border-color: var(--line);
 }
 
-/* ---- Avatar ring — clean static ring ---- */
+/* ---- Avatar — a square portrait panel, not a ring ---- */
 .avatar-ring {
-  border-radius: 50%;
-  padding: 4px;
-  background: var(--surface-2);
-  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 5px;
+  background: var(--surface);
+  border: var(--ink-w-bold) solid var(--line);
+  box-shadow: var(--shadow);
   flex-shrink: 0;
 }
 .avatar-inner {
   width: 100%;
   height: 100%;
-  border-radius: 50%;
+  border-radius: 0;
   overflow: hidden;
   background: var(--bg-soft);
 }
@@ -366,21 +608,22 @@ p {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font-family: var(--font-mono);
+  font-family: var(--font-jp);
   font-size: 11px;
-  letter-spacing: 0.1em;
+  font-weight: 500;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--muted);
   padding: 7px 14px;
-  border-radius: 999px;
-  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  border: var(--ink-w) solid var(--line);
   background: var(--surface);
 }
 .status-chip .dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--success);
+  width: 7px;
+  height: 7px;
+  border-radius: 0;
+  background: var(--accent);
   flex-shrink: 0;
 }
 
@@ -389,11 +632,12 @@ p {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-family: var(--font-mono);
+  font-family: var(--font-jp);
   font-size: 11px;
-  letter-spacing: 0.04em;
+  font-weight: 500;
+  letter-spacing: 0.08em;
   padding: 5px 11px;
-  border-radius: 7px;
+  border-radius: var(--radius-sm);
   background: var(--bg-soft);
   border: 1px solid var(--line-soft);
   color: var(--muted);
@@ -404,9 +648,19 @@ p {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  margin-bottom: 28px;
+  margin-bottom: 30px;
   gap: 20px;
   flex-wrap: wrap;
+}
+
+/* Kana set beside a Latin section title */
+.section-kana {
+  font-family: var(--font-jp);
+  font-size: clamp(20px, 2.4vw, 30px);
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.16em;
+  margin-left: 2px;
 }
 
 /* ---- Hero two-column layout ---- */
@@ -418,12 +672,29 @@ p {
 }
 .hero-portrait {
   position: relative;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius);
   overflow: hidden;
-  border: 1px solid var(--line);
+  border: var(--ink-w-bold) solid var(--line);
   box-shadow: var(--shadow);
   aspect-ratio: 4 / 5;
   background: var(--bg-soft);
+}
+/* Vertical kana label running down the outside of the portrait */
+.hero-avatar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.hero-avatar .hero-portrait {
+  flex: 1;
+  min-width: 0;
+}
+.portrait-label {
+  font-size: 11px;
+  color: var(--subtle);
+  letter-spacing: 0.3em;
+  white-space: nowrap;
 }
 @media (max-width: 1080px) {
   .hero-layout {
@@ -454,16 +725,18 @@ p {
   }
 }
 
-/* ---- Grid helpers ---- */
+/* ---- Grid helpers — the gap is the panel gutter ---- */
 .grid-2 {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 22px;
+  gap: 28px;
+  counter-reset: panel;
 }
 .grid-3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
+  gap: 28px;
+  counter-reset: panel;
 }
 @media (max-width: 800px) {
   .grid-2,
@@ -478,8 +751,8 @@ p {
   grid-template-columns: repeat(4, 1fr);
   margin-top: 80px;
   padding: 26px 4px;
-  border-top: 1px solid var(--line-soft);
-  border-bottom: 1px solid var(--line-soft);
+  border-top: var(--ink-w) solid var(--line);
+  border-bottom: var(--ink-w) solid var(--line);
 }
 @media (max-width: 600px) {
   .stat-strip {
@@ -489,23 +762,52 @@ p {
   }
 }
 
-/* ---- Project/story card ---- */
+/* ---- Project / story panel ---- */
 .project-card {
   display: flex;
   flex-direction: column;
+  counter-increment: panel;
 }
 .project-thumb {
   aspect-ratio: 16/10;
   position: relative;
   overflow: hidden;
   background: var(--bg-soft);
+  border-bottom: var(--ink-w) solid var(--line);
 }
 .project-thumb img {
-  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1),
+    filter 0.45s ease;
 }
 .project-card:hover .project-thumb img {
   transform: scale(1.04);
 }
+
+/* Panel number stamped in the corner — 01, 02, … for work;
+   第 01 話 ("chapter one") for writing. */
+.project-thumb::after {
+  content: counter(panel, decimal-leading-zero);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  padding: 5px 10px;
+  background: var(--ink);
+  color: var(--bg);
+  border-right: var(--ink-w) solid var(--line);
+  border-bottom: var(--ink-w) solid var(--line);
+}
+.story-card .project-thumb::after {
+  content: "第 " counter(panel, decimal-leading-zero) " 話";
+  font-family: var(--font-jp);
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
 .project-body {
   padding: 20px 22px 22px;
   display: flex;
@@ -521,14 +823,15 @@ p {
 }
 .project-head h3 {
   font-family: var(--font-display);
-  font-size: 19px;
-  letter-spacing: -0.02em;
+  font-size: 21px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
   line-height: 1.25;
 }
 .project-sub {
   color: var(--muted);
   font-size: 14.5px;
-  line-height: 1.5;
+  line-height: 1.65;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -536,7 +839,7 @@ p {
 }
 .project-foot {
   margin-top: auto;
-  padding-top: 14px;
+  padding-top: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -560,33 +863,34 @@ p {
   height: 100%;
 }
 .project-card:hover .project-body .stack > div {
-  color: var(--muted);
+  color: var(--fg);
 }
 
-/* Small uppercase label used inside cards */
+/* Small kana/Latin label used inside panels */
 .kicker {
-  font-family: var(--font-mono);
+  font-family: var(--font-jp);
   font-size: 11px;
-  letter-spacing: 0.08em;
+  font-weight: 500;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--subtle);
 }
 
-/* Circular arrow affordance, animates on card hover */
+/* Square arrow affordance — fills with vermilion on panel hover */
 .card-arrow {
   flex-shrink: 0;
   width: 32px;
   height: 32px;
-  border-radius: 50%;
-  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  border: var(--ink-w) solid var(--line);
   display: grid;
   place-items: center;
-  color: var(--muted);
-  transition: background 0.25s, border-color 0.25s, color 0.25s, transform 0.25s;
+  color: var(--fg);
+  background: var(--surface);
+  transition: background 0.22s, color 0.22s, transform 0.22s;
 }
 .project-card:hover .card-arrow {
   background: var(--accent);
-  border-color: var(--accent);
   color: var(--accent-contrast);
   transform: translate(2px, -2px);
 }
@@ -595,12 +899,13 @@ p {
 .read-more {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   color: var(--accent);
   font-size: 14px;
   font-weight: 500;
+  letter-spacing: 0.02em;
   margin-top: auto;
-  padding-top: 14px;
+  padding-top: 16px;
 }
 
 /* ---- Detail (project / story) page ---- */
@@ -613,7 +918,7 @@ p {
   aspect-ratio: 5 / 2;
   border-radius: var(--radius);
   overflow: hidden;
-  border: 1px solid var(--line);
+  border: var(--ink-w-bold) solid var(--line);
   box-shadow: var(--shadow);
   background: var(--bg-soft);
 }
@@ -636,22 +941,25 @@ p {
 .back-link {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   color: var(--subtle);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: var(--font-jp);
   text-decoration: none;
   margin-bottom: 26px;
   transition: color 0.2s, gap 0.2s;
 }
 .back-link:hover {
   color: var(--accent);
-  gap: 10px;
+  gap: 12px;
 }
 .detail-lead {
   margin-top: 18px;
-  font-size: 19px;
-  line-height: 1.55;
+  font-size: 18px;
+  line-height: 1.7;
   color: var(--muted);
   max-width: 700px;
 }
@@ -663,7 +971,7 @@ p {
   flex-wrap: wrap;
   margin-top: 32px;
   padding-top: 26px;
-  border-top: 1px solid var(--line-soft);
+  border-top: var(--ink-w) solid var(--line);
 }
 .detail-stack {
   display: flex;
@@ -693,7 +1001,7 @@ p {
   flex-wrap: wrap;
 }
 
-/* ---- Link with accent underline ---- */
+/* ---- Link with vermilion underline ---- */
 .link {
   color: var(--fg);
   text-decoration: none;
@@ -705,8 +1013,8 @@ p {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: -2px;
-  height: 1px;
+  bottom: -3px;
+  height: 2px;
   background: var(--accent);
   transform: scaleX(0);
   transform-origin: left;
@@ -716,7 +1024,7 @@ p {
   transform: scaleX(1);
 }
 
-/* ---- Experience card ---- */
+/* ---- Experience panel ---- */
 .job {
   padding: 24px 26px;
   display: grid;
@@ -727,26 +1035,26 @@ p {
 .job-logo {
   width: 54px;
   height: 54px;
-  border-radius: 13px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
   background: var(--surface-2);
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  border: 1px solid var(--line);
+  border: var(--ink-w) solid var(--line);
   padding: 7px;
 }
 .job-head {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
   min-width: 0;
 }
 .job-title {
   font-family: var(--font-display);
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
   line-height: 1.25;
   color: var(--fg);
 }
@@ -756,23 +1064,23 @@ p {
 }
 .job-date {
   justify-self: end;
-  font-family: var(--font-mono);
+  font-family: var(--font-jp);
   font-size: 11px;
-  letter-spacing: 0.04em;
-  color: var(--muted);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--accent-contrast);
+  background: var(--accent);
   text-transform: uppercase;
   white-space: nowrap;
   padding: 6px 12px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--bg-soft);
+  border-radius: var(--radius-sm);
 }
 .job-body {
   grid-column: 2 / -1;
   margin-top: 14px;
   color: var(--muted);
   font-size: 14.5px;
-  line-height: 1.65;
+  line-height: 1.75;
 }
 .job-skills {
   grid-column: 2 / -1;
@@ -796,7 +1104,7 @@ p {
   height: 100%;
 }
 .card:hover .job-skills > div {
-  color: var(--muted);
+  color: var(--fg);
 }
 @media (max-width: 600px) {
   .job {
@@ -814,31 +1122,33 @@ p {
   }
 }
 
-/* ---- Stack grid ---- */
+/* ---- Stack grid — small tone-backed panels ---- */
 .stack-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-  gap: 12px;
+  gap: 14px;
 }
 .stack-tile {
   position: relative;
   aspect-ratio: 1;
-  border-radius: 14px;
+  border-radius: var(--radius);
   background: var(--surface);
-  border: 1px solid var(--line);
+  background-image: radial-gradient(var(--tone) 1.05px, transparent 1.05px);
+  background-size: 4px 4px;
+  border: var(--ink-w) solid var(--line);
   display: grid;
   place-items: center;
   font-family: var(--font-body);
   font-size: 12px;
   color: var(--muted);
-  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  box-shadow: 3px 3px 0 var(--plate);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, color 0.2s;
   overflow: hidden;
 }
 .stack-tile:hover {
   color: var(--fg);
-  border-color: var(--accent);
-  box-shadow: var(--shadow);
-  transform: translateY(-2px);
+  transform: translate(-2px, -2px);
+  box-shadow: 5px 5px 0 var(--plate);
 }
 
 /* ---- Images ---- */
@@ -862,7 +1172,33 @@ p {
   text-align: center;
   position: relative;
   z-index: 2;
-  border-top: 1px solid var(--line-soft);
+  border-top: var(--ink-w) solid var(--line);
+}
+/* Seigaiha waves breaking along the top edge of the footer */
+.gn-footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  pointer-events: none;
+  background-image: radial-gradient(
+    circle at 50% 100%,
+    transparent 20%,
+    var(--tone) 21%,
+    var(--tone) 23%,
+    transparent 24%,
+    transparent 33%,
+    var(--tone) 34%,
+    var(--tone) 36%,
+    transparent 37%,
+    transparent 46%,
+    var(--tone) 47%,
+    var(--tone) 49%,
+    transparent 50%
+  );
+  background-size: 56px 28px;
 }
 @media (max-width: 720px) {
   .gn-footer {
@@ -874,59 +1210,97 @@ p {
 .story-wrapper a {
   color: var(--accent);
   text-decoration: underline;
-  text-underline-offset: 2px;
+  text-underline-offset: 3px;
 }
 .story-wrapper img {
   object-fit: contain;
   border-radius: var(--radius-sm);
+  border: var(--ink-w) solid var(--line);
 }
+/* Headings inside an article are signposts for a reader, not cover titles —
+   uppercase condensed caps would fight the body copy here. */
 .story-wrapper h2 {
   margin-top: 48px;
   margin-bottom: 16px;
   font-size: 28px;
   color: var(--fg);
+  padding-left: 14px;
+  border-left: 3px solid var(--accent);
+  text-transform: none;
+  letter-spacing: 0.01em;
 }
 .story-wrapper h3 {
-  margin-top: 26px;
+  margin-top: 28px;
   margin-bottom: 10px;
-  font-size: 19px;
+  font-size: 20px;
   color: var(--fg);
+  text-transform: none;
 }
 .story-wrapper p {
   color: var(--muted);
-  margin-bottom: 14px;
+  margin-bottom: 16px;
   font-size: 16px;
-  line-height: 1.7;
+  line-height: 1.85;
 }
 .story-wrapper ul {
-  list-style-type: disc;
-  padding-left: 1.3rem;
-  margin: 4px 0 14px;
+  list-style-type: none;
+  padding-left: 1.1rem;
+  margin: 4px 0 16px;
   color: var(--muted);
+}
+.story-wrapper ul li::marker {
+  content: none;
+}
+.story-wrapper ul li {
+  position: relative;
+}
+.story-wrapper ul li::before {
+  content: "";
+  position: absolute;
+  left: -1.1rem;
+  top: 0.65em;
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
 }
 .story-wrapper ol {
   list-style-type: decimal;
   padding-left: 1.3rem;
-  margin: 4px 0 14px;
+  margin: 4px 0 16px;
   color: var(--muted);
 }
 .story-wrapper li {
-  margin-bottom: 6px;
-  line-height: 1.6;
+  margin-bottom: 8px;
+  line-height: 1.75;
 }
+/* Code blocks read as solid sumi panels dropped into the page.
+   react-syntax-highlighter writes inline styles, hence the !important. */
+.story-wrapper pre {
+  border: var(--ink-w) solid var(--line);
+  border-radius: var(--radius) !important;
+  box-shadow: 3px 3px 0 var(--plate);
+  margin: 24px 0 !important;
+}
+
+/* The one place mincho still belongs — a pull quote reads as literary */
 .story-wrapper blockquote {
-  border-left: 2px solid var(--accent);
-  padding: 8px 20px;
-  margin: 20px 0;
-  font-style: italic;
+  border-left: 3px solid var(--accent);
+  padding: 10px 22px;
+  margin: 24px 0;
+  font-family: var(--font-mincho);
+  font-size: 18px;
+  line-height: 1.7;
   color: var(--fg);
 }
 
 /* ---- GN Card (MDX Card component) ---- */
 .gn-card {
   background: var(--surface-2) !important;
-  border: 1px solid var(--line-soft) !important;
-  border-radius: 12px !important;
+  background-image: radial-gradient(var(--tone) 1.05px, transparent 1.05px);
+  background-size: 4px 4px;
+  border: var(--ink-w) solid var(--line) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: 3px 3px 0 var(--plate);
   color: var(--muted);
 }
 .gn-card ul {
@@ -942,9 +1316,9 @@ p {
 input,
 textarea {
   background-color: var(--surface) !important;
-  border: 1px solid var(--line) !important;
+  border: var(--ink-w) solid var(--line) !important;
   color: var(--fg) !important;
-  border-radius: 10px;
+  border-radius: var(--radius);
   padding: 12px 14px;
   font-family: inherit;
   font-size: 15px;
@@ -954,12 +1328,16 @@ input:focus,
 textarea:focus {
   outline: none;
   border-color: var(--accent) !important;
-  box-shadow: 0 0 0 3px var(--accent-soft);
+  box-shadow: 3px 3px 0 var(--accent-soft);
 }
 label {
   color: var(--muted);
-  font-size: 14px;
-  margin-bottom: 6px;
+  font-family: var(--font-jp);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
   display: block;
 }
 
@@ -972,8 +1350,10 @@ label {
   left: 0;
   margin: 0;
   background-color: var(--overlay-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background-image: radial-gradient(var(--tone) 1.05px, transparent 1.05px);
+  background-size: 4px 4px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 100;
   display: flex;
   flex-direction: column;
@@ -981,6 +1361,22 @@ label {
   gap: 1rem;
   justify-content: center;
   overflow: hidden;
+}
+
+/* Nav entry in the mobile overlay — Latin over kana */
+.menu-entry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  text-decoration: none;
+}
+.menu-entry .menu-kana {
+  font-family: var(--font-jp);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  color: var(--accent);
 }
 
 /* ---- SVG defaults ---- */
@@ -1020,5 +1416,10 @@ svg {
   *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+  }
+  .card:hover,
+  .pill:hover,
+  .stack-tile:hover {
+    transform: none;
   }
 }

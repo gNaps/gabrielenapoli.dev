@@ -20,7 +20,7 @@ const ItemStory = ({ preview, title, writtenAt, slug }: Story) => {
 
   return (
     <article
-      className="card project-card"
+      className="card project-card story-card"
       onClick={openDetailStory}
       style={{ cursor: "pointer" }}
     >
@@ -36,10 +36,11 @@ const ItemStory = ({ preview, title, writtenAt, slug }: Story) => {
             objectFit: "cover",
           }}
         />
+        <span className="speed-lines" aria-hidden />
       </div>
       <div className="project-body">
         <div className="project-head">
-          <span className="kicker">Article · {writtenAt}</span>
+          <span className="kicker">物語 · {writtenAt}</span>
           <span className="card-arrow" aria-hidden>
             <svg
               width={14}

@@ -37,39 +37,23 @@ const ThemeToggle = () => {
     <button
       className="pill"
       onClick={toggle}
-      aria-label="Toggle color theme"
-      style={{ width: 44, height: 44, padding: 0, justifyContent: "center" }}
+      aria-label={
+        theme === "dark" ? "Switch to light theme" : "Switch to dark theme"
+      }
+      title={theme === "dark" ? "日 — light" : "月 — dark"}
+      style={{
+        width: 44,
+        height: 44,
+        padding: 0,
+        justifyContent: "center",
+        fontFamily: "var(--font-jp)",
+        fontSize: 18,
+        fontWeight: 500,
+        lineHeight: 1,
+      }}
     >
-      {theme === "dark" ? (
-        // Sun — switch to light
-        <svg
-          width={18}
-          height={18}
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={1.6}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          style={{ fill: "none" }}
-        >
-          <circle cx="12" cy="12" r="4" />
-          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
-        </svg>
-      ) : theme === "light" ? (
-        // Moon — switch to dark
-        <svg
-          width={17}
-          height={17}
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={1.6}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          style={{ fill: "none" }}
-        >
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-        </svg>
-      ) : null}
+      {/* 日 (sun) switches to light, 月 (moon) switches to dark */}
+      <span aria-hidden>{theme === "dark" ? "日" : theme === "light" ? "月" : ""}</span>
     </button>
   );
 };

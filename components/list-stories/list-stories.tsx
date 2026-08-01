@@ -19,12 +19,15 @@ const ListStories = ({ stories, homepage }: ListStoriesProps) => {
         <ContainerAnimated>
           <div className="section-head">
             <div>
-              <div className="eyebrow">Writing</div>
+              <div className="eyebrow">物語 · Writing</div>
               <h2 style={{ marginTop: 14 }}>
                 Recent <span className="grad-violet">articles</span>.
               </h2>
             </div>
             <button className="pill" onClick={() => router.push("/stories")}>
+              <span className="kana" aria-hidden style={{ fontSize: 11 }}>
+                一覧
+              </span>
               View all
               <svg
                 width={13}

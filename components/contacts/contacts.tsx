@@ -37,9 +37,9 @@ const Contacts = () => {
   return (
     <>
       <ContainerAnimated>
-        {/* <div className="eyebrow" style={{ marginBottom: 14 }}>
-          Reach out
-        </div> */}
+        <div className="eyebrow" style={{ marginBottom: 20 }}>
+          連絡 · Reach out
+        </div>
         <h1 className="glow-wrap" style={{ maxWidth: 900 }}>
           Got an idea?{" "}
           <span className="grad">tell me about it.</span>
@@ -124,6 +124,9 @@ const Contacts = () => {
               )}
 
               <button type="submit" className="pill pill-primary">
+                <span className="kana" aria-hidden style={{ fontSize: 11 }}>
+                  送信
+                </span>
                 Send message
               </button>
             </form>

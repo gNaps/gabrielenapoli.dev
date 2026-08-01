@@ -20,12 +20,15 @@ const Hero = () => {
             style={{
               fontSize: 19,
               color: "var(--muted)",
-              margin: "28px 0 12px",
+              margin: "34px 0 14px",
             }}
           >
             Hi, I&apos;m{" "}
-            <span className="h-violet" style={{ fontWeight: 600 }}>
-              Gabriele
+            <span className="h-violet" style={{ fontWeight: 700 }}>
+              {/* Furigana — the name spelled out in katakana above it */}
+              <ruby>
+                Gabriele<rt>ガブリエレ</rt>
+              </ruby>
             </span>
             .
           </p>
@@ -64,6 +67,9 @@ const Hero = () => {
               className="pill pill-primary"
               onClick={() => router.push("/projects")}
             >
+              <span className="kana" aria-hidden style={{ fontSize: 11 }}>
+                制作
+              </span>
               See projects
               <svg
                 width={13}
@@ -79,13 +85,20 @@ const Hero = () => {
               </svg>
             </button>
             <button className="pill" onClick={() => router.push("/about")}>
+              <span className="kana" aria-hidden style={{ fontSize: 11 }}>
+                経歴
+              </span>
               About me
             </button>
           </div>
         </div>
 
         <div className="hero-avatar">
-          <div className="hero-portrait">
+          {/* Vertical caption running down the gutter, manga-style */}
+          <span className="tategaki portrait-label" aria-hidden>
+            ミラノ在住・フルスタック開発者
+          </span>
+          <div className="hero-portrait panel-hover tone">
             <Image
               src="/cms/about_me.webp"
               alt="Gabriele Napoli"
@@ -99,6 +112,7 @@ const Hero = () => {
                 objectPosition: "center 28%",
               }}
             />
+            <span className="speed-lines" aria-hidden />
           </div>
         </div>
       </section>

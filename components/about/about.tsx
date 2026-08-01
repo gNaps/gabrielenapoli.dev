@@ -14,9 +14,9 @@ const About = ({ experiences, stacks }: AboutProps) => {
   return (
     <>
       <ContainerAnimated>
-        {/* <div className="eyebrow" style={{ marginBottom: 18 }}>
-          About me
-        </div> */}
+        <div className="eyebrow" style={{ marginBottom: 20 }}>
+          自己紹介 · About me
+        </div>
         <h1 className="glow-wrap" style={{ textWrap: "initial" }}>
           A developer who cares{" "}
           <span className="grad">about every detail.</span>
@@ -56,11 +56,11 @@ const About = ({ experiences, stacks }: AboutProps) => {
 
             <div>
               <h2
+                className="prose-lead"
                 style={{
                   maxWidth: 760,
-                  fontWeight: 500,
-                  fontSize: "clamp(17px, 2vw, 26px)",
-                  lineHeight: 1.45,
+                  fontSize: "clamp(17px, 2vw, 25px)",
+                  lineHeight: 1.5,
                 }}
               >
                 I&apos;m a senior{" "}
@@ -88,9 +88,9 @@ const About = ({ experiences, stacks }: AboutProps) => {
       {/* Experience */}
       <div className="mt-xl">
         <ContainerAnimated>
-          {/* <div className="eyebrow" style={{ marginBottom: 18 }}>
-            Experience
-          </div> */}
+          <div className="eyebrow" style={{ marginBottom: 18 }}>
+            経歴 · Experience
+          </div>
           <h2 style={{ marginBottom: 30 }}>
             Where I&apos;ve <span className="grad-violet">built.</span>
           </h2>
@@ -145,9 +145,9 @@ const About = ({ experiences, stacks }: AboutProps) => {
       {/* Stack */}
       <div className="mt-xl">
         <ContainerAnimated>
-          {/* <div className="eyebrow" style={{ marginBottom: 18 }}>
-            Stack
-          </div> */}
+          <div className="eyebrow" style={{ marginBottom: 18 }}>
+            道具 · Stack
+          </div>
           <h2 style={{ marginBottom: 30 }}>
             Tools I <span className="grad-violet">reach for.</span>
           </h2>
@@ -180,15 +180,16 @@ const About = ({ experiences, stacks }: AboutProps) => {
                       fontSize: 8,
                       letterSpacing: "0.15em",
                       padding: "2px 6px",
-                      borderRadius: 4,
+                      borderRadius: "var(--radius-sm)",
                       background: "var(--accent)",
                       color: "var(--accent-contrast)",
                       textTransform: "uppercase",
-                      fontFamily: "var(--font-mono)",
+                      fontFamily: "var(--font-jp)",
+                      fontWeight: 500,
                       whiteSpace: "nowrap",
                     }}
                   >
-                    Learning
+                    学習中 Learning
                   </div>
                 )}
               </div>
