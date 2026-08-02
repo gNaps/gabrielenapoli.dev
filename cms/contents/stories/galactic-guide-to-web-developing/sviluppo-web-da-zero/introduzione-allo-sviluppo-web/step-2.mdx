@@ -1,0 +1,121 @@
+<Card>
+## 02 - Come funziona una web app moderna
+
+<br />
+Nel capitolo scorso ti ho lasciato con uno spoiler: quando clicchi un pulsante
+c'è dietro molto più di quanto sembri. Eccoci al dunque. Hai presente quando
+apri un sito, clicchi e qualcosa succede, magicamente? La pagina si aggiorna,
+compare un messaggio, arrivano dei dati. Dietro non c'è magia: c'è una
+**struttura precisa**, l'architettura client-server, ed è su questa base che si
+regge quasi ogni applicazione web moderna.
+<br />
+Vediamola insieme, senza complicarci la vita.
+<br />
+### 🧭 Un mondo diviso in due: client e server
+<br />
+Ogni web app è composta da due grandi protagonisti che collaborano a distanza:
+il **client** e il **server**.
+<br />
+Il **client** è la parte visibile, quella con cui l'utente interagisce. Nella
+maggior parte dei casi è un browser (Chrome sul PC, Safari sull'iPhone,
+Firefox su un tablet) o anche un'app mobile che dietro le quinte si comporta
+come un browser. Tutto ciò che vedi (testi, bottoni, animazioni, notifiche) è
+disegnato e gestito dal client.
+<br />
+Il **server**, invece, è un'entità remota. Vive in qualche data center,
+silenzioso ma sempre attivo. Il suo compito è ricevere le richieste del client,
+fare i calcoli del caso (leggere e scrivere dati, validare input, controllare
+permessi) e restituire una risposta.
+
+> È come ordinare un caffè al bar: tu sei il client, il barista è il server.
+> Dai un comando ("un espresso, grazie"), lui lo prepara, te lo consegna. Il
+> bar funziona perché le due parti parlano la stessa lingua. Nel web, quella
+> lingua è l'**HTTP**.
+
+### 🔁 Ma come parlano, esattamente?
+<br />
+Il meccanismo è più semplice di quanto pensi. Quando interagisci con una web
+app (per esempio clicchi "Invia" in un modulo di contatto), il browser
+costruisce una **richiesta HTTP**: un messaggio che contiene il tipo di azione,
+l'indirizzo a cui è destinata e, se serve, dei dati.
+<br />
+I tipi di azione (i "verbi" di HTTP) principali sono quattro:
+<br />
+- **GET**: dammi qualcosa (una pagina, dei dati)
+- **POST**: ti mando qualcosa di nuovo da salvare
+- **PUT**: aggiorna qualcosa che esiste già
+- **DELETE**: cancella qualcosa
+<br />
+La richiesta parte dal tuo dispositivo e viaggia attraverso Internet fino al
+server. Il server la riceve, la interpreta, fa quello che deve fare (magari
+salva il tuo messaggio in un database) e poi **risponde**: a volte con una
+pagina HTML, altre con dati in formato JSON che il browser userà per aggiornare
+l'interfaccia.
+<br />
+Questa andata e ritorno si chiama **ciclo richiesta/risposta**, e succede in
+continuazione, quasi sempre senza che tu te ne accorga.
+<br />
+### ☕ Un esempio terra-terra
+<br />
+Immagina la scena: hai appena scritto un commento sotto un articolo di un blog
+e clicchi su "Pubblica". A questo punto:
+<br />
+- il browser costruisce una richiesta HTTP `POST` e la invia all'API del sito
+- il server riceve il commento e lo salva nel database
+- il server risponde con la versione "ufficiale" del commento salvato
+- il browser usa la risposta per aggiornare la pagina, mostrandoti il commento con tanto di avatar
+<br />
+Tutto in una manciata di millisecondi. E sai la cosa bella? La richiesta e la
+risposta si possono proprio *guardare*. Ecco, semplificando un po', cosa parte
+dal tuo browser:
+
+```http
+POST /api/commenti HTTP/1.1
+Host: blog.example.com
+Content-Type: application/json
+
+{ "autore": "Gabriele", "testo": "Bellissimo articolo!" }
+```
+
+E cosa torna indietro dal server:
+
+```http
+HTTP/1.1 201 Created
+Content-Type: application/json
+
+{ "id": 42, "autore": "Gabriele", "testo": "Bellissimo articolo!" }
+```
+
+Non serve capire ogni riga, per ora. Ma nota quanto è leggibile: un verbo, un
+indirizzo, dei dati; uno stato ("201 Created": fatto, creato) e i dati di
+ritorno. Tutto il web, sotto sotto, è fatto di messaggi come questi.
+<br />
+### ⚙️ Quindi una web app... com'è fatta?
+<br />
+Nel suo nucleo c'è sempre questa divisione:
+<br />
+- il **frontend** è la parte che vive nel browser: HTML, CSS e JavaScript, spesso organizzati con framework come React, Angular o Vue
+- il **backend** è tutto ciò che sta dietro, sul server: può essere scritto in mille linguaggi (Node.js, C#, Python, PHP...) e si occupa di logica, dati e sicurezza
+<br />
+I due comunicano con richieste HTTP, di solito attraverso un'interfaccia
+chiamata **API REST**: la vedremo per bene più avanti nella guida.
+<br />
+E le web app moderne? Sempre più spesso sono **Single Page Application
+(SPA)**: l'interfaccia viene caricata una volta sola, poi i dati si aggiornano
+dinamicamente senza mai ricaricare la pagina. È come avere un'app "vera"
+dentro al browser.
+<br />
+### 🧠 Cosa portarti a casa
+<br />
+Capire come funziona una web app significa capire **chi fa cosa**, **come
+comunicano le parti** e **in che direzione viaggiano i dati**. Quando clicchi
+su qualcosa non è solo un colore che cambia: dietro c'è un viaggio, dal client
+al server e ritorno, un flusso continuo che rende possibile ogni interazione
+che conosci.
+<br />
+E ora che hai la mappa, sei pronto per scendere nel dettaglio. Più avanti in
+questa guida esploreremo la prima metà di questo mondo, il **frontend**: cosa
+significa davvero scrivere codice che finisce davanti agli occhi dell'utente.
+Ma prima, nel **prossimo capitolo**, parliamo degli **strumenti del mestiere**:
+cosa serve installare e configurare per fare questo bellissimo lavoro.
+</Card>

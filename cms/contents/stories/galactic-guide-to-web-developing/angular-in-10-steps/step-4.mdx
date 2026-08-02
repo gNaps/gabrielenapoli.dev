@@ -1,0 +1,321 @@
+<Card>
+## 04 - Il Router: da componenti a pagine
+
+<br />
+Nel capitolo scorso ti avevo promesso che avremmo trasformato i nostri componenti
+in vere e proprie pagine navigabili. Eccoci: è il momento del **Router**.
+<br />
+Una delle cose più belle delle applicazioni moderne è che passi da una "pagina"
+all'altra **senza mai ricaricare davvero il browser**. Niente schermata bianca,
+niente attesa: l'URL cambia e il contenuto pure, all'istante. In Angular tutto
+questo passa dal router, ed è uno dei concetti che userai in ogni singolo progetto.
+<br />
+In questo capitolo vediamo cos'è e come si configura, il lazy loading, come
+passare parametri nelle rotte, i modi per navigare, le guardie e i resolver.
+C'è parecchia carne al fuoco, ma ogni pezzo è corto.
+<br />
+### 🚪 Cos'è il Router
+<br />
+Il router è il sistema che gestisce la **navigazione tra le pagine** di una
+**Single Page Application**. E "pagine", in Angular, significa componenti: non
+esiste un file HTML diverso per ogni URL, esiste un componente diverso che il
+router monta e smonta in base all'indirizzo.
+
+> In una SPA il browser carica l'applicazione una volta sola. Da lì in poi è il
+> router a decidere quale componente mostrare per ogni URL, senza altri round trip
+> per l'HTML.
+
+Un esempio concreto:
+<br />
+- `/` mostra `HomeComponent`
+- `/games` mostra `GamesComponent`
+- `/games/42` mostra il dettaglio del gioco con id 42
+<br />
+### Dove finiscono le pagine: router-outlet
+<br />
+Prima domanda da farsi: se il router "monta" i componenti, dove li mette?
+La risposta è `<router-outlet>`, un segnaposto che piazzi nel template del
+componente radice:
+
+```html
+<!-- app.component.html -->
+<header>La mia app</header>
+<router-outlet />
+```
+
+Tutto ciò che sta fuori dall'outlet (header, footer, menu) resta fisso; dentro
+l'outlet il router inserisce la pagina corrente. Ricordati la lezione del capitolo
+scorso: `RouterOutlet` è una direttiva e va importata nel componente che la usa.
+
+```typescript
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+
+@Component({
+  selector: 'app-root',
+  imports: [RouterOutlet],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css'
+})
+export class AppComponent {}
+```
+
+### ⚙️ Configurare le rotte
+<br />
+La configurazione vive in due file. Il primo è `app.routes.ts`, l'elenco delle
+rotte:
+
+```typescript
+import { Routes } from '@angular/router';
+import { HomeComponent } from './home/home.component';
+
+export const routes: Routes = [
+  { path: '', component: HomeComponent },
+  {
+    path: 'games',
+    loadComponent: () =>
+      import('./games/games.component').then((m) => m.GamesComponent),
+  },
+];
+```
+
+Il secondo è `app.config.ts`, dove le rotte vengono registrate con
+`provideRouter()`:
+
+```typescript
+import { ApplicationConfig } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { routes } from './app.routes';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideRouter(routes)],
+};
+```
+
+> Se hai creato il progetto con `ng new`, questi due file esistono già e sono già
+> collegati tra loro: ti basta riempire l'array `routes`.
+
+### 💤 Lazy loading
+<br />
+Nell'esempio sopra hai visto due modi di dichiarare una rotta. Con `component`
+il componente finisce nel bundle iniziale dell'app; con `loadComponent` viene
+**caricato solo quando l'utente visita quella rotta**. Questo è il lazy loading,
+e i vantaggi sono concreti:
+<br />
+- il primo caricamento dell'app è più leggero e veloce
+- il codice resta diviso in blocchi indipendenti per funzionalità
+- le pagine che l'utente non visita mai non vengono proprio scaricate
+<br />
+Quel `.then((m) => m.GamesComponent)` serve perché `import()` restituisce l'intero
+modulo JavaScript, e al router serve il componente. Se il componente è l'export
+di default del file puoi anche scrivere solo `loadComponent: () =>
+import('./games/games.component')`, ma la forma esplicita si legge meglio.
+<br />
+La mia regola pratica: la home eager, quasi tutto il resto lazy.
+<br />
+### 🔁 Parametri nella rotta
+<br />
+Il dettaglio del gioco 42 sta su `/games/42`: il 42 è un **parametro di rotta**
+e si dichiara con i due punti:
+
+```typescript
+{
+  path: 'games/:id',
+  loadComponent: () =>
+    import('./game-detail/game-detail.component').then(
+      (m) => m.GameDetailComponent
+    ),
+}
+```
+
+E come lo leggi dal componente? Il modo moderno è sorprendentemente pulito, ma
+richiede un'opzione in più nella configurazione: `withComponentInputBinding()`.
+
+```typescript
+import { provideRouter, withComponentInputBinding } from '@angular/router';
+import { routes } from './app.routes';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideRouter(routes, withComponentInputBinding())],
+};
+```
+
+Con questa opzione attiva, Angular prende i parametri della rotta e li passa al
+componente come normali **input**. Nel componente scrivi:
+
+```typescript
+import { Component, input } from '@angular/core';
+
+@Component({ /* ... */ })
+export class GameDetailComponent {
+  id = input.required<string>();
+}
+```
+
+> Il nome dell'input deve combaciare con quello del parametro: la rotta dichiara
+> `:id`, l'input si chiama `id`. Funziona allo stesso modo anche con le query
+> string, tipo `/search?q=zelda`: un input chiamato `q` riceve il valore.
+
+Esiste anche la strada classica, iniettare `ActivatedRoute` e leggere
+`paramMap`. La incontrerai in qualunque codebase esistente, ma per il codice
+nuovo gli input binding sono più semplici e più facili da testare.
+<br />
+### 🚦 Navigare tra le rotte
+<br />
+Due modi, a seconda che la navigazione parta dal template o dalla logica.
+<br />
+**Dal template**, con la direttiva `routerLink` (da importare nel componente,
+come sempre):
+
+```html
+<!-- rotta semplice -->
+<a routerLink="/home">Vai alla home</a>
+
+<!-- rotta con parametri -->
+<a [routerLink]="['/games', gameId]">Dettaglio gioco</a>
+
+<!-- con query string -->
+<a [routerLink]="['/search']" [queryParams]="{ q: 'zelda' }">Cerca Zelda</a>
+```
+
+Bonus utile per i menu: `routerLinkActive` aggiunge una classe CSS quando il
+link corrisponde alla rotta corrente.
+
+```html
+<a routerLink="/home" routerLinkActive="active-link">Home</a>
+```
+
+**Dal codice**, con il servizio `Router`, quando la navigazione dipende da una
+logica: dopo il salvataggio di un form, dopo il login, e così via.
+
+```typescript
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
+
+@Component({ /* ... */ })
+export class LoginComponent {
+  private router = inject(Router);
+
+  onLoginSuccess(gameId: string) {
+    // per segmenti e parametri
+    this.router.navigate(['/games', gameId]);
+
+    // per un URL completo come stringa
+    this.router.navigateByUrl('/home');
+
+    // con query string
+    this.router.navigate(['/search'], { queryParams: { q: 'zelda' } });
+  }
+}
+```
+
+In sintesi: `routerLink` per i link veri e propri, `router.navigate()` quando
+c'è una decisione di mezzo.
+<br />
+### 🛡 Guardie: proteggere le rotte
+<br />
+Una **guardia** decide se una rotta può essere attivata. Il caso tipico è la
+pagina riservata agli utenti autenticati. Oggi una guardia è una semplice
+funzione:
+
+```typescript
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
+
+export const authGuard: CanActivateFn = () => {
+  const isLoggedIn = localStorage.getItem('token') !== null;
+
+  // true lascia passare, un UrlTree reindirizza
+  return isLoggedIn ? true : inject(Router).parseUrl('/login');
+};
+```
+
+Restituire `false` e basta funzionerebbe, ma l'utente resterebbe su una pagina
+vuota: restituire un `UrlTree` lo porta invece dritto al login. E la agganci
+alla rotta con `canActivate`:
+
+```typescript
+{
+  path: 'profile',
+  loadComponent: () =>
+    import('./profile/profile.component').then((m) => m.ProfileComponent),
+  canActivate: [authGuard],
+}
+```
+
+> Una guardia protegge la navigazione, non i dati: gira nel browser, quindi non è
+> un meccanismo di sicurezza. I controlli veri restano sul server; la guardia serve
+> a dare un'esperienza sensata a chi non è autorizzato.
+
+### 🧩 Resolver: dati pronti prima della pagina
+<br />
+A volte una pagina senza i suoi dati non ha senso: tanto vale caricarli **prima**
+di mostrarla. È il lavoro dei **resolver**, anche loro semplici funzioni:
+
+```typescript
+import { inject } from '@angular/core';
+import { ResolveFn } from '@angular/router';
+import { GameService } from './services/game.service';
+import { Game } from './models/game';
+
+export const gameResolver: ResolveFn<Game> = (route) => {
+  const id = route.paramMap.get('id')!;
+  return inject(GameService).getGameById(id);
+};
+```
+
+Si registra sulla rotta con `resolve`:
+
+```typescript
+{
+  path: 'games/:id',
+  loadComponent: () =>
+    import('./game-detail/game-detail.component').then(
+      (m) => m.GameDetailComponent
+    ),
+  resolve: { game: gameResolver },
+}
+```
+
+E qui torna utile il `withComponentInputBinding()` di prima: anche i dati
+risolti arrivano al componente come input, con il nome della chiave usata in
+`resolve`.
+
+```typescript
+import { Component, input } from '@angular/core';
+import { Game } from './models/game';
+
+@Component({ /* ... */ })
+export class GameDetailComponent {
+  game = input.required<Game>();
+}
+```
+
+Il rovescio della medaglia: finché il resolver non ha finito, la navigazione
+resta in attesa. Per chiamate veloci è perfetto; per dati lenti valuta se non
+sia meglio mostrare la pagina con uno spinner.
+<br />
+### La rotta di riserva
+<br />
+Ultima cosa, piccola ma da fare sempre: cosa succede se l'utente digita un URL
+che non esiste? Senza istruzioni, niente di buono. La rotta jolly `**` cattura
+tutto ciò che non ha trovato corrispondenza:
+
+```typescript
+{ path: '**', component: NotFoundComponent }
+```
+
+Va messa **per ultima** nell'array: le rotte vengono valutate in ordine, e il
+jolly mangia tutto quello che incontra.
+<br />
+### Dove siamo arrivati
+<br />
+Il router è il pezzo che trasforma una collezione di componenti in
+un'applicazione: pagine con un URL, caricate solo quando servono, protette dove
+serve e con i dati già pronti quando ha senso. Con quello che hai visto qui
+copri la stragrande maggioranza dei casi reali.
+<br />
+Nel **prossimo capitolo** arriva il tema che ti ho anticipato due volte:
+**data binding e signals**, ovvero come Angular tiene sincronizzati dati e
+interfaccia. È il capitolo dove il framework moderno mostra i muscoli.
+</Card>

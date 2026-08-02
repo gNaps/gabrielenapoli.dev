@@ -1,0 +1,117 @@
+<Card>
+## 10 - Cos'è il backend e cosa fa
+
+<br />
+Eccoci dall'altra parte dello specchio. Prima di attraversarlo, però, un
+piccolo test: ricordi il modulo dei Guardiani della Notte? Compili i campi,
+premi "Entra nella Guardia", compare il messaggio di benvenuto. Bello. Ma
+fatti la domanda giusta: **quei dati, a chi sono arrivati?**
+<br />
+A nessuno. Chiudi la pagina e la tua adesione svanisce nel nulla, come
+lacrime nella neve oltre la Barriera. Perché finora abbiamo costruito solo la
+metà visibile dell'app. Manca la parte che riceve, custodisce e protegge: il
+**backend**, il cuore dell'applicazione.
+<br />
+### 🖥️ Il ruolo dei server
+<br />
+Del server abbiamo già fatto la conoscenza nel capitolo sull'architettura
+client-server: è l'entità remota che riceve le richieste HTTP e risponde. Ora
+mettiamolo a fuoco.
+<br />
+Un **server** è, banalmente, un computer (spesso senza schermo né tastiera,
+impilato con migliaia di suoi simili in un data center) su cui gira un
+programma con un compito preciso: **restare sempre in ascolto**. Ventiquattro
+ore su ventiquattro, aspetta che arrivi una richiesta, e quando arriva la
+serve:
+<br />
+1. riceve la richiesta HTTP (il `POST` del nostro modulo, per dire)
+2. la interpreta: cosa vuole questo client? È autorizzato a chiederlo?
+3. esegue la logica necessaria: valida i dati, li salva, li recupera
+4. costruisce la risposta e la rispedisce al mittente
+<br />
+Il ciclo richiesta/risposta del capitolo 2, visto stavolta dal lato di chi
+risponde. E oggi "server" non vuol dire per forza una macchina che possiedi:
+con il **cloud** (AWS, Google Cloud, Azure...) affitti la potenza di calcolo
+di data center altrui, e ci arriveremo più avanti nella guida.
+<br />
+### 🧠 Dove vive la logica dell'applicazione
+<br />
+Nel capitolo sul frontend dicevamo: se il frontend è il volto, il backend è il
+cervello. Ed è il momento di prenderlo alla lettera: nel backend vive la
+**business logic**, l'insieme delle regole che rendono la tua app *la tua
+app*.
+<br />
+Il prezzo finale col codice sconto applicato. Il controllo che un username
+non sia già preso. La decisione su chi può vedere cosa. Il calcolo della
+spedizione. Tutte queste regole stanno sul server, e c'è un motivo preciso
+per cui *devono* stare lì e non nel browser.
+
+> Il codice frontend gira sulla macchina dell'utente, e l'utente può leggerlo,
+> modificarlo e aggirarlo: bastano i DevTools che conosci bene. Se lo sconto
+> venisse calcolato nel browser, un utente smaliziato potrebbe farsi il 100%
+> di sconto da solo. La regola d'oro del backend è tutta qui: **mai fidarsi
+> del client**. Il frontend propone, il server dispone.
+
+E in che linguaggio si scrive, questa logica? Qui sta una libertà che il
+frontend non ha: nel browser c'è solo JavaScript, ma sul server, che è un
+computer come un altro, puoi usare quello che vuoi. **Node.js** (JavaScript
+anche lato server: il tuo investimento degli ultimi capitoli vale doppio),
+**Python**, **C#**, **Java**, **PHP**, **Go**... Ogni linguaggio ha i suoi
+framework, come quelli visti per il frontend: Express e Fastify per Node,
+Django per Python, ASP.NET per C#, Laravel per PHP.
+<br />
+La porta d'ingresso a tutta questa logica sono le **API**: gli indirizzi che
+il server espone e che il frontend chiama: il `/api/commenti` del capitolo 2.
+Alle API, e in particolare allo stile **REST**, dedicheremo presto un capitolo
+tutto loro.
+<br />
+### 🔐 Utenti, dati e sicurezza
+<br />
+Tre responsabilità del backend meritano una presentazione a parte, perché ti
+accompagneranno per tutta la carriera.
+<br />
+**I dati.** Il backend è il custode della memoria dell'app. I dati non
+possono vivere nel browser (si perdono alla chiusura, e ogni utente vedrebbe
+solo i propri): vengono salvati in un **database**, un archivio strutturato e
+interrogabile che vive accanto al server. Con un backend vero, l'adesione ai
+Guardiani finirebbe lì: per sempre, o almeno fino al disgelo.
+<br />
+**Gli utenti.** Quasi ogni app deve sapere *chi* ha davanti, ed è un problema
+con due facce che è bene distinguere subito:
+<br />
+- l'**autenticazione** risponde a "chi sei?": il login, le password, i token
+- l'**autorizzazione** risponde a "cosa puoi fare?": i permessi, i ruoli
+<br />
+Sei Jon Snow (autenticato), ma solo il Lord Comandante può congedare un
+guardiano (autorizzato).
+<br />
+**La sicurezza.** Il server è esposto a Internet, e Internet è piena di gente
+curiosa. Il backend è la linea di difesa: valida ogni dato in arrivo (anche se
+il frontend lo ha già validato: ricordi? mai fidarsi del client), custodisce
+le password in forma cifrata, parla HTTPS, tiene i segreti (chiavi,
+credenziali) dove il browser non può vederli.
+<br />
+### 🧑‍💻 Cosa fa uno sviluppatore backend
+<br />
+Per simmetria col ritratto del frontend developer, ecco l'altra metà del
+cielo. Uno sviluppatore backend:
+<br />
+- progetta e costruisce le **API** che il frontend consuma
+- modella i **dati**: come strutturarli, dove salvarli, come interrogarli in fretta
+- implementa la **business logic** e la tiene testata
+- gestisce autenticazione, autorizzazione e sicurezza
+- si preoccupa di **prestazioni e scalabilità**: cosa succede quando gli utenti diventano diecimila?
+<br />
+Meno riflettori del frontend (nessun utente si complimenterà mai per
+un'API ben fatta), ma quando il backend sbaglia, se ne accorgono tutti.
+<br />
+### ✅ Conclusione
+<br />
+Il backend è la metà invisibile ma decisiva: il server sempre in ascolto, la
+logica che fa rispettare le regole, i dati custoditi, gli utenti riconosciuti
+e la sicurezza che tiene fuori i malintenzionati. Il frontend è ciò che
+l'utente percepisce; il backend è ciò che rende vero quello che percepisce.
+<br />
+Nel **prossimo capitolo** restiamo in sala macchine e continuiamo
+l'esplorazione: il cuore dell'app ha ancora parecchio da raccontare.
+</Card>

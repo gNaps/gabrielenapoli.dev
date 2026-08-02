@@ -1,0 +1,125 @@
+<Card>
+## 23 - Controllo versione con Git
+
+<br />
+Diciannove capitoli fa, tra gli strumenti del mestiere, ti avevo promesso che
+a Git avremmo dedicato lo spazio che merita. Il debito si paga oggi, ed era
+l'ultimo rimasto.
+<br />
+Partiamo dal problema, che conosci anche se non programmi da vent'anni:
+`progetto-finale-v2-DEFINITIVO-ok-questo.zip`. Copie su copie, la paura di
+toccare il codice che funziona, il "ma prima andava, cosa ho cambiato?". Git
+esiste per cancellare tutto questo: è la **macchina del tempo del codice**, e
+da quarant'anni a questa parte è la prima cosa che si impara in qualsiasi
+team.
+<br />
+### 📸 L'idea di fondo: gli snapshot
+<br />
+Git è un sistema di **controllo versione**: fotografa lo stato del progetto
+ogni volta che glielo chiedi, e conserva l'intera storia. Ogni fotografia si
+chiama **commit** e porta con sé cosa è cambiato, chi l'ha cambiato, quando
+e, nel messaggio, *perché*.
+<br />
+Mettiamo sotto controllo il progetto dei Guardiani. Dalla cartella del
+progetto:
+
+```bash
+# una volta sola: trasforma la cartella in un repository
+git init
+
+# scegli cosa fotografare (il punto = tutto)
+git add .
+
+# scatta la foto, con una descrizione sensata
+git commit -m "Registro dei guardiani: prima versione funzionante"
+```
+
+Da questo momento quella versione è **al sicuro per sempre**. Rompi tutto
+domani? Si torna indietro. Vuoi sapere com'era il server tre settimane fa?
+C'è scritto. La storia si consulta con `git log`, e lo stato attuale con il
+comando che digiterai più di ogni altro: `git status`.
+
+> Prima del primo commit, crea un file **`.gitignore`**: l'elenco di ciò che
+> Git deve fingere di non vedere. Nel nostro progetto: `node_modules/` (si
+> rigenera con npm install, capitolo 13), `guardia.db` (i dati non sono
+> codice) e `.env` (i **segreti non si committano mai**: capitolo 15, e non
+> era un consiglio).
+
+### 🌿 I branch: universi paralleli
+<br />
+Ora la funzione che trasforma Git da salvagente a superpotere. Vuoi
+sperimentare una funzionalità nuova (che so, la gestione dei castelli)
+senza rischiare il codice che funziona? Crei un **branch**: una linea
+temporale parallela.
+
+```bash
+# crea il branch e spostati sopra
+git switch -c gestione-castelli
+
+# ...lavori, sperimenti, committi in libertà...
+git add .
+git commit -m "Aggiunge la tabella castelli e le rotte"
+```
+
+Sul branch `gestione-castelli` puoi fare qualsiasi disastro: il branch
+principale (si chiama `main`) resta intatto. E quando l'esperimento è
+maturo, le due linee temporali si riuniscono con un **merge**:
+
+```bash
+git switch main
+git merge gestione-castelli
+```
+
+Le modifiche del branch confluiscono in `main`. Se nel frattempo `main` è
+cambiato negli stessi punti, Git ti chiederà di risolvere i **conflitti** a
+mano: sembra spaventoso la prima volta, è routine dalla terza.
+<br />
+### 🌍 GitHub e il lavoro in team
+<br />
+Finora tutto vive sul tuo computer. Piattaforme come **GitHub** (o GitLab,
+Bitbucket) ospitano una copia **remota** del repository: backup, vetrina e,
+soprattutto, punto d'incontro del team.
+
+```bash
+# collega il repository remoto (una volta sola)
+git remote add origin https://github.com/tuonome/guardiani.git
+
+# spedisci i tuoi commit
+git push
+
+# scarica quelli dei colleghi
+git pull
+```
+
+Ed è qui che i branch mostrano il loro vero scopo. In un team nessuno
+committa direttamente su `main`: ognuno lavora sul proprio branch e, quando
+ha finito, apre una **pull request**: letteralmente "ti chiedo di tirare
+dentro le mie modifiche". La PR è la piazza del team: i colleghi **leggono il
+codice**, commentano riga per riga, chiedono modifiche, e solo dopo
+l'approvazione si fa il merge.
+
+> La code review non è un esame: è il momento in cui si impara di più, in
+> entrambe le direzioni. Le PR con le discussioni più accese sono quelle che,
+> a distanza di anni, ricordi come le migliori lezioni ricevute gratis.
+
+Il flusso completo, quello che userai in qualsiasi azienda:
+<br />
+1. `git pull` su `main`: parti aggiornato
+2. `git switch -c nome-funzionalita`: il tuo branch
+3. lavori e committi, a piccoli passi, con messaggi chiari
+4. `git push` e apri la **pull request**
+5. review, eventuali ritocchi, merge, e si riparte dal punto 1
+<br />
+### ✅ Conclusione
+<br />
+Commit come fotografie, branch come universi paralleli, merge per riunirli,
+pull request per lavorare in tanti senza pestarsi: con questi quattro concetti
+copri il 90% dell'uso quotidiano di Git. Il consiglio è uno solo: **inizia a
+usarlo adesso**, anche da solo, anche sul progetto dei Guardiani. Il te
+stesso che tra un mese romperà qualcosa ti ringrazierà, e potrà rimediare
+con un comando.
+<br />
+Siamo quasi in fondo al viaggio. Nel **prossimo capitolo**, l'ultimo,
+tracciamo la mappa di quello che viene dopo: cosa approfondire, dove
+studiare, e come si continua a crescere quando la guida finisce.
+</Card>

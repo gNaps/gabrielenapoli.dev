@@ -1,0 +1,311 @@
+<Card>
+## 03 - I componenti: i mattoncini di Angular
+
+<br />
+Benvenuto nel terzo capitolo! L'ambiente di sviluppo è pronto, quindi da qui in poi
+si scrive codice. E si parte dal cuore di Angular: i **componenti**.
+<br />
+Nel primo capitolo ti ho detto che in Angular "tutto ruota attorno ai componenti".
+Ora ti mostro cosa significa in pratica: alla fine di questo capitolo saprai crearne
+uno, capire quando ha senso farlo e iniziare a ragionare "a componenti" quando
+strutturi un'applicazione.
+<br />
+### 🧩 Cos'è un componente
+<br />
+Un componente è un **pezzo riutilizzabile di interfaccia** che tiene insieme tre cose:
+<br />
+- **HTML**: la struttura
+- **CSS**: lo stile
+- **TypeScript**: la logica
+<br />
+L'analogia classica è quella dei LEGO e, per una volta, è anche quella giusta.
+Ogni mattoncino ha una forma e un colore (HTML e CSS) e alcuni hanno funzionalità
+speciali (TypeScript). I mattoncini si combinano per costruire cose più grandi,
+lo stesso pezzo si riusa in punti diversi e, se un tipo di mattoncino va modificato,
+lo cambi una volta sola e il cambiamento arriva ovunque.
+<br />
+Apri un sito qualsiasi e li vedi subito: l'header con logo e menu, la card prodotto
+con immagine, prezzo e bottone, il form di contatto, il footer. Ogni elemento che si
+ripete, o che ha una logica tutta sua, è un buon candidato a diventare componente.
+<br />
+### Perché conviene
+<br />
+Te lo riassumo con i motivi che pesano davvero nel lavoro di tutti i giorni:
+<br />
+- **Riutilizzo**: scrivi un bottone una volta e lo usi in cinquanta posti
+- **Leggibilità**: tanti file piccoli e focalizzati invece di un HTML da 500 righe
+- **Manutenzione**: un bug nella card si sistema in un punto solo
+- **Lavoro in team**: ognuno sul suo componente, senza pestarsi i piedi
+- **Test**: ogni pezzo si prova in isolamento, senza tirare su tutta l'app
+<br />
+Quando l'app cresce, aggiungere una funzionalità diventa spesso questione di
+combinare componenti che hai già.
+<br />
+### 🔧 Com'è fatto un componente in Angular
+<br />
+In Angular un componente è una **classe TypeScript** decorata con `@Component`:
+
+```typescript
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-saluto',           // il tag da usare nell'HTML
+  template: `<h1>{{ titolo }}</h1>`, // il template
+  styles: [`h1 { color: rebeccapurple; }`]
+})
+export class SalutoComponent {
+  titolo = 'Il mio primo componente';
+}
+```
+
+I pezzi sono tre:
+<br />
+1. Il **decorator** `@Component`, che dice ad Angular "questa classe è un componente" e ne definisce selector, template e stili
+2. La **classe**, con le proprietà (i dati) e i metodi (le azioni)
+3. Il **template**, cioè HTML normale più la sintassi di binding di Angular
+<br />
+### Una parola sugli standalone component
+<br />
+Se hai incrociato Angular qualche anno fa, ricorderai che ogni componente andava
+dichiarato dentro un **NgModule**, con relativo boilerplate. Dalla versione 14 sono
+arrivati gli **standalone component**, componenti indipendenti che importano
+direttamente ciò che gli serve. E dalla versione 19 gli standalone sono il
+**comportamento predefinito**: non serve nemmeno più scrivere `standalone: true`.
+<br />
+In questa guida usiamo Angular moderno, quindi standalone e basta. Gli NgModule li
+nomineremo solo quando serviranno a capire codice esistente.
+
+> Se un tutorial ti fa dichiarare il componente dentro un NgModule, o insiste su
+> `standalone: true`, è scritto per una versione vecchia di Angular. Non è sbagliato,
+> ma non è più il modo consigliato di lavorare.
+
+### 🛠 Creiamo il primo componente
+<br />
+Riprendiamo il progetto del capitolo precedente:
+
+```bash
+cd il-mio-primo-progetto
+code .
+```
+
+E generiamo un componente con la CLI (la shortcut è `ng g c benvenuto`):
+
+```bash
+ng generate component benvenuto
+```
+
+La CLI crea quattro file:
+
+```bash
+src/app/benvenuto/
+├── benvenuto.component.ts       # la logica
+├── benvenuto.component.html     # il template
+├── benvenuto.component.css      # gli stili
+└── benvenuto.component.spec.ts  # i test
+```
+
+Il file TypeScript generato è già uno standalone component, pronto all'uso:
+
+```typescript
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-benvenuto',
+  imports: [],
+  templateUrl: './benvenuto.component.html',
+  styleUrl: './benvenuto.component.css'
+})
+export class BenvenutoComponent {
+
+}
+```
+
+Adesso personalizziamolo. Aggiungiamo un paio di proprietà e due metodi:
+
+```typescript
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-benvenuto',
+  imports: [],
+  templateUrl: './benvenuto.component.html',
+  styleUrl: './benvenuto.component.css'
+})
+export class BenvenutoComponent {
+  nome = 'sviluppatore';
+  messaggio = 'Benvenuto nel mondo di Angular!';
+  numeroVisite = 0;
+
+  incrementaVisite() {
+    this.numeroVisite++;
+  }
+
+  cambiaNome(nuovoNome: string) {
+    this.nome = nuovoNome;
+  }
+}
+```
+
+Poi il template, in `benvenuto.component.html`:
+
+```html
+<div class="card-benvenuto">
+  <h2>{{ messaggio }}</h2>
+  <p>Ciao <strong>{{ nome }}</strong>!</p>
+  <p>Hai cliccato {{ numeroVisite }} volte.</p>
+
+  <button (click)="incrementaVisite()">Incrementa</button>
+  <button (click)="cambiaNome('Angular developer')">Cambia nome</button>
+</div>
+```
+
+E un minimo di stile in `benvenuto.component.css`:
+
+```css
+.card-benvenuto {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.card-benvenuto button {
+  margin: 0.5rem 0.25rem 0;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+```
+
+Il componente esiste, ma nessuno lo sta usando. Apri `src/app/app.component.html`
+e sostituisci tutto il contenuto con:
+
+```html
+<div class="container">
+  <h1>La mia app Angular</h1>
+  <app-benvenuto></app-benvenuto>
+</div>
+```
+
+Ultimo passaggio, quello che all'inizio si dimentica sempre: il componente va
+**importato** da chi lo usa. In `src/app/app.component.ts`:
+
+```typescript
+import { Component } from '@angular/core';
+import { BenvenutoComponent } from './benvenuto/benvenuto.component';
+
+@Component({
+  selector: 'app-root',
+  imports: [BenvenutoComponent], // senza questo, il tag non viene riconosciuto
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css'
+})
+export class AppComponent {
+  title = 'il-mio-primo-progetto';
+}
+```
+
+Avvia il server con `ng serve`, vai su `http://localhost:4200` e gioca con i due
+bottoni: stai già usando proprietà, eventi e interpolazione senza aver scritto una
+riga di codice "di collegamento". Questo è il punto di Angular.
+<br />
+### 🔄 Il data binding, in breve
+<br />
+Nel componente appena scritto abbiamo già usato due tipi di **data binding**, il
+meccanismo con cui template e classe si parlano. In tutto sono quattro:
+<br />
+**Interpolation** `{{ }}`: mostra il valore di una proprietà nel template
+
+```html
+<h2>{{ messaggio }}</h2>
+```
+
+**Event binding** `(evento)`: esegue un metodo quando succede qualcosa
+
+```html
+<button (click)="incrementaVisite()">Clicca</button>
+```
+
+**Property binding** `[proprieta]`: imposta una proprietà HTML da una proprietà della classe
+
+```html
+<img [src]="urlImmagine" [alt]="descrizione">
+```
+
+**Two-way binding** `[(ngModel)]`: tiene sincronizzati un input e una proprietà, nelle due direzioni
+
+```html
+<input [(ngModel)]="nome" placeholder="Il tuo nome">
+```
+
+Per ora ti basta riconoscerli. Al data binding, e ai **signals** che ti avevo
+anticipato nel primo capitolo, dedicheremo un capitolo intero più avanti.
+<br />
+### Il ciclo di vita di un componente
+<br />
+Ogni componente vive una vita: nasce, reagisce ai cambiamenti e prima o poi viene
+distrutto. Angular ti permette di agganciarti a questi momenti con i
+**lifecycle hooks**, metodi speciali che vengono chiamati automaticamente:
+<br />
+- `ngOnInit()` viene eseguito una volta sola, all'inizializzazione: perfetto per caricare dati
+- `ngOnChanges()` scatta quando cambiano gli input del componente
+- `ngOnDestroy()` viene chiamato prima della rimozione: il posto giusto per pulire timer e sottoscrizioni
+
+```typescript
+import { Component, OnInit, OnDestroy } from '@angular/core';
+
+@Component({ /* ... */ })
+export class MyComponent implements OnInit, OnDestroy {
+  ngOnInit() {
+    console.log('componente inizializzato');
+  }
+
+  ngOnDestroy() {
+    console.log('componente distrutto');
+  }
+}
+```
+
+Non serve impararli tutti adesso. `ngOnInit` e `ngOnDestroy` coprono la maggior
+parte dei casi reali, gli altri li incontreremo strada facendo.
+<br />
+### Qualche buona abitudine
+<br />
+Tre regole che mi hanno risparmiato parecchi mal di testa nei progetti veri:
+<br />
+- **Nomi coerenti**: file `user-card.component.ts`, classe `UserCardComponent`, selector `app-user-card`. La CLI li genera già così, non combatterla
+- **Componenti piccoli**: se il template supera le 100 righe, probabilmente dentro ci vivono due o tre componenti che chiedono di uscire
+- **Una responsabilità sola**: `UserCardComponent` mostra un utente. Se lo stesso componente mostra la lista, il dettaglio, il form e la validazione, qualcosa è andato storto
+<br />
+### I comandi CLI che uso davvero
+<br />
+Oltre a `ng g c nome`, questi flag tornano utili spesso:
+
+```bash
+# in una sottocartella
+ng g c features/user-profile
+
+# senza file di test
+ng g c mio-comp --skip-tests
+
+# template e stili inline, per componenti minuscoli
+ng g c mio-comp --inline-template --inline-style
+
+# anteprima di cosa verrebbe creato, senza creare nulla
+ng g c mio-comp --dry-run
+```
+
+Il `--dry-run` in particolare vale oro: prima di generare qualcosa in un progetto
+grosso, controlli dove andranno a finire i file.
+<br />
+### Dove siamo arrivati
+<br />
+Ora sai cos'è un componente, perché è l'unità di misura di qualsiasi app Angular,
+come crearne uno con la CLI e come collegare dati ed eventi al template. Non è
+poco: è il modo di ragionare che userai per tutto il resto della guida.
+<br />
+Nel **prossimo capitolo** entra in scena il **Router**: trasformeremo i nostri
+componenti in vere e proprie pagine navigabili, come si aspetta chiunque apra
+un'applicazione web.
+</Card>

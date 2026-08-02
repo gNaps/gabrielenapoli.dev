@@ -1,0 +1,656 @@
+<Card>
+## 10 - Dalla teoria alla pratica: una libreria di videogiochi
+
+<br />
+Eccoci all'ultimo capitolo. Nove puntate di teoria, esempi e avvertimenti:
+adesso mettiamo tutto in fila e costruiamo un'applicazione vera, dall'inizio
+alla fine.
+<br />
+Il progetto si chiama **GameShelf**: una libreria personale di videogiochi.
+Cerchi un gioco in un database online, lo aggiungi alla tua collezione, e poi
+gestisci lo stato di ogni titolo: da giocare, in corso, finito. Il tipo di app
+che sembra un giocattolo e invece contiene tutti i problemi veri: autenticazione,
+chiamate a un'API esterna, stato condiviso, form, navigazione protetta.
+<br />
+La regola di questo capitolo: **niente di nuovo**. Ogni pezzo che scriveremo
+viene da un capitolo della serie: componenti (3), router con guardie e lazy
+loading (4), signals (5), form (6), HTTP e Resource API (7), stato nei service
+(8), interceptor e pipe (9). Considerale l'esame finale.
+<br />
+### 🎮 Cosa ci serve
+<br />
+Per la ricerca dei giochi usiamo **RAWG** ([rawg.io](https://rawg.io/apidocs)),
+il più grande database di videogiochi con API pubblica: registrati e ottieni
+una chiave gratuita in due minuti. Il login invece sarà **finto** (niente
+backend, un token fasullo in localStorage), ma il flusso (form, service,
+guardia, redirect) è identico a quello di un'app vera: quando avrai un backend,
+cambierai solo il contenuto di un metodo.
+
+> Una chiave API in un'app frontend non è mai davvero segreta: chiunque apra i
+> DevTools la vede. Per RAWG va bene così (è pensata per questo), ma non
+> committare chiavi in repository pubblici e, per servizi seri, fai passare le
+> chiamate da un tuo backend.
+
+### 🧰 Setup del progetto
+<br />
+Si parte come nel capitolo 2:
+
+```bash
+ng new gameshelf --style=css
+cd gameshelf
+```
+
+Per l'interfaccia non scriveremo CSS a mano: usiamo **Tailwind CSS** con
+**daisyUI**. Installazione:
+
+```bash
+npm install tailwindcss @tailwindcss/postcss postcss daisyui
+```
+
+Poi crea un file `.postcssrc.json` nella radice del progetto:
+
+```json
+{
+  "plugins": {
+    "@tailwindcss/postcss": {}
+  }
+}
+```
+
+E in `src/styles.css` bastano due righe:
+
+```css
+@import "tailwindcss";
+@plugin "daisyui";
+```
+
+### 🌼 Due parole su daisyUI
+<br />
+Tailwind è un framework CSS *utility-first*: invece di scrivere classi tue,
+componi lo stile con classi atomiche (`flex`, `p-4`, `text-xl`...). Potente, ma
+per un bottone decente servono dieci classi. **daisyUI** è un plugin che
+aggiunge sopra Tailwind delle **classi componente** già disegnate:
+
+```html
+<button class="btn btn-primary">Salva</button>
+<div class="card bg-base-100 shadow">...</div>
+<span class="badge badge-success">finito</span>
+```
+
+`btn`, `card`, `badge`, `navbar`, `input`: nomi che si spiegano da soli, temi
+chiari e scuri inclusi. Per un progetto didattico è perfetto: l'aspetto è
+subito presentabile e noi restiamo concentrati su Angular. E dove serve un
+ritocco, le utility di Tailwind si affiancano senza conflitti.
+<br />
+### 🗺️ Lo scheletro: rotte e configurazione
+<br />
+Tre pagine: login, ricerca e libreria. Le ultime due protette dalla guardia e
+caricate lazy, come da capitolo 4:
+
+```typescript
+// app.routes.ts
+import { Routes } from '@angular/router';
+import { authGuard } from './auth/auth.guard';
+
+export const routes: Routes = [
+  { path: '', redirectTo: 'search', pathMatch: 'full' },
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./auth/login.component').then((m) => m.LoginComponent),
+  },
+  {
+    path: 'search',
+    loadComponent: () =>
+      import('./search/search.component').then((m) => m.SearchComponent),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'library',
+    loadComponent: () =>
+      import('./library/library.component').then((m) => m.LibraryComponent),
+    canActivate: [authGuard],
+  },
+  { path: '**', redirectTo: 'search' },
+];
+```
+
+In `app.config.ts` registriamo router, HttpClient e un interceptor che
+vedremo tra poco:
+
+```typescript
+import { ApplicationConfig } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { routes } from './app.routes';
+import { rawgKeyInterceptor } from './core/rawg-key.interceptor';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideRouter(routes),
+    provideHttpClient(withInterceptors([rawgKeyInterceptor])),
+  ],
+};
+```
+
+### 🔑 Autenticazione: service, guardia e login
+<br />
+Lo stato di autenticazione vive in un service, col pattern del capitolo 8:
+signal privato, lettura pubblica con `asReadonly()`, scritture solo via metodi.
+
+```typescript
+// auth/auth.service.ts
+import { Injectable, signal } from '@angular/core';
+
+@Injectable({ providedIn: 'root' })
+export class AuthService {
+  private _isLoggedIn = signal(!!localStorage.getItem('gameshelf-token'));
+  readonly isLoggedIn = this._isLoggedIn.asReadonly();
+
+  login(email: string, password: string): boolean {
+    if (!email || !password) return false;
+
+    // qui, in un'app vera, ci sarebbe una POST al backend (capitolo 7)
+    localStorage.setItem('gameshelf-token', 'fake-token');
+    this._isLoggedIn.set(true);
+    return true;
+  }
+
+  logout() {
+    localStorage.removeItem('gameshelf-token');
+    this._isLoggedIn.set(false);
+  }
+}
+```
+
+La guardia è quella del capitolo 4, parola per parola:
+
+```typescript
+// auth/auth.guard.ts
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
+import { AuthService } from './auth.service';
+
+export const authGuard: CanActivateFn = () => {
+  return inject(AuthService).isLoggedIn()
+    ? true
+    : inject(Router).parseUrl('/login');
+};
+```
+
+E la pagina di login è un form template-driven (capitolo 6): due campi, due
+signal, submit che delega al service e naviga.
+
+```typescript
+// auth/login.component.ts
+import { Component, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from './auth.service';
+
+@Component({
+  selector: 'app-login',
+  imports: [FormsModule],
+  templateUrl: './login.component.html',
+})
+export class LoginComponent {
+  private auth = inject(AuthService);
+  private router = inject(Router);
+
+  email = signal('');
+  password = signal('');
+  errore = signal(false);
+
+  submit() {
+    if (this.auth.login(this.email(), this.password())) {
+      this.router.navigateByUrl('/search');
+    } else {
+      this.errore.set(true);
+    }
+  }
+}
+```
+
+```html
+<!-- auth/login.component.html -->
+<div class="min-h-screen flex items-center justify-center bg-base-200">
+  <form
+    (ngSubmit)="submit()"
+    class="card bg-base-100 shadow-xl p-8 w-full max-w-sm flex flex-col gap-4"
+  >
+    <h1 class="text-2xl font-bold">GameShelf 🎮</h1>
+
+    <input
+      name="email"
+      type="email"
+      [(ngModel)]="email"
+      placeholder="Email"
+      class="input input-bordered w-full"
+      required
+    />
+    <input
+      name="password"
+      type="password"
+      [(ngModel)]="password"
+      placeholder="Password"
+      class="input input-bordered w-full"
+      required
+    />
+
+    @if (errore()) {
+      <div class="alert alert-error">Inserisci email e password.</div>
+    }
+
+    <button type="submit" class="btn btn-primary">Entra</button>
+  </form>
+</div>
+```
+
+Nota la solita coppia del capitolo 6: `[(ngModel)]="email"` (il signal, non la
+chiamata) e l'attributo `name` su ogni campo.
+<br />
+### 🚦 L'interceptor per la chiave RAWG
+<br />
+RAWG vuole la chiave API come query param su ogni richiesta. Potremmo
+appiccicarla a mano a ogni URL... oppure usare quello che abbiamo imparato nel
+capitolo 9:
+
+```typescript
+// core/rawg-key.interceptor.ts
+import { HttpInterceptorFn } from '@angular/common/http';
+
+const RAWG_KEY = 'LA_TUA_CHIAVE_RAWG';
+
+export const rawgKeyInterceptor: HttpInterceptorFn = (req, next) => {
+  if (req.url.startsWith('https://api.rawg.io')) {
+    return next(req.clone({ setParams: { key: RAWG_KEY } }));
+  }
+  return next(req);
+};
+```
+
+Da questo momento ogni chiamata verso RAWG esce già firmata, e nessun service
+deve saperlo. Questo è il mestiere degli interceptor.
+<br />
+### 🔍 La pagina di ricerca
+<br />
+Il cuore della pagina è un `httpResource` (capitolo 7) pilotato da un signal.
+Scelta di design: la richiesta parte al **submit** del form, non a ogni tasto
+premuto: per questo i signal sono due, uno per il testo digitato e uno per la
+query confermata.
+
+```typescript
+// search/search.component.ts
+import { Component, computed, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { httpResource } from '@angular/common/http';
+import { DatePipe } from '@angular/common';
+import { LibraryService } from '../library/library.service';
+import { Game, RawgSearchResponse } from '../models/game.model';
+
+@Component({
+  selector: 'app-search',
+  imports: [FormsModule, DatePipe],
+  templateUrl: './search.component.html',
+})
+export class SearchComponent {
+  library = inject(LibraryService);
+
+  testo = signal('');
+  query = signal('');
+
+  risultati = httpResource<RawgSearchResponse>(() =>
+    this.query()
+      ? `https://api.rawg.io/api/games?search=${encodeURIComponent(this.query())}&page_size=12`
+      : undefined
+  );
+
+  giochi = computed(() => this.risultati.value()?.results ?? []);
+
+  cerca() {
+    this.query.set(this.testo().trim());
+  }
+
+  aggiungi(game: Game) {
+    this.library.add(game);
+  }
+}
+```
+
+Il trucco è nella funzione passata a `httpResource`: se la query è vuota
+restituisce `undefined`, e Angular semplicemente **non fa la richiesta**. Quando
+la query cambia, la richiesta riparte da sola. I modelli:
+
+```typescript
+// models/game.model.ts
+export interface Game {
+  id: number;
+  name: string;
+  background_image: string | null;
+  released: string | null;
+  metacritic: number | null;
+}
+
+export interface RawgSearchResponse {
+  results: Game[];
+}
+```
+
+E il template, dove tornano il control flow del capitolo 5, la `date` pipe del
+capitolo 9 e le card di daisyUI:
+
+```html
+<!-- search/search.component.html -->
+<div class="p-6 max-w-5xl mx-auto">
+  <form (ngSubmit)="cerca()" class="flex gap-2 mb-6">
+    <input
+      name="testo"
+      [(ngModel)]="testo"
+      placeholder="Cerca un gioco..."
+      class="input input-bordered flex-1"
+    />
+    <button type="submit" class="btn btn-primary">Cerca</button>
+  </form>
+
+  @if (risultati.isLoading()) {
+    <span class="loading loading-spinner loading-lg"></span>
+  } @else if (risultati.error()) {
+    <div class="alert alert-error">Qualcosa è andato storto. Riprova.</div>
+  } @else {
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      @for (game of giochi(); track game.id) {
+        <div class="card bg-base-100 shadow">
+          @if (game.background_image) {
+            <figure>
+              <img [src]="game.background_image" [alt]="game.name" />
+            </figure>
+          }
+          <div class="card-body">
+            <h2 class="card-title">{{ game.name }}</h2>
+            <p class="text-sm opacity-70">
+              {{ game.released | date: 'longDate' }}
+            </p>
+            <div class="card-actions justify-end">
+              <button
+                class="btn btn-sm btn-primary"
+                [disabled]="library.has(game.id)"
+                (click)="aggiungi(game)"
+              >
+                {{ library.has(game.id) ? 'In libreria ✓' : 'Aggiungi' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      } @empty {
+        @if (query()) {
+          <p>Nessun risultato per "{{ query() }}".</p>
+        }
+      }
+    </div>
+  }
+</div>
+```
+
+Il bottone "Aggiungi" interroga direttamente il service della libreria: se il
+gioco c'è già si disabilita da solo. Due componenti, uno stato condiviso, zero
+eventi da propagare: il capitolo 8 all'opera.
+<br />
+### 📚 Il service della libreria
+<br />
+Ed eccolo, il service. Stato in un signal privato, lettura con `asReadonly()`,
+statistiche derivate con `computed`, e la persistenza in localStorage affidata
+a un `effect`, che, come dicevamo al capitolo 5, è esattamente il posto dei
+side effect:
+
+```typescript
+// library/library.service.ts
+import { computed, effect, Injectable, signal } from '@angular/core';
+import { Game } from '../models/game.model';
+
+export type GameStatus = 'backlog' | 'playing' | 'done';
+
+export interface LibraryGame extends Game {
+  status: GameStatus;
+}
+
+const STORAGE_KEY = 'gameshelf-library';
+
+@Injectable({ providedIn: 'root' })
+export class LibraryService {
+  private _games = signal<LibraryGame[]>(this.load());
+
+  readonly games = this._games.asReadonly();
+  readonly count = computed(() => this._games().length);
+  readonly doneCount = computed(
+    () => this._games().filter((g) => g.status === 'done').length
+  );
+
+  constructor() {
+    // ogni volta che la libreria cambia, la salviamo. Tutto qui.
+    effect(() => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(this._games()));
+    });
+  }
+
+  has(id: number): boolean {
+    return this._games().some((g) => g.id === id);
+  }
+
+  add(game: Game) {
+    if (this.has(game.id)) return;
+    this._games.update((games) => [...games, { ...game, status: 'backlog' }]);
+  }
+
+  remove(id: number) {
+    this._games.update((games) => games.filter((g) => g.id !== id));
+  }
+
+  setStatus(id: number, status: GameStatus) {
+    this._games.update((games) =>
+      games.map((g) => (g.id === id ? { ...g, status } : g))
+    );
+  }
+
+  private load(): LibraryGame[] {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]');
+    } catch {
+      return [];
+    }
+  }
+}
+```
+
+Rileggi l'`effect` nel costruttore: legge `_games()`, quindi si ri-esegue a
+ogni modifica della libreria. Aggiungi, rimuovi, cambi stato: il salvataggio
+avviene da solo, e al riavvio `load()` ritrova tutto. Persistenza in sei righe.
+<br />
+### 🗄️ La pagina libreria
+<br />
+Ultima pagina: la collezione, con un filtro per stato. Il filtro è un signal,
+la lista filtrata un `computed`: a questo punto della serie, il riflesso
+dovrebbe essere automatico.
+
+```typescript
+// library/library.component.ts
+import { Component, computed, inject, signal } from '@angular/core';
+import { GameStatus, LibraryService } from './library.service';
+
+const LABELS: Record<GameStatus, string> = {
+  backlog: 'Da giocare',
+  playing: 'In corso',
+  done: 'Finito',
+};
+
+@Component({
+  selector: 'app-library',
+  templateUrl: './library.component.html',
+})
+export class LibraryComponent {
+  library = inject(LibraryService);
+
+  readonly stati = ['backlog', 'playing', 'done'] as const;
+  readonly labels = LABELS;
+
+  filtro = signal<GameStatus | 'all'>('all');
+
+  giochiFiltrati = computed(() => {
+    const filtro = this.filtro();
+    const games = this.library.games();
+    return filtro === 'all' ? games : games.filter((g) => g.status === filtro);
+  });
+
+  cambiaStato(id: number, event: Event) {
+    const status = (event.target as HTMLSelectElement).value as GameStatus;
+    this.library.setStatus(id, status);
+  }
+}
+```
+
+```html
+<!-- library/library.component.html -->
+<div class="p-6 max-w-5xl mx-auto">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold">
+      La mia libreria
+      <span class="badge badge-primary">{{ library.count() }}</span>
+      <span class="badge badge-success">{{ library.doneCount() }} finiti</span>
+    </h1>
+
+    <div class="join">
+      <button
+        class="btn btn-sm join-item"
+        [class.btn-active]="filtro() === 'all'"
+        (click)="filtro.set('all')"
+      >
+        Tutti
+      </button>
+      @for (stato of stati; track stato) {
+        <button
+          class="btn btn-sm join-item"
+          [class.btn-active]="filtro() === stato"
+          (click)="filtro.set(stato)"
+        >
+          {{ labels[stato] }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-3">
+    @for (game of giochiFiltrati(); track game.id) {
+      <div class="card card-side bg-base-100 shadow">
+        @if (game.background_image) {
+          <figure class="w-40">
+            <img
+              [src]="game.background_image"
+              [alt]="game.name"
+              class="h-full object-cover"
+            />
+          </figure>
+        }
+        <div class="card-body flex-row items-center justify-between">
+          <h2 class="card-title">{{ game.name }}</h2>
+          <div class="flex items-center gap-2">
+            <select
+              class="select select-bordered select-sm"
+              [value]="game.status"
+              (change)="cambiaStato(game.id, $event)"
+            >
+              @for (stato of stati; track stato) {
+                <option [value]="stato">{{ labels[stato] }}</option>
+              }
+            </select>
+            <button
+              class="btn btn-sm btn-ghost text-error"
+              (click)="library.remove(game.id)"
+            >
+              Rimuovi
+            </button>
+          </div>
+        </div>
+      </div>
+    } @empty {
+      <p class="opacity-70">
+        Qui non c'è ancora niente. Vai nella ricerca e aggiungi il primo gioco!
+      </p>
+    }
+  </div>
+</div>
+```
+
+Ogni interazione (cambio stato, rimozione, filtro) passa dai signals: la
+lista si aggiorna, i badge in alto si ricalcolano, l'`effect` risalva. Nessun
+codice di sincronizzazione, da nessuna parte.
+<br />
+### 🧭 La barra di navigazione
+<br />
+Chiudiamo il cerchio nel componente radice: navbar con i link (e
+`routerLinkActive` dal capitolo 4), il contatore della libreria che si aggiorna
+da qualunque pagina, e il logout.
+
+```typescript
+// app.component.ts
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { AuthService } from './auth/auth.service';
+import { LibraryService } from './library/library.service';
+
+@Component({
+  selector: 'app-root',
+  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  templateUrl: './app.component.html',
+})
+export class AppComponent {
+  auth = inject(AuthService);
+  library = inject(LibraryService);
+  private router = inject(Router);
+
+  logout() {
+    this.auth.logout();
+    this.router.navigateByUrl('/login');
+  }
+}
+```
+
+```html
+<!-- app.component.html -->
+@if (auth.isLoggedIn()) {
+  <div class="navbar bg-base-100 shadow">
+    <div class="flex-1 font-bold">GameShelf 🎮</div>
+    <div class="flex gap-2">
+      <a routerLink="/search" routerLinkActive="btn-active" class="btn btn-ghost btn-sm">
+        Cerca
+      </a>
+      <a routerLink="/library" routerLinkActive="btn-active" class="btn btn-ghost btn-sm">
+        Libreria
+        <span class="badge badge-sm badge-primary">{{ library.count() }}</span>
+      </a>
+      <button class="btn btn-ghost btn-sm" (click)="logout()">Esci</button>
+    </div>
+  </div>
+}
+
+<router-outlet />
+```
+
+`ng serve`, login con credenziali qualsiasi, e GameShelf è vivo: cerca "Hollow
+Knight", aggiungilo, segnalo "in corso" (siamo onesti: ci resterà per mesi), e
+guarda il badge della navbar contare per te.
+<br />
+### 🏁 Fine della corsa
+<br />
+Dieci capitoli fa Angular era "quel framework enterprise con troppa roba
+dentro". Oggi hai costruito un'app completa: componenti standalone, rotte
+protette e lazy, stato reattivo coi signals, form, un'API esterna con tanto di
+interceptor, persistenza. E soprattutto hai un metodo: sai *dove* va ogni
+pezzo, che è la cosa che separa chi copia i tutorial da chi costruisce.
+<br />
+Da qui in poi i compiti li dai tu a te stesso: aggiungi una pagina di dettaglio
+con i parametri di rotta, un rating personale coi reactive forms, o sostituisci
+il login finto con un backend vero. Gli attrezzi li hai tutti.
+<br />
+Grazie di essere arrivato fin qui. E se GameShelf ti sfugge di mano e diventa
+il tuo prossimo progetto serio, beh, [scrivimi](/#contact): le storie così
+sono le mie preferite. またね!
+</Card>

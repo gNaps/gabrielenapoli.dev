@@ -1,0 +1,126 @@
+<Card>
+## Vibe coding vs spec-driven development
+
+<br />
+C'è un termine che negli ultimi tempi è ovunque: **vibe coding**. Lo ha
+battezzato Andrej Karpathy all'inizio del 2025, descrivendo un modo di
+programmare in cui ti abbandoni completamente all'AI: descrivi a grandi linee
+quello che vuoi, accetti il codice che arriva senza leggerlo davvero, e se
+qualcosa non va incolli l'errore e chiedi di sistemarlo. Avanti così, a
+sensazione, finché "più o meno funziona".
+<br />
+E funziona, eh. È questo il problema.
+<br />
+### 🎧 La seduzione del vibe coding
+<br />
+Partiamo dall'onestà: il vibe coding è **divertente**. Descrivi un'idea e
+tre minuti dopo hai una pagina che gira. Niente documentazione da leggere,
+niente setup, niente di quella fatica che di solito sta tra un'idea e la sua
+prima demo. Per un prototipo del weekend da mostrare lunedì o per esplorare un'API che non
+conosci è uno strumento formidabile. Lo uso anch'io, e non me ne vergogno.
+<br />
+Il guaio comincia quando quel codice smette di essere un esperimento e
+inizia a essere *il progetto*. Perché il vibe coding ha un costo nascosto che si paga con gli interessi.
+<br />
+### 🕳️ Il codice che nessuno ha letto
+<br />
+Il patto implicito del vibe coding è: "non leggo il codice, tanto funziona".
+Ma nel software professionale il codice che funziona oggi è solo metà del
+lavoro. L'altra metà è il codice che qualcuno dovrà **capire domani**: per
+correggerlo, estenderlo, difenderlo.
+<br />
+E qui i nodi vengono al pettine:
+<br />
+- **Il debugging alla cieca**: quando qualcosa si rompe (e si rompe), nessuno sa dove mettere le mani. Non l'hai scritto tu, non l'hai letto tu: sei il manutentore di un sistema che non conosci
+- **Il debito che si accumula in silenzio**: ogni iterazione "sistemalo tu" aggiunge strati sopra strati. L'AI non rifattorizza spontaneamente: rattoppa. Dopo venti rattoppi hai un'architettura che non ha deciso nessuno
+- **La sicurezza**: input non validati, query concatenate, segreti nel codice. L'AI riproduce anche i pattern sbagliati che ha visto in giro, e chi non legge non se ne accorge
+- **La responsabilità**: quando il codice va in produzione, sul commit c'è il tuo nome. "L'ha scritto l'AI" non è mai una risposta accettabile in una code review
+<br />
+C'è poi un errore di prospettiva più sottile. Il vibe coding ottimizza la
+velocità di *scrittura* del codice. Ma scrivere codice non è mai stato il
+collo di bottiglia: le parti difficili del mestiere sono **decidere cosa
+costruire** e **verificare che sia giusto**. Su quelle, l'abbandono alle
+vibes non aiuta: le peggiora, perché rinunci proprio ai momenti in cui
+si pensa.
+<br />
+### 📋 L'alternativa: lo sviluppo spec-driven
+<br />
+La risposta non è tornare a scrivere tutto a mano. È usare l'AI **al
+contrario**: invece di delegare le decisioni e tenerti la digitazione,
+deleghi la digitazione e ti tieni le decisioni. Si chiama
+**spec-driven development**: prima si scrive la specifica, poi si fa
+implementare.
+<br />
+Una spec non è un documento aziendale di quaranta pagine. Per una singola
+funzionalità bastano poche righe scritte con cura:
+
+```markdown
+## Funzionalità: filtro per stato nella libreria giochi
+
+Cosa fa:
+- l'utente può filtrare i giochi per stato: tutti, da giocare, in corso, finiti
+- il filtro è un gruppo di bottoni sopra la lista
+- il filtro attivo è evidenziato
+
+Vincoli:
+- lo stato del filtro vive in un signal, la lista filtrata è un computed
+- nessuna nuova dipendenza
+- i contatori nel titolo non cambiano col filtro (contano sempre tutto)
+
+Criteri di accettazione:
+- con filtro "in corso" vedo solo i giochi in corso
+- cambiare filtro non ricarica dati dal server
+- con lista vuota per quel filtro appare il messaggio dedicato
+```
+
+Guarda cosa è successo scrivendola: hai dovuto decidere *dove vive lo stato*,
+*cosa non deve cambiare* e*come si comporta il caso limite*. La spec non è
+burocrazia: **è il pensiero, messo per iscritto prima che diventi codice**.
+Ed è esattamente il materiale con cui un LLM lavora meglio: vincoli chiari e 
+criteri verificabili.
+<br />
+Il flusso completo, quello che uso davvero:
+<br />
+1. **Scrivi la spec**: cosa fa, vincoli, criteri di accettazione. Dieci minuti ben spesi
+2. **Falla implementare** all'AI, passandogliela per intero
+3. **Review contro la spec**, non a sensazione: ogni criterio è soddisfatto? I vincoli sono rispettati?
+4. **Chiedi i test** che dimostrano i criteri di accettazione: una spec eseguibile vale doppio
+5. Quello che non torna, lo correggi **aggiornando la spec**, non accumulando "sistemalo" nella chat
+
+> Il punto 3 è il più importante. "Review a sensazione" non è fare una review:
+> senza criteri scritti, la review del codice AI si riduce a "sembra ok",
+> che è precisamente il vibe coding con un passaggio in più. La spec
+> trasforma la domanda da "ti convince?" a "rispetta questi cinque punti?".
+> Alla seconda si può rispondere; alla prima si può solo annuire.
+
+### ⚖️ Ma quindi il vibe coding è il male?
+<br />
+No, ed è giusto dirlo senza moralismi. Il vibe coding va benissimo quando il
+codice è **usa e getta per definizione**: uno spike per capire se un'idea
+sta in piedi, uno script che esegui una volta, un giocattolo per imparare.
+In quei casi il costo della manutenzione è zero perché la manutenzione non
+esisterà.
+<br />
+La regola che mi sono dato è semplice: **se il codice ha un futuro, ha
+bisogno di una spec**. Se finirà in un repository condiviso, davanti a
+utenti, o anche solo davanti al me stesso di fra tre mesi, allora qualcuno
+deve averlo pensato. E quel qualcuno, finché firmo io il commit, sono io.
+<br />
+### 🧭 La morale, che poi è sempre la stessa
+<br />
+Nella guida per chi parte da zero, su questo sito, c'è una frase che
+riassume tutto: *l'AI accelera chi sa giudicare quello che produce*. Il
+vibe coding rinuncia al giudizio e si tiene l'accelerazione: sembra un
+affare, finché il conto non arriva. Lo spec-driven development fa
+l'opposto: mette il giudizio all'inizio (la spec) e alla fine (la review
+sui criteri), e lascia all'AI il pezzo in mezzo, che è quello che le
+riesce meglio.
+<br />
+L'ironia è che questa non è nemmeno una novità: requisiti chiari, criteri di
+accettazione, test che li dimostrano sono ingegneria del software da
+cinquant'anni. L'AI non ha cambiato le regole del gioco. Ha solo reso
+altissimo il costo di ignorarle, perché adesso il codice non pensato si
+produce a velocità industriale.
+<br />
+Scrivi la spec. Il te stesso di fra tre mesi, come sempre, ringrazia.
+</Card>

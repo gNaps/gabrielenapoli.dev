@@ -1,0 +1,154 @@
+<Card>
+## 13 - Node.js: JavaScript fuori dal browser
+
+<br />
+Tre capitoli di teoria sul backend: server, HTTP, CRUD. Ora basta guardare la
+sala macchine da dietro il vetro: è il momento di metterci le mani. E ho una
+buona notizia che vale doppio: per scrivere il nostro primo backend **non
+devi imparare un linguaggio nuovo**.
+<br />
+Ricordi il capitolo su JavaScript? Ti avevo detto che è l'unico linguaggio
+che il browser sa eseguire. Vero. Ma nel 2009 qualcuno si è fatto una domanda
+niente male: *e se JavaScript potesse girare anche fuori dal browser?*
+<br />
+### ⚙️ Cos'è Node.js
+<br />
+**Node.js** è un **runtime**: un ambiente che esegue JavaScript direttamente
+sul computer, o sul server, senza bisogno di un browser. Sotto il cofano
+usa V8, lo stesso motore di Chrome, estratto e messo al servizio di tutto ciò
+che un browser non fa: leggere file, aprire connessioni di rete e, quello che
+interessa a noi, **restare in ascolto di richieste HTTP**.
+<br />
+Le differenze rispetto al JavaScript che conosci sono meno di quanto pensi:
+variabili, funzioni, array, oggetti, eventi: tutto identico. Cambia il
+contesto: niente `document`, niente DOM da manipolare (non c'è nessuna pagina
+qui), e in cambio hai accesso al sistema. Il tuo investimento degli ultimi
+capitoli vale doppio, come promesso.
+<br />
+### 📥 Installazione e primo script
+<br />
+Se hai seguito il capitolo sugli strumenti forse è già tutto pronto;
+altrimenti scarica la versione **LTS** da [nodejs.org](https://nodejs.org/) e
+verifica dal terminale:
+
+```bash
+node --version
+npm --version
+```
+
+Poi il rito di iniziazione. Crea una cartella `barriera-server`, dentro un
+file `hello.js`:
+
+```javascript
+const motto = 'La notte si raduna';
+console.log(`${motto}, e ora inizia il mio server.`);
+```
+
+E lancialo dal terminale:
+
+```bash
+node hello.js
+```
+
+Eccolo lì, il tuo JavaScript che gira senza browser: il `console.log` che nel
+capitolo 8 finiva nella Console dei DevTools ora stampa **nel terminale**.
+Piccolo momento, grande confine attraversato.
+<br />
+### 📦 npm e il package.json
+<br />
+Prima di scrivere il server ci serve **npm**, il gestore di pacchetti che
+abbiamo presentato tra gli strumenti: il posto da cui si scaricano le librerie
+scritte da altri. Ogni progetto Node inizia così:
+
+```bash
+npm init -y
+```
+
+Questo crea il **`package.json`**, la carta d'identità del progetto: nome,
+versione, dipendenze, comandi. Aprilo e aggiungi una riga che ci serve per
+usare la sintassi moderna dei moduli (gli `import` di ES6):
+
+```json
+{
+  "name": "barriera-server",
+  "version": "1.0.0",
+  "type": "module"
+}
+```
+
+Quando installerai una libreria, npm la scriverà qui tra le dipendenze e ne
+metterà il codice nella cartella `node_modules`, che si rigenera con un
+semplice `npm install`, motivo per cui non si condivide mai (né si committa
+su Git).
+<br />
+### 🚀 Il primo server con Fastify
+<br />
+Per gestire le richieste HTTP potremmo usare i mattoni grezzi di Node, ma
+(lezione del capitolo sugli strumenti) non si reinventa la ruota: usiamo un
+framework. La nostra scelta è **Fastify**: moderno, veloce come da nome, e
+con un'API pulita che si legge da sola.
+
+> L'alternativa che incontrerai ovunque nei tutorial è **Express**, lo storico
+> framework di Node: più anziano, ancora diffusissimo. I concetti sono
+> identici e passare dall'uno all'altro è questione di un pomeriggio: vale
+> quello che abbiamo detto per i framework frontend: impara le idee, non la
+> sintassi.
+
+Installiamolo:
+
+```bash
+npm install fastify
+```
+
+E ora crea `server.js`:
+
+```javascript
+import Fastify from 'fastify';
+
+const app = Fastify();
+
+// la nostra prima rotta: risponde alle GET su /
+app.get('/', () => {
+  return { messaggio: 'La Barriera è in ascolto' };
+});
+
+// mettiamoci in ascolto sulla porta 3000
+await app.listen({ port: 3000 });
+console.log('Server in ascolto su http://localhost:3000');
+```
+
+Avvialo:
+
+```bash
+node server.js
+```
+
+Il terminale stampa il messaggio... e poi **non ti ridà il controllo**. Non è
+un blocco: è il server che fa il suo mestiere, come da capitolo 10: resta in
+ascolto, per sempre, finché non lo fermi con `Ctrl+C`.
+<br />
+Ora apri il browser su `http://localhost:3000`:
+
+```json
+{ "messaggio": "La Barriera è in ascolto" }
+```
+
+Fermati un secondo a guardare cos'è successo, perché è tutta la teoria dei
+capitoli scorsi diventata carne. Il browser ha mandato una `GET /`; il tuo
+codice, **la funzione che hai scritto tu**, è stato eseguito dal server;
+Fastify ha preso l'oggetto restituito, lo ha trasformato in JSON, ha impostato
+il `Content-Type` e ha risposto `200 OK`. Il ciclo richiesta/risposta del
+capitolo 2, e stavolta dall'altra parte del bancone ci sei tu.
+<br />
+### ✅ Conclusione
+<br />
+Dieci righe di JavaScript e hai un backend vivo: Node che esegue il codice,
+Fastify che parla HTTP, il browser che riceve JSON. Ti manca solo una cosa
+per chiudere il cerchio aperto all'inizio di questa sezione: dare al server
+qualcosa da custodire.
+<br />
+Nel **prossimo capitolo** costruiamo le **API del registro dei Guardiani** (gli
+endpoint CRUD del capitolo 12, per davvero) e finalmente colleghiamo il
+nostro vecchio modulo HTML a un backend in carne e ossa. L'adesione di
+Samwell sta per arrivare a destinazione.
+</Card>

@@ -1,0 +1,168 @@
+<Card>
+## 15 - Sicurezza essenziale: mai fidarsi di nessuno
+
+<br />
+Il registro della Guardia funziona, e c'è di che essere fieri. Ora però
+mettiti per un attimo dall'altra parte: apri il terminale e prova questo.
+
+```bash
+curl -X DELETE http://localhost:3000/guardiani/1
+```
+
+Congratulazioni: hai appena congedato Jon Snow. Senza password, senza
+permesso, senza che nessuno ti chiedesse niente. E con la CORS aperta a
+tutti, poteva farlo **chiunque su Internet**.
+<br />
+Il nostro server è ingenuo. In questo capitolo gli insegniamo la diffidenza,
+perché la sicurezza non è una feature da aggiungere alla fine: è
+un'attitudine, e il momento di prenderla è adesso, sul primo server della
+tua vita.
+<br />
+### 🛂 La regola d'oro, applicata: validare tutto
+<br />
+"Mai fidarsi del client" te l'ho ripetuto dal capitolo 10, e nel capitolo
+scorso l'abbiamo applicata una prima volta: il `400` quando manca il nome.
+Ma la validazione seria va oltre il "c'è o non c'è". Rafforziamo il nostro
+`POST /guardiani`:
+
+```javascript
+app.post('/guardiani', (request, reply) => {
+  const { nome, ruolo } = request.body;
+
+  // esiste, è una stringa, non è vuota, non è chilometrica
+  if (typeof nome !== 'string' || !nome.trim() || nome.length > 100) {
+    return reply.code(400).send({ errore: 'Nome non valido' });
+  }
+
+  const guardiano = {
+    id: prossimoId++,
+    nome: nome.trim(),
+    ruolo: ruolo === 'attendente' ? 'attendente' : 'recluta',
+  };
+  guardiani.push(guardiano);
+  return reply.code(201).send(guardiano);
+});
+```
+
+Nota i tre livelli: il **tipo** (che sia una stringa e non, per dire, un
+oggetto malevolo), il **contenuto** (non vuota, ripulita con `trim`), i
+**limiti** (100 caratteri bastano a qualunque nome onesto). E il ruolo non si
+accetta più a scatola chiusa: o è un valore che conosciamo, o si diventa
+recluta. Il client *propone*, il server *dispone*, anche sui dettagli.
+
+> Sembra pignoleria? Quando nella prossima parte della guida i dati finiranno
+> in un database, questa abitudine diventerà questione di vita o di morte:
+> esiste un'intera categoria di attacchi, la **SQL injection**, che vive
+> esattamente dei dati non validati. Ne riparleremo, e quel giorno mi
+> ringrazierai.
+
+### 🔑 Le password: mai, mai, mai in chiaro
+<br />
+Prima o poi il tuo backend gestirà un login, e con lui le password. La regola
+non ammette eccezioni: **una password non si salva mai in chiaro**. Se il
+database venisse rubato (succede anche ai grandi, più spesso di quanto
+pensi), il ladro avrebbe le password di tutti. E gli utenti, si sa,
+riusano ovunque.
+<br />
+La soluzione è l'**hashing**: una trasformazione a senso unico. Dalla
+password si ottiene l'hash, ma dall'hash non si torna alla password. Al
+login non confronti le password: confronti gli hash.
+
+```javascript
+import bcrypt from 'bcrypt';
+
+// alla registrazione: salvi l'hash, butti via la password
+const hash = await bcrypt.hash(password, 10);
+
+// al login: confronti il tentativo con l'hash salvato
+const valido = await bcrypt.compare(tentativo, hash);
+```
+
+Due righe con una libreria collaudata come **bcrypt**. Il che ci porta a una
+regola sorella: in sicurezza **non si inventa**: niente algoritmi fatti in
+casa, niente "tanto chi vuoi che ci attacchi". Si usano gli strumenti
+standard, quelli che il mondo intero testa da anni.
+<br />
+### 🚪 Proteggere le rotte: chi va là?
+<br />
+Torniamo al problema dell'apertura: la `DELETE` libera per tutti. Il server
+deve chiedere le credenziali prima delle operazioni pericolose. Nel capitolo
+11 hai visto come viaggiano: l'header `Authorization`. Ecco una sentinella
+minima, con un **hook** di Fastify che ispeziona ogni richiesta in arrivo:
+
+```javascript
+app.addHook('onRequest', async (request, reply) => {
+  // le letture restano pubbliche; scritture e cancellazioni no
+  if (request.method !== 'GET') {
+    const token = request.headers.authorization;
+    if (token !== 'Bearer parola-dordine') {
+      return reply.code(401).send({ errore: 'Chi va là?' });
+    }
+  }
+});
+```
+
+Riprova la `DELETE` di prima: `401 Unauthorized`. Riprovala con l'header
+giusto (`-H "Authorization: Bearer parola-dordine"`): passa. La coppia
+401/403 del capitolo 11, ora, lavora per te.
+
+> Un token fisso scritto nel codice è didattica, non sicurezza: nel mondo
+> reale i token si generano al login, scadono, e si usano standard come i
+> **JWT** (JSON Web Token). Ma il flusso (credenziali nell'header, sentinella
+> sulle rotte, 401 per chi non le ha) è esattamente questo.
+
+### 🔒 HTTPS: la lettera sigillata
+<br />
+C'è un dettaglio che rende tutto il resto inutile, se manca: il token del
+paragrafo scorso **viaggia dentro la richiesta**, e una richiesta HTTP è
+testo in chiaro. Chiunque sulla strada, il Wi-Fi del bar per dire, può
+leggerla, password e token compresi.
+<br />
+**HTTPS** è HTTP dentro una busta cifrata: il contenuto lo leggono solo
+mittente e destinatario. È il lucchetto nella barra del browser, ed è il
+motivo per cui oggi è lo standard, non un optional. La buona notizia: non
+dovrai quasi mai occupartene a mano: le piattaforme di hosting moderne e i
+certificati gratuiti (Let's Encrypt) lo gestiscono per te. Ti basta la
+regola: **in produzione, sempre e solo HTTPS**.
+<br />
+### 🤫 I segreti fuori dal codice
+<br />
+Ultima abitudine, forse la più facile da sbagliare: la "parola d'ordine" del
+nostro hook è scritta **nel codice**. E il codice finisce su Git, e magari su
+GitHub. Le chiavi, le password del database, i token: **i segreti non si
+committano mai**.
+<br />
+Vivono invece nelle **variabili d'ambiente**: valori che il server riceve
+dall'esterno all'avvio, senza che stiano nel codice sorgente.
+
+```javascript
+const PAROLA_DORDINE = process.env.PAROLA_DORDINE;
+```
+
+In locale si mettono in un file `.env` (che si aggiunge al `.gitignore`,
+sempre); in produzione si configurano sulla piattaforma di hosting. Il codice
+li usa, ma non li conosce.
+<br />
+### 🧾 L'igiene minima, in una lista
+<br />
+- **valida tutto** quello che arriva dal client: tipo, contenuto, limiti
+- **password solo hashate**, con librerie standard, mai in chiaro, mai algoritmi fatti in casa
+- **proteggi le rotte** che modificano dati: credenziali nell'header, `401` per chi non le ha
+- **HTTPS in produzione**, sempre
+- **segreti nelle variabili d'ambiente**, mai nel codice, mai su Git
+<br />
+Non è la sicurezza di una banca: è l'igiene di base, quella che separa un
+esercizio da qualcosa che puoi mostrare al mondo senza arrossire.
+<br />
+### ✅ Conclusione
+<br />
+Con questo capitolo la parte backend della guida è **completa**: sai cosa fa
+un server, parli HTTP fluentemente, riconosci il CRUD ovunque, hai costruito
+API vere con Node e Fastify e ora sai anche difenderle. Il cuore dell'app
+batte, ed è protetto.
+<br />
+Resta la promessa fatta a Samwell: un registro che non lo dimentichi a ogni
+riavvio. Nella **prossima parte della guida** entriamo nel mondo dei
+**database**: dove i dati vivono per sempre, e dove la regola "mai fidarsi
+del client" tornerà a farci visita molto presto.
+</Card>

@@ -7,14 +7,19 @@ export const allProjects: Project[] = [
     preview: {
       url: "/cms/napsql.webp",
       title: "napsql",
-      alt: "NapSQL — a modern SQL client",
+      alt: "NapSQL, a modern SQL client",
     },
     skill: ["React", "Electron", "MSSQLS"],
     slug: "napsql",
-    subtitle: "🗄️ A fast, modern SQL client — the SSMS alternative.",
+    subtitle: "🗄️ A fast, modern SQL client: the SSMS alternative.",
     title: "NapSQL",
     urlGithub: "",
     urlPreview: "",
+    sfx: "ドン!",
+    description: {
+      en: "A fast, modern SQL client: the SSMS alternative.",
+      it: "Un client SQL moderno e veloce: l'alternativa a SSMS.",
+    },
   },
   {
     homepage: true,
@@ -22,7 +27,7 @@ export const allProjects: Project[] = [
     preview: {
       url: "/cms/venticritico.webp",
       title: "venticritico",
-      alt: "VentiCritico — D&D campaign manager",
+      alt: "VentiCritico, D&D campaign manager",
     },
     skill: ["NextJS", "Convex"],
     slug: "venticritico",
@@ -30,6 +35,11 @@ export const allProjects: Project[] = [
     title: "VentiCritico",
     urlGithub: "",
     urlPreview: "",
+    sfx: "バン!",
+    description: {
+      en: "Run your D&D campaigns with a natural 20.",
+      it: "Gestisci le tue campagne D&D con un 20 naturale.",
+    },
   },
   {
     homepage: true,
@@ -45,6 +55,11 @@ export const allProjects: Project[] = [
     title: "OakBot",
     urlGithub: "https://github.com/gNaps/pokedex-bot",
     urlPreview: "https://t.me/napsryu_pokedex_bot",
+    sfx: "ピカ!",
+    description: {
+      en: "A smart Pokédex, right in your Telegram.",
+      it: "Un Pokédex intelligente, dentro Telegram.",
+    },
   },
   {
     homepage: true,
@@ -60,6 +75,11 @@ export const allProjects: Project[] = [
     title: "Regalando",
     urlGithub: "https://github.com/gNaps/regalando-web",
     urlPreview: "www.regalando.vercel.app",
+    sfx: "パッ!",
+    description: {
+      en: "The gift-giving experience, reimagined.",
+      it: "L'esperienza del regalo, ripensata.",
+    },
   },
   {
     homepage: true,

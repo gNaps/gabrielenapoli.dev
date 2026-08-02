@@ -1,0 +1,178 @@
+<Card>
+## 19 - Collegare un'app al database
+
+<br />
+Sei capitoli fa, Samwell spariva a ogni riavvio. Oggi si chiude il cerchio:
+colleghiamo il server Fastify a un database vero e diamo alla Guardia il
+registro permanente che le abbiamo promesso.
+<br />
+### 🔌 Come parlano, in generale
+<br />
+Prima la panoramica, perché vale per qualsiasi stack. Il database, come
+sappiamo, è di solito un server a sé: il backend gli si collega attraverso un
+**driver**: una libreria che apre la connessione, spedisce le query SQL e
+traduce i risultati in oggetti del tuo linguaggio. Il flusso completo di una
+richiesta diventa:
+
+```text
+browser ──HTTP──▶ backend ──SQL──▶ database
+browser ◀──JSON── backend ◀──righe── database
+```
+
+Il frontend non parla **mai** direttamente col database: passa sempre dal
+backend, che valida, controlla i permessi e decide quali query eseguire. Ora
+capisci fino in fondo il capitolo 10: il backend è il guardiano *anche* dei
+dati.
+<br />
+### 🗃️ Il nostro database: SQLite
+<br />
+Per il primo collegamento scegliamo **SQLite**, il database perfetto per
+imparare: niente server da installare e configurare, perché l'intero database vive
+in **un singolo file** accanto al tuo codice. Non è un giocattolo: è il
+database più diffuso del pianeta (è dentro ogni telefono che possiedi), e
+parla lo stesso SQL del capitolo scorso.
+
+```bash
+npm install better-sqlite3
+```
+
+Ora apriamo `server.js` e mandiamo in pensione l'array in memoria:
+
+```javascript
+import Fastify from 'fastify';
+import cors from '@fastify/cors';
+import Database from 'better-sqlite3';
+
+const app = Fastify();
+await app.register(cors);
+
+// il registro ora vive in un file: guardia.db
+const db = new Database('guardia.db');
+
+// se la tabella non esiste, creala (SQL del capitolo 17!)
+db.exec(`
+  CREATE TABLE IF NOT EXISTS guardiani (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT NOT NULL,
+    ruolo TEXT NOT NULL DEFAULT 'recluta'
+  )
+`);
+
+// Read: l'elenco, dritto dal database
+app.get('/guardiani', () => {
+  return db.prepare('SELECT * FROM guardiani').all();
+});
+
+// Create: arruolamento persistente
+app.post('/guardiani', (request, reply) => {
+  const { nome } = request.body;
+
+  if (typeof nome !== 'string' || !nome.trim() || nome.length > 100) {
+    return reply.code(400).send({ errore: 'Nome non valido' });
+  }
+
+  const result = db
+    .prepare('INSERT INTO guardiani (nome) VALUES (?)')
+    .run(nome.trim());
+
+  return reply.code(201).send({
+    id: result.lastInsertRowid,
+    nome: nome.trim(),
+    ruolo: 'recluta',
+  });
+});
+
+await app.listen({ port: 3000 });
+console.log('Il registro permanente è in ascolto su http://localhost:3000');
+```
+
+Guarda le query: sono il `SELECT` e l'`INSERT` del capitolo scorso,
+consegnate al database dal driver. E ora, il momento che aspettiamo da sei
+capitoli. Avvia il server, arruola Samwell dal form (o con curl), poi
+**fermalo e riavvialo**. Rileggi l'elenco:
+<br />
+Samwell **è ancora lì**. 🎉
+<br />
+I dati ora vivono nel file `guardia.db`, e sopravvivono a riavvii, crash e
+aggiornamenti. La promessa è mantenuta: la Guardia ha un registro che non
+dimentica i suoi nomi.
+<br />
+### 💉 Il punto interrogativo che ti salva la vita
+<br />
+Prima di festeggiare troppo, torna sull'`INSERT` e guarda quel `?`:
+
+```javascript
+db.prepare('INSERT INTO guardiani (nome) VALUES (?)').run(nome.trim());
+```
+
+Quella è una **query parametrizzata**, la difesa promessa contro la SQL
+injection. Il comando SQL e i dati viaggiano **separati**: il database
+riceve prima la struttura della query (con i segnaposto `?`) e poi i valori,
+che vengono trattati *sempre e solo come dati*. L'input malevolo del capitolo
+scorso, `' OR '1'='1`, qui finirebbe salvato com'è, come il nome bizzarro
+di una recluta, senza mai diventare parte del comando.
+
+> Tutta la difesa dalla vulnerabilità più sfruttata del web sta in
+> un'abitudine: **mai concatenare input nelle query, sempre i parametri**.
+> Ogni driver e ogni linguaggio ha la sua sintassi per farlo; d'ora in poi,
+> quando vedi una query costruita con il `+`, ti deve suonare un allarme.
+
+### 🧙 Gli ORM: parlare al database a oggetti
+<br />
+Scrivere SQL a mano va benissimo, e sapere farlo è irrinunciabile. Ma nei
+progetti grandi, tradurre all'infinito righe-in-oggetti e oggetti-in-query
+diventa manovalanza. Per questo esistono gli **ORM** (Object-Relational
+Mapping): librerie che mappano le tabelle su oggetti del tuo linguaggio, e
+generano l'SQL per te.
+<br />
+Nel mondo Node il più diffuso è **Prisma**. Gli descrivi lo schema:
+
+```prisma
+model Guardiano {
+  id    Int    @id @default(autoincrement())
+  nome  String
+  ruolo String @default("recluta")
+}
+```
+
+E da lì in poi interroghi il database in puro JavaScript, tipizzato e senza
+SQL a vista:
+
+```javascript
+// Read
+const guardiani = await prisma.guardiano.findMany({
+  where: { ruolo: 'recluta' },
+  orderBy: { nome: 'asc' },
+});
+
+// Create
+await prisma.guardiano.create({
+  data: { nome: 'Samwell Tarly' },
+});
+```
+
+Riconosci `where` e `orderBy`? È il SELECT del capitolo scorso con un altro
+vestito. E le query che Prisma genera sono parametrizzate di serie, quindi
+l'injection è disinnescata by design.
+<br />
+Driver e SQL a mano, oppure ORM? La solita risposta onesta: **dipende**.
+L'ORM regala produttività, tipi e sicurezza di default; l'SQL diretto dà
+controllo totale e nessuna magia di mezzo. Molti progetti reali usano
+entrambi: ORM per il quotidiano, SQL puro per le query complesse. (E per la
+cronaca: Fastify più Prisma è esattamente lo stack con cui lavoro davvero:
+questa coppia la ritroverai nei progetti di questo sito.)
+<br />
+### ✅ Conclusione
+<br />
+Guarda l'architettura completa che hai attraversato, capitolo dopo capitolo:
+un frontend che raccoglie dati e li spedisce via HTTP, un backend che valida,
+protegge e decide, un database che custodisce tutto per sempre. **Questa è
+una web app, per intero**: la stessa anatomia di Gmail, di Amazon, del
+gestionale che userai al lavoro. Cambia la scala, non lo scheletro.
+<br />
+Ogni pezzo, però, l'abbiamo studiato per conto suo. Nella **prossima parte
+della guida**, l'ultima di questo arco, ripercorriamo il ciclo intero senza
+soluzione di continuità: come frontend e backend si parlano davvero, e il
+flusso completo dal click dell'utente al pixel aggiornato. Ci manca solo di
+unire i puntini.
+</Card>

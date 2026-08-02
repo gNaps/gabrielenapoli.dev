@@ -1,0 +1,84 @@
+<Card>
+## 16 - Cos'è un database e perché è importante
+
+<br />
+Samwell è sparito di nuovo, vero? Ogni riavvio del server, un'amnesia totale:
+il registro della Guardia vive in un array in memoria, e la memoria muore col
+processo. Te l'avevo promesso alla fine della scorsa sezione: è ora di dare
+ai dati una casa vera. Benvenuto nel mondo dei **database**.
+<br />
+### 💾 Perché non basta un file?
+<br />
+La prima idea che viene in mente è semplice: "salvo tutto in un file di
+testo". E per un esperimento funziona pure. Ma prova a immaginare il registro
+con centomila guardiani e cento client collegati:
+<br />
+- come **trovi** un guardiano in mezzo a centomila senza leggere tutto il file?
+- cosa succede se **due richieste scrivono nello stesso istante**? (Spoiler: dati corrotti)
+- chi ti garantisce che nessuno salvi un guardiano **senza nome**, o assegnato a un castello che non esiste?
+<br />
+Un file non risponde a nessuna di queste domande. Un database sì: è nato
+esattamente per questo.
+<br />
+### 🏛️ Cos'è, davvero
+<br />
+Un **database** è un archivio di dati strutturato; il programma che lo
+gestisce si chiama **DBMS** (Database Management System): nomi che
+incontrerai presto: PostgreSQL, MySQL, SQLite, SQL Server, MongoDB. Come il
+web server del capitolo 10, anche il DBMS di solito è un server: sempre
+acceso, in ascolto, ma specializzato in un solo mestiere, **custodire dati**.
+E lo fa con quattro garanzie che un file si sogna:
+<br />
+- **persistenza**: i dati sopravvivono a riavvii, crash e aggiornamenti
+- **ricerca veloce**: trovare un dato tra milioni in millisecondi
+- **accesso concorrente**: cento client che leggono e scrivono insieme, senza pestarsi
+- **regole**: il database può *rifiutare* dati che violano i vincoli che hai definito
+<br />
+Quell'ultima garanzia dovrebbe suonarti familiare: è "mai fidarsi del client"
+portato al livello successivo. Anche il database, come il server, dispone.
+<br />
+### 🔗 I dati sono relazioni
+<br />
+C'è una cosa che finora abbiamo ignorato: i dati veri **non vivono da soli**.
+Ogni guardiano presta servizio in un castello. Ogni ordine di un e-commerce
+appartiene a un cliente e contiene dei prodotti. Ogni post ha un autore e dei
+commenti, che a loro volta hanno autori.
+<br />
+I dati, insomma, sono una rete di **relazioni**, e il modo in cui un database
+le gestisce è la scelta più importante della sua architettura. Ed è
+esattamente su questo che si divide il mondo.
+<br />
+### ⚖️ Relazionali vs non relazionali
+<br />
+I **database relazionali** organizzano i dati in **tabelle** (righe e
+colonne, come un foglio di calcolo ma con superpoteri) collegate tra loro da
+riferimenti espliciti. Si interrogano con un linguaggio chiamato **SQL**, e
+sono lo standard da cinquant'anni: PostgreSQL, MySQL, SQLite, SQL Server.
+Struttura rigida dichiarata in anticipo, in cambio di regole ferree e
+relazioni garantite dal database stesso.
+<br />
+I **database non relazionali** (detti anche **NoSQL**) rinunciano alle
+tabelle in favore di modelli più liberi. Il più diffuso è quello a
+**documenti**, MongoDB su tutti, dove ogni record è un oggetto simile al
+JSON che ormai conosci bene: flessibile, senza schema imposto, comodo quando
+i dati sono irregolari o cambiano forma spesso. Nella famiglia ci sono anche
+i key-value (Redis) e altri ancora, ognuno ottimizzato per un mestiere.
+
+> Quale scegliere? La risposta pragmatica per chi inizia: **parti dal
+> relazionale**. È lo standard del settore, ti costringe a ragionare sulla
+> struttura dei dati (che è un'ottima palestra), e i suoi concetti si
+> trasferiscono ovunque. Il NoSQL lo apprezzerai davvero solo dopo aver
+> capito a cosa stai rinunciando.
+
+### ✅ Conclusione
+<br />
+Ora sai perché ogni applicazione seria ha un database alle spalle: non è un
+file glorificato, è un guardiano specializzato: persistenza, velocità,
+concorrenza e regole. E sai che la grande divisione del mondo dei dati passa
+dalle **relazioni**: tabelle rigorose da una parte, documenti flessibili
+dall'altra.
+<br />
+Nel **prossimo capitolo** entriamo nel mondo relazionale e ne impariamo la
+grammatica: tabelle, righe, colonne e le chiavi che tengono insieme tutto.
+Il registro della Guardia sta per diventare serio.
+</Card>

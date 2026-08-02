@@ -1,0 +1,127 @@
+<Card>
+## 20 - Come comunicano frontend e backend
+
+<br />
+In questa guida `fetch` l'abbiamo già usato due volte, sempre di corsa: nel
+capitolo 14 per spedire l'adesione di Samwell, con una spiegazione al volo di
+`async` e `await`. Ha funzionato, ma "funziona" e "l'ho capito" sono due cose
+diverse. In questo capitolo smontiamo la comunicazione tra frontend e backend
+pezzo per pezzo, perché è il ponte su cui cammina *tutto* quello che hai
+costruito, e sui ponti conviene sapere dove mettere i piedi.
+<br />
+### 📜 Prima di fetch: la storia di AJAX
+<br />
+Un po' di contesto, che aiuta a capire i nomi strani che incontrerai. Nel web
+delle origini ogni azione ricaricava la pagina intera: cliccavi "invia",
+schermata bianca, pagina nuova. Poi, attorno al 2005, si diffuse una tecnica
+per fare richieste HTTP **da JavaScript, senza ricaricare**: la battezzarono
+**AJAX** (Asynchronous JavaScript And XML: l'XML è finito in soffitta, il
+nome è rimasto).
+<br />
+È il trucco che rese possibili Gmail e Google Maps, e che nel capitolo 2
+chiamavamo Single Page Application. Lo strumento dell'epoca,
+`XMLHttpRequest`, era però così scomodo che una generazione di sviluppatori
+usò librerie apposta per non toccarlo. Oggi non serve più: il browser ha
+**`fetch`**, un'API moderna e pulita. Quando senti "chiamata AJAX", sappi che
+si parla di questo: una richiesta HTTP fatta da JavaScript.
+<br />
+### 🧩 Anatomia di una chiamata
+<br />
+La forma più semplice è una `GET`:
+
+```javascript
+const risposta = await fetch('http://localhost:3000/guardiani');
+```
+
+Per tutto il resto si passa un secondo argomento, l'oggetto delle opzioni:
+
+```javascript
+const risposta = await fetch('http://localhost:3000/guardiani', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ nome: 'Samwell Tarly' }),
+});
+```
+
+Riconosci i pezzi? Sono **esattamente** le parti della richiesta HTTP del
+capitolo 11: il metodo, gli header, il body. `fetch` non inventa niente: ti
+dà le manopole per comporre il messaggio che ormai sai leggere riga per riga.
+<br />
+Una riga merita attenzione: `JSON.stringify({...})`. Il body di una richiesta
+è **testo**, non un oggetto JavaScript: `stringify` serializza l'oggetto in
+una stringa JSON. Tienilo a mente, perché tra poco incontrerai la sua metà
+speculare.
+<br />
+### ✉️ La Response e il mistero del doppio await
+<br />
+Ti sei mai chiesto perché gli `await` sono **due**?
+
+```javascript
+const risposta = await fetch('http://localhost:3000/guardiani'); // 1
+const guardiani = await risposta.json();                          // 2
+```
+
+Perché arrivano **due cose, in due momenti**. Il primo `await` si risolve
+quando arriva la *busta*: la riga di stato e gli header. Sai già che il
+server ha risposto `200`, ma il corpo potrebbe essere ancora in viaggio (una
+lista da megabyte non arriva tutta insieme). Il secondo `await` aspetta il
+corpo completo e lo **parsa**: `.json()` legge il testo e lo trasforma in
+oggetti JavaScript veri, su cui puoi fare `.map`, `.filter` e compagnia.
+<br />
+Ecco la simmetria promessa: in uscita `JSON.stringify` (da oggetto a testo),
+in entrata `.json()` (da testo a oggetto). Il JSON è il formato di viaggio;
+ai due capi ci sono sempre oggetti JavaScript.
+<br />
+### 🚨 Il gotcha che devi conoscere: fetch non fallisce sui 404
+<br />
+E ora la cosa più importante del capitolo, quella che nel capitolo 14 ho
+volutamente glissato. Intuitivamente ti aspetteresti che un `404` o un `500`
+facciano "fallire" la chiamata. **No**: per `fetch`, se una risposta è
+arrivata, la missione è compiuta, anche se la risposta dice "errore". La
+promise viene rigettata **solo** se la richiesta non è proprio partita o
+arrivata: rete assente, server spento, DNS che non risolve.
+<br />
+Gli errori HTTP vanno controllati **a mano**, con la proprietà
+`response.ok` (vera per gli stati 2xx):
+
+```javascript
+async function caricaGuardiani() {
+  try {
+    const risposta = await fetch('http://localhost:3000/guardiani');
+
+    // errore HTTP: il server ha risposto, ma male
+    if (!risposta.ok) {
+      throw new Error(`Il server ha risposto ${risposta.status}`);
+    }
+
+    return await risposta.json();
+  } catch (errore) {
+    // qui finiscono sia gli errori di rete sia il throw qui sopra
+    console.error('Impossibile caricare il registro:', errore.message);
+    return [];
+  }
+}
+```
+
+Questo è lo scheletro di ogni chiamata fatta come si deve: `try/catch` per
+gli imprevisti di rete, `response.ok` per gli errori del server, e una
+decisione consapevole su cosa fare quando le cose vanno male (qui: logga e
+restituisci una lista vuota, e l'app resta in piedi).
+
+> La regola pratica: **due famiglie di errori, due controlli**. La rete può
+> tradirti (catch), il server può dirti di no (response.ok). Il codice che
+> ignora una delle due famiglie funziona benissimo, fino al giorno della
+> demo davanti al cliente.
+
+### ✅ Conclusione
+<br />
+Ora `fetch` non ha più segreti: sai da dove viene (AJAX), come si compone una
+chiamata (le stesse parti di una richiesta HTTP), perché gli `await` sono due
+(busta prima, corpo poi), come viaggia il JSON (stringify in uscita, json in
+entrata) e, soprattutto, come si gestiscono gli errori per davvero.
+<br />
+Nel **prossimo capitolo** mettiamo tutto in fila per l'ultima volta: il
+flusso completo, dal click dell'utente al pixel aggiornato, passando per
+Fastify e SQLite. Il registro della Guardia merita una pagina degna di questo
+nome.
+</Card>

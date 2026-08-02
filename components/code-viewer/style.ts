@@ -1,15 +1,22 @@
+/* Prism theme for the manga code panel: fixed ink background (same in
+   light and dark theme), JetBrains Mono, high-contrast tokens tuned to
+   the site palette (pink / cyan / amber on cream). */
+
+const FONT =
+  "var(--font-mono), 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace";
+
 export const style: any = {
   'code[class*="language-"]': {
-    color: "#ccc",
+    color: "#f3eee5",
     background: "none",
-    fontFamily: "Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace",
-    fontSize: "1em",
+    fontFamily: FONT,
+    fontSize: "14px",
     textAlign: "left",
     whiteSpace: "pre",
     wordSpacing: "normal",
     wordBreak: "normal",
     wordWrap: "normal",
-    lineHeight: "1.5",
+    lineHeight: "1.75",
     MozTabSize: "4",
     OTabSize: "4",
     tabSize: "4",
@@ -19,16 +26,16 @@ export const style: any = {
     hyphens: "none",
   },
   'pre[class*="language-"]': {
-    color: "#ccc",
-    background: "#2d2d2d",
-    fontFamily: "Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace",
-    fontSize: "1em",
+    color: "#f3eee5",
+    background: "transparent",
+    fontFamily: FONT,
+    fontSize: "14px",
     textAlign: "left",
     whiteSpace: "pre",
     wordSpacing: "normal",
     wordBreak: "normal",
     wordWrap: "normal",
-    lineHeight: "1.5",
+    lineHeight: "1.75",
     MozTabSize: "4",
     OTabSize: "4",
     tabSize: "4",
@@ -36,110 +43,111 @@ export const style: any = {
     MozHyphens: "none",
     msHyphens: "none",
     hyphens: "none",
-    padding: "1em",
-    margin: ".5em 0",
+    padding: "18px 20px",
+    margin: "0",
     overflow: "auto",
   },
   ':not(pre) > code[class*="language-"]': {
-    background: "#2d2d2d",
-    padding: ".1em",
-    borderRadius: ".3em",
+    background: "#14100f",
+    padding: ".1em .3em",
     whiteSpace: "normal",
   },
   comment: {
-    color: "#999",
+    color: "#8d8177",
+    fontStyle: "italic",
   },
   "block-comment": {
-    color: "#999",
+    color: "#8d8177",
+    fontStyle: "italic",
   },
   prolog: {
-    color: "#999",
+    color: "#8d8177",
   },
   doctype: {
-    color: "#999",
+    color: "#8d8177",
   },
   cdata: {
-    color: "#999",
+    color: "#8d8177",
   },
   punctuation: {
-    color: "#ccc",
+    color: "#c9beb4",
   },
   tag: {
-    color: "#e2777a",
+    color: "#ff9d9d",
   },
   "attr-name": {
-    color: "#e2777a",
+    color: "#ff9d9d",
   },
   namespace: {
-    color: "#e2777a",
+    color: "#ff9d9d",
   },
   deleted: {
-    color: "#e2777a",
+    color: "#ff9d9d",
   },
   "function-name": {
-    color: "#6196cc",
-  },
-  boolean: {
-    color: "#f08d49",
-  },
-  number: {
-    color: "#f08d49",
+    color: "#4fd6ff",
   },
   function: {
-    color: "#f08d49",
+    color: "#4fd6ff",
+  },
+  boolean: {
+    color: "#ffab66",
+  },
+  number: {
+    color: "#ffab66",
   },
   property: {
-    color: "#f8c555",
+    color: "#ffd97a",
   },
   "class-name": {
-    color: "#f8c555",
+    color: "#ffd97a",
   },
   constant: {
-    color: "#f8c555",
+    color: "#ffd97a",
   },
   symbol: {
-    color: "#f8c555",
+    color: "#ffd97a",
   },
   selector: {
-    color: "#cc99cd",
+    color: "#ff7aa2",
   },
   important: {
-    color: "#cc99cd",
+    color: "#ff7aa2",
     fontWeight: "bold",
   },
   atrule: {
-    color: "#cc99cd",
+    color: "#ff7aa2",
   },
   keyword: {
-    color: "#cc99cd",
+    color: "#ff7aa2",
   },
   builtin: {
-    color: "#cc99cd",
+    color: "#ff7aa2",
   },
   string: {
-    color: "#7ec699",
+    color: "#a8e6a1",
   },
   char: {
-    color: "#7ec699",
+    color: "#a8e6a1",
   },
   "attr-value": {
-    color: "#7ec699",
+    color: "#a8e6a1",
   },
   regex: {
-    color: "#7ec699",
+    color: "#a8e6a1",
   },
   variable: {
-    color: "#7ec699",
+    color: "#f3eee5",
   },
   operator: {
-    color: "#67cdcc",
+    color: "#7fe3e1",
   },
   entity: {
-    color: "#67cdcc",
+    color: "#7fe3e1",
     cursor: "help",
   },
   url: {
-    color: "#67cdcc",
+    color: "#7fe3e1",
   },
   bold: {
     fontWeight: "bold",
@@ -148,6 +156,6 @@ export const style: any = {
     fontStyle: "italic",
   },
   inserted: {
-    color: "green",
+    color: "#a8e6a1",
   },
 };

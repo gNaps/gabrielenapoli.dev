@@ -1,20 +1,13 @@
-import Projects from "@/components/projects/projects";
+import WorkArchive from "@/components/sections/work-archive";
 import { projectsListApi } from "@/utils/api.utils";
 import { Metadata } from "next";
 
-const useProjects = async () => {
-  const token = process.env.AUTH_TOKEN;
-  return await projectsListApi(token ?? "");
-};
-
 const ProjectsPage = async () => {
-  const projects = await useProjects();
+  const projects = await projectsListApi(process.env.AUTH_TOKEN ?? "");
   return (
-    <>
-      <div className="gn-page">
-        <Projects projects={projects} />
-      </div>
-    </>
+    <div className="gn-page">
+      <WorkArchive projects={projects} />
+    </div>
   );
 };
 

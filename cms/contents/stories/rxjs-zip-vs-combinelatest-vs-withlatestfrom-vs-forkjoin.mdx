@@ -1,0 +1,206 @@
+<Card>
+## RxJS: zip vs combineLatest vs withLatestFrom vs forkJoin
+
+<br />
+Se lavori con Angular, da RxJS non scappi. E prima o poi arriva il momento in
+cui devi **combinare due o più observable**, apri la documentazione e trovi
+quattro operatori che sembrano fare tutti la stessa cosa: `zip`,
+`combineLatest`, `withLatestFrom` e `forkJoin`. Non la fanno. La differenza
+sta tutta nel **quando emettono**, e sceglierne uno sbagliato è il modo più
+rapido per ritrovarsi con una richiesta che parte due volte o uno spinner che
+gira per sempre.
+<br />
+Questa oneshot è il remake di un pezzo che avevo scritto nel 2023: stessa
+storia, ridisegnata da cima a fondo. E stavolta con tutti e quattro i
+protagonisti in scena.
+<br />
+### 🎨 Lo scenario
+<br />
+Dobbiamo disegnare delle icone colorate, e le informazioni ci arrivano da
+**due persone diverse**: la prima ci dice il *colore*, la seconda il *tipo*
+di icona. Le due persone non sono sincronizzate tra loro: parlano quando
+vogliono, ognuna per conto suo. Nel nostro codice sono due observable,
+`color$` e `icon$`.
+
+```typescript
+import { Subject } from 'rxjs';
+
+type Color = 'red' | 'blue' | 'green' | 'purple';
+type Icon = 'github' | 'bitbucket' | 'gitlab';
+
+// le due persone che ci comunicano le informazioni
+const color$ = new Subject<Color>();
+const icon$ = new Subject<Icon>();
+
+// e questo è l'ordine in cui parleranno
+color$.next('red');
+icon$.next('github');
+
+color$.next('blue');
+icon$.next('bitbucket');
+
+color$.next('green');
+icon$.next('gitlab');
+
+color$.next('purple');
+```
+
+Nota il finale: quattro colori, ma solo tre icone. Questo piccolo squilibrio
+è quello che renderà visibili le differenze tra gli operatori.
+<br />
+### 🤐 zip: uno per ciascuno, in coppia
+<br />
+`zip` accoppia le emissioni **per posizione**: il primo colore con la prima
+icona, il secondo con la seconda, e così via. Come una cerniera, appunto.
+
+```typescript
+import { zip } from 'rxjs';
+
+zip(color$, icon$).subscribe(([color, icon]) =>
+  console.log(`Disegnata icona ${icon} di colore ${color}`)
+);
+
+// → github red
+// → bitbucket blue
+// → gitlab green
+// ("purple" resta in attesa di un'icona che non arriverà)
+```
+
+<img src="/cms/zip.webp" alt="Diagramma dell'operatore zip" />
+
+Per emettere una nuova coppia devono arrivare **entrambi** i valori: il
+quarto colore rimane in canna, perché la quarta icona non esiste.
+<br />
+**Quando usarlo**: quando i due stream avanzano davvero in coppia e ti
+serve l'accoppiata esatta per indice. È il caso più raro dei quattro.
+
+> Il lato oscuro di `zip`: se una sorgente è più veloce dell'altra, i suoi
+> valori si **accumulano in un buffer** in attesa del compagno. Su stream
+> infiniti e sbilanciati è memoria che cresce, silenziosamente.
+
+### 🔄 combineLatest: reagisci a ogni cambiamento
+<br />
+Il grande assente della prima versione di questo articolo, e ironicamente il
+più usato dei quattro. `combineLatest` emette **l'ultima combinazione
+disponibile** ogni volta che *una qualsiasi* delle sorgenti parla.
+
+```typescript
+import { combineLatest } from 'rxjs';
+
+combineLatest([color$, icon$]).subscribe(([color, icon]) =>
+  console.log(`Disegnata icona ${icon} di colore ${color}`)
+);
+
+// → github red        (prima combinazione completa)
+// → github blue       (cambia il colore, l'icona resta)
+// → bitbucket blue    (cambia l'icona, il colore resta)
+// → bitbucket green
+// → gitlab green
+// → gitlab purple
+```
+
+<img src="/cms/combinelatest.webp" alt="Diagramma dell'operatore combineLatest" />
+
+Ogni novità, da qualunque parte arrivi, produce una nuova coppia con
+"l'ultimo valore noto" dell'altra sorgente.
+<br />
+**Quando usarlo**: è l'operatore dei **form con più filtri**. Query di
+ricerca, pagina, ordinamento: al cambio di uno qualsiasi, ricalcoli il
+risultato con gli ultimi valori di tutti.
+
+```typescript
+combineLatest([query$, page$, sort$])
+  .pipe(switchMap(fetchResults))
+  .subscribe(render);
+```
+
+> Il gotcha classico: `combineLatest` **non emette finché tutte le sorgenti
+> hanno parlato almeno una volta**. Se un filtro parte "muto", niente
+> risultati e nessun errore. La cura è dargli un valore iniziale, con
+> `startWith` o con un `BehaviorSubject`.
+
+### 🎯 withLatestFrom: un protagonista, un contesto
+<br />
+Qui il rapporto non è più alla pari: c'è una sorgente **primaria** che
+comanda, e una secondaria che viene solo *consultata*. Nel nostro caso il
+colore decide quando disegnare, e l'icona fa da contesto.
+
+```typescript
+import { withLatestFrom } from 'rxjs/operators';
+
+color$
+  .pipe(withLatestFrom(icon$))
+  .subscribe(([color, icon]) =>
+    console.log(`Disegnata icona ${icon} di colore ${color}`)
+  );
+
+// → github blue      (al secondo colore: il primo è passato
+//                     quando icon$ non aveva ancora un valore)
+// → bitbucket green
+// → gitlab purple
+```
+
+<img src="/cms/withlatestfrom.webp" alt="Diagramma dell'operatore withLatestFrom" />
+
+Solo le emissioni di `color$` scatenano l'output; `icon$` può parlare quanto
+vuole, da solo non produce nulla.
+<br />
+**Quando usarlo**: quando un **evento** deve leggere uno **stato** al volo.
+Il click che parte con l'ultimo valore del form, il submit che allega la
+configurazione corrente: l'evento comanda, lo stato accompagna.
+
+> Anche qui, occhio all'avvio: finché la secondaria non ha emesso almeno un
+> valore, le emissioni della primaria **vengono scartate**. È il motivo per
+> cui nel nostro esempio il colore "red" sparisce senza lasciare traccia.
+
+### 🏁 forkJoin: aspetta che tutti abbiano finito
+<br />
+`forkJoin` è il più drastico: ignora tutto quello che succede durante il
+viaggio ed emette **una volta sola**, quando **tutte** le sorgenti hanno
+**completato**, con l'ultimo valore di ciascuna.
+
+```typescript
+import { forkJoin } from 'rxjs';
+
+forkJoin([color$, icon$]).subscribe(([color, icon]) =>
+  console.log(`Disegnata icona ${icon} di colore ${color}`)
+);
+
+// ...a un certo punto le due persone salutano e se ne vanno
+color$.complete();
+icon$.complete();
+
+// → gitlab purple    (una sola emissione: gli ultimi valori)
+```
+
+<img src="/cms/forkjoin.webp" alt="Diagramma dell'operatore forkJoin" />
+
+**Quando usarlo**: è il `Promise.all` di RxJS. Un gruppo di chiamate HTTP che
+ti servono tutte insieme prima di renderizzare la pagina: `forkJoin` aspetta,
+raccoglie e consegna in un colpo solo. (Con le chiamate di `HttpClient`
+funziona alla perfezione, perché completano da sole dopo la risposta.)
+
+> Ed ecco lo spinner infinito promesso in apertura: se anche una sola
+> sorgente **non completa mai** (un Subject dimenticato aperto, uno stream di
+> eventi), `forkJoin` non emetterà mai niente. Nessun errore, nessun avviso:
+> solo un caricamento eterno. Se ti è successo, ora sai chi era.
+
+### 🧭 Quale scelgo? Il bigino
+<br />
+- **zip**: mi servono le coppie *per posizione*, primo con primo, secondo con secondo
+- **combineLatest**: voglio reagire a *ogni cambiamento* con gli ultimi valori di tutti (form, filtri)
+- **withLatestFrom**: ho un *evento* che comanda e uno *stato* da leggere al passaggio
+- **forkJoin**: aspetto che *tutte* le sorgenti finiscano e mi serve solo il risultato finale (gruppi di HTTP)
+<br />
+### ✅ Conclusione
+<br />
+Quattro operatori che in superficie "combinano observable", e quattro
+contratti completamente diversi su *quando* emettere. È il motivo per cui
+sembrano intercambiabili nei tutorial e poi esplodono in produzione: la
+differenza non si vede nel caso felice, si vede quando gli stream sono
+sbilanciati, muti o infiniti. Cioè sempre, nel mondo vero.
+<br />
+La prossima volta che devi combinarne due, non chiederti "quale operatore
+conosco": chiediti **chi deve comandare l'emissione**. La risposta a quella
+domanda è l'operatore giusto.
+</Card>

@@ -1,26 +1,31 @@
-import Footer from "@/components/footer/footer";
-import Header from "@/components/header/header";
+import Footer from "@/components/layout/footer";
+import Header from "@/components/layout/header";
+import Marquee from "@/components/layout/marquee";
+import SpeedLines from "@/components/layout/speed-lines";
+import { LanguageProvider } from "@/components/providers/language-provider";
 import type { Metadata } from "next";
-import { Anton } from "next/font/google";
+import { Bebas_Neue, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 
-/* Display face for Latin headings and the logotype — a heavy condensed
-   gothic, the idiom of manga cover and chapter titles.
-
-   Deliberately NOT a Japanese Google font: families like Zen Old Mincho are
-   served as ~120 numbered unicode-range slices that `subsets: ["latin"]`
-   cannot filter, so next/font inlines every one of them — that cost 731
-   @font-face rules and 544 kB of blocking CSS. Kana therefore falls through
-   to the system gothic faces declared in --font-display.
-
-   Anton ships a single weight. Headings must stay at font-weight 400 or the
-   browser synthesises a smeared fake bold. */
-const anton = Anton({
+/* Latin-only families go through next/font. The two Japanese families
+   (Shippori Mincho B1, Zen Kaku Gothic New) are loaded with a classic
+   Google Fonts <link> instead: they ship as ~120 unicode-range slices
+   that `subsets: ["latin"]` cannot filter, so next/font would inline
+   hundreds of @font-face rules (~544 kB of blocking CSS). With the
+   <link> the browser downloads only the slices actually used. */
+const bebas = Bebas_Neue({
   subsets: ["latin"],
-  weight: ["400"],
+  weight: "400",
   display: "swap",
-  variable: "--font-anton",
+  variable: "--font-display",
+});
+
+const jetbrains = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "600"],
+  display: "swap",
+  variable: "--font-mono",
 });
 
 export const metadata: Metadata = {
@@ -38,13 +43,25 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={anton.variable}
+      className={`${bebas.variable} ${jetbrains.variable}`}
     >
       <head>
         <script
+          // Applies the stored theme before first paint (no flash) and
+          // migrates the legacy `theme` localStorage key to `gn-theme`.
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light'){document.documentElement.dataset.theme=t;}}catch(e){}})();`,
+            __html: `(function(){try{var t=localStorage.getItem('gn-theme')||localStorage.getItem('theme');if(t==='dark'||t==='light'){document.documentElement.dataset.theme=t;localStorage.setItem('gn-theme',t);}}catch(e){}})();`,
           }}
+        />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap"
+          rel="stylesheet"
         />
         <Script
           id="goatcounter"
@@ -56,9 +73,14 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.svg" />
       </head>
       <body>
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        <LanguageProvider>
+          <div className="halftone" aria-hidden />
+          <SpeedLines />
+          <Header />
+          <main>{children}</main>
+          <Marquee />
+          <Footer />
+        </LanguageProvider>
       </body>
     </html>
   );

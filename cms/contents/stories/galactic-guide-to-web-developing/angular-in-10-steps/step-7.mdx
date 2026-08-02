@@ -1,0 +1,287 @@
+<Card>
+## 07 - Chiamate HTTP: dai servizi alla Resource API
+
+<br />
+Componenti, router, signals, form: finora la nostra app vive in un mondo tutto
+suo. Ma le applicazioni vere parlano con un server: leggono la lista dei tuoi
+giochi, salvano un utente, cancellano un ordine. Le **chiamate HTTP** sono il
+ponte tra il frontend e il resto del mondo, e in questo capitolo lo costruiamo.
+<br />
+Prima però dobbiamo saldare un debito: nei capitoli scorsi `inject()` è spuntato
+più volte senza mai una presentazione ufficiale. È il momento di parlare di
+**servizi e dependency injection**, perché è lì che vivrà la nostra logica HTTP.
+<br />
+### 💉 Servizi e dependency injection in due minuti
+<br />
+Un componente dovrebbe occuparsi di una cosa sola: l'interfaccia. La logica che
+non riguarda la UI (parlare col server, condividere dati tra pagine, fare
+calcoli) sta meglio in un **service**: una classe normale, decorata con
+`@Injectable`.
+
+```typescript
+import { Injectable } from '@angular/core';
+
+@Injectable({ providedIn: 'root' })
+export class GameService {
+  // logica condivisa, niente UI
+}
+```
+
+Quel `providedIn: 'root'` dice ad Angular: "creane **una sola istanza** per
+tutta l'app e dalla a chiunque la chieda". E come si chiede? Con `inject()`:
+
+```typescript
+import { Component, inject } from '@angular/core';
+
+@Component({ /* ... */ })
+export class GameListComponent {
+  private gameService = inject(GameService);
+}
+```
+
+Questa è la **dependency injection**: il componente non costruisce le sue
+dipendenze, le dichiara, e Angular gliele fornisce. Il vantaggio si vede subito
+nei test (puoi sostituire il service con un finto) e nella condivisione: due
+componenti che iniettano `GameService` parlano con la stessa istanza, quindi
+con gli stessi dati.
+
+> Nei progetti esistenti troverai spesso l'iniezione via costruttore,
+> `constructor(private http: HttpClient) {}`. Funziona identica: `inject()` è
+> solo la forma più recente e più comoda, perché si usa anche fuori dal
+> costruttore, come nelle guardie e nei resolver del capitolo 4.
+
+### 🧰 Abilitare HttpClient
+<br />
+Il client HTTP di Angular va registrato una volta sola, in `app.config.ts`:
+
+```typescript
+import { ApplicationConfig } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideHttpClient()],
+};
+```
+
+Fatto: da questo momento `HttpClient` è iniettabile ovunque.
+<br />
+### 🛠️ Un service con le operazioni CRUD
+<br />
+Mettiamo insieme le due cose e scriviamo il service che gestisce i nostri
+videogiochi, con le classiche operazioni CRUD (create, read, update, delete):
+
+```typescript
+import { inject, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Game } from './models/game.model';
+
+@Injectable({ providedIn: 'root' })
+export class GameService {
+  private http = inject(HttpClient);
+  private apiUrl = 'https://api.example.com/games';
+
+  getGames(): Observable<Game[]> {
+    return this.http.get<Game[]>(this.apiUrl);
+  }
+
+  getGame(id: string): Observable<Game> {
+    return this.http.get<Game>(`${this.apiUrl}/${id}`);
+  }
+
+  addGame(game: Game): Observable<Game> {
+    return this.http.post<Game>(this.apiUrl, game);
+  }
+
+  updateGame(id: string, game: Game): Observable<Game> {
+    return this.http.put<Game>(`${this.apiUrl}/${id}`, game);
+  }
+
+  deleteGame(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+}
+```
+
+Nota il tipo generico, `this.http.get<Game[]>(...)`: stiamo dicendo al
+compilatore cosa aspettarci dalla risposta, e da lì in poi tutto è tipizzato.
+<br />
+### 🔄 Observables, il minimo indispensabile
+<br />
+Ogni metodo del service restituisce un **Observable**. Cos'è? Un oggetto che
+rappresenta un valore che **arriverà in futuro**: non la risposta del server,
+ma la promessa di avvisarti quando arriva. Per riceverla ti metti in ascolto
+con `subscribe()`:
+
+```typescript
+this.gameService.getGames().subscribe((games) => {
+  console.log('ho ricevuto i giochi:', games);
+});
+```
+
+Gli Observable sono un mondo enorme (vengono dalla libreria RxJS, e chi mi
+segue dal vecchio articolo su zip e combineLatest sa quanto ci si può
+perdere), ma per le chiamate HTTP la buona notizia è che il caso d'uso è
+semplice: la richiesta parte quando ti sottoscrivi, emette un valore quando
+arriva la risposta, e si chiude da sola.
+<br />
+Ecco il componente che carica e mostra la lista:
+
+```typescript
+import { Component, inject, OnInit } from '@angular/core';
+import { GameService } from './game.service';
+import { Game } from './models/game.model';
+
+@Component({
+  selector: 'app-game-list',
+  template: `
+    <h2>I miei giochi</h2>
+    <ul>
+      @for (game of games; track game.id) {
+        <li>{{ game.title }}</li>
+      }
+    </ul>
+  `
+})
+export class GameListComponent implements OnInit {
+  private gameService = inject(GameService);
+  games: Game[] = [];
+
+  ngOnInit() {
+    this.gameService.getGames().subscribe((data) => {
+      this.games = data;
+    });
+  }
+}
+```
+
+Funziona, ma guardalo con occhio critico: non gestiamo il caricamento, non
+gestiamo gli errori, e lo stato va travasato a mano dall'Observable a una
+proprietà. Per anni i progetti Angular si sono riempiti di flag `isLoading` e
+blocchi `error` scritti a mano. Ed è esattamente il problema che la Resource
+API viene a risolvere.
+<br />
+### 🚀 La Resource API
+<br />
+Da Angular 19 esiste `resource()`: dichiari **da cosa dipende** il dato e
+**come caricarlo**, e Angular ti dà tre signals già pronti: `value()`,
+`isLoading()` ed `error()`. Niente subscribe, niente flag manuali.
+<br />
+Esempio: una ricerca di giochi che si aggiorna mentre digiti.
+
+```typescript
+import { Component, inject, resource, signal } from '@angular/core';
+import { Game } from './models/game.model';
+
+const API_URL = 'https://api.example.com/games';
+
+@Component({
+  selector: 'app-game-search',
+  templateUrl: './game-search.component.html'
+})
+export class GameSearchComponent {
+  query = signal('');
+
+  games = resource({
+    params: () => this.query(),
+    loader: async ({ params, abortSignal }) => {
+      const response = await fetch(`${API_URL}/search?q=${params}`, {
+        signal: abortSignal,
+      });
+      if (!response.ok) throw new Error('Impossibile caricare i giochi');
+      return (await response.json()) as Game[];
+    },
+  });
+
+  search(event: Event) {
+    this.query.set((event.target as HTMLInputElement).value);
+  }
+}
+```
+
+```html
+<input (input)="search($event)" placeholder="Cerca un gioco..." />
+
+@if (games.isLoading()) {
+  <p>Caricamento...</p>
+} @else if (games.error()) {
+  <p>Qualcosa è andato storto. Riprova.</p>
+} @else {
+  <ul>
+    @for (game of games.value(); track game.id) {
+      <li>{{ game.title }}</li>
+    } @empty {
+      <li>Nessun gioco trovato.</li>
+    }
+  </ul>
+}
+```
+
+Il meccanismo: `params` legge il signal `query`, quindi ogni volta che la query
+cambia il `loader` riparte da solo. E quel `abortSignal` passato a `fetch` è un
+regalo prezioso: se l'utente digita un'altra lettera mentre la richiesta
+precedente è in volo, Angular **annulla** quella vecchia. La race condition
+delle ricerche, quella per cui arriva prima la risposta sbagliata, sparisce
+gratis.
+
+> La Resource API è recente e ancora marcata come sperimentale: i nomi sono
+> cambiati tra la versione 19 e la 20 (`request` è diventato `params`, e nel
+> `rxResource` qui sotto `loader` è diventato `stream`). Se qualcosa non
+> compila, controlla la versione di Angular del progetto.
+
+### Le varianti: rxResource e httpResource
+<br />
+Il `loader` di `resource()` è basato su Promise, per questo nell'esempio ho
+usato `fetch`. Se preferisci restare su `HttpClient` (che ha i suoi vantaggi,
+come gli interceptor) ci sono due varianti. `rxResource` accetta un Observable:
+
+```typescript
+import { inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { rxResource } from '@angular/core/rxjs-interop';
+
+export class GameSearchComponent {
+  private http = inject(HttpClient);
+  query = signal('');
+
+  games = rxResource({
+    params: () => this.query(),
+    stream: ({ params }) =>
+      this.http.get<Game[]>(`${API_URL}/search?q=${params}`),
+  });
+}
+```
+
+E per il caso più comune di tutti, una GET che dipende da qualche signal,
+c'è la scorciatoia `httpResource`:
+
+```typescript
+import { httpResource } from '@angular/common/http';
+
+games = httpResource<Game[]>(() => `${API_URL}/search?q=${this.query()}`);
+```
+
+Una riga. L'URL è una funzione che legge i signals, quindi al cambio della
+query la richiesta riparte, con loading, errori e annullamento gestiti da
+Angular.
+<br />
+### Quando usare cosa
+<br />
+La mia bussola attuale:
+<br />
+- **`resource()` / `httpResource`**: dati da *leggere* e mostrare, soprattutto se dipendono da signals (ricerche, dettagli, liste filtrate)
+- **`HttpClient` con subscribe**: i *comandi* (salvataggi, cancellazioni, submit di form), dove la richiesta parte da un'azione dell'utente e non da un cambio di stato
+- **`rxResource`**: quando sei nel primo caso ma ti servono gli operatori RxJS di mezzo
+<br />
+### Dove siamo arrivati
+<br />
+Oggi la nostra app ha smesso di parlare da sola: sai creare un service e
+iniettarlo dove serve, fare le operazioni CRUD con `HttpClient`, capire cosa
+firma quando fai `subscribe()` a un Observable, e delegare loading ed errori
+alla Resource API quando si tratta di leggere dati.
+<br />
+La cassetta degli attrezzi comincia a essere seria. E i service, che qui
+abbiamo appena presentato, nel **prossimo capitolo** diventano protagonisti:
+vedremo come usarli per **condividere lo stato** tra componenti che non si
+conoscono tra loro.
+</Card>

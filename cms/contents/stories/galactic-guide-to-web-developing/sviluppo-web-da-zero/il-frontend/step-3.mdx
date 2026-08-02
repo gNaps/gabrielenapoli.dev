@@ -1,0 +1,156 @@
+<Card>
+## 06 - HTML: la struttura della pagina
+
+<br />
+Prima che una pagina web prenda vita con colori, movimenti e logiche
+complesse... c'è **lo scheletro**. E quello scheletro si chiama **HTML**.
+<br />
+Se immagini la tua pagina come una casa, l'HTML è la **pianta architettonica**:
+dice dove vanno i muri, le finestre, le porte. Senza HTML, il browser, il
+nostro interprete del capitolo scorso, non saprebbe nemmeno *che cosa*
+mostrare.
+<br />
+### 📜 Un po' di storia (tranquillo, niente interrogazione)
+<br />
+HTML è l'acronimo di **HyperText Markup Language**. Nasce nei primi anni '90
+grazie a Tim Berners-Lee, l'inventore del World Wide Web, con un'idea semplice
+ma rivoluzionaria: **collegare informazioni tramite collegamenti ipertestuali**
+e mostrarle in modo strutturato attraverso un browser. Oggi siamo alla
+versione **HTML5**, lo standard moderno che permette pagine più semantiche,
+accessibili e interattive.
+<br />
+Ma partiamo dalle basi.
+<br />
+### 🏷️ Cos'è un linguaggio di markup?
+<br />
+HTML **non è un linguaggio di programmazione**: non ci sono condizioni, cicli
+o funzioni. È un **linguaggio di markup**, cioè serve a *descrivere* il
+contenuto e la struttura di un documento.
+<br />
+Tutto funziona tramite **tag**: elementi racchiusi tra parentesi angolari che
+dicono al browser cos'è ogni pezzo di contenuto.
+
+```html
+<h1>Benvenuto</h1>              <!-- un titolo principale -->
+<p>Questo è un paragrafo.</p>   <!-- un testo normale -->
+<a href="#">Un link</a>         <!-- un collegamento -->
+```
+
+### 🦴 L'ossatura di ogni documento
+<br />
+Ogni pagina HTML che si rispetti parte dalla stessa impalcatura minima:
+
+```html
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <title>La mia prima pagina</title>
+  </head>
+  <body>
+    <!-- qui va il contenuto visibile -->
+  </body>
+</html>
+```
+
+Tre cose da fissare: il `<!DOCTYPE html>` dice al browser "questo è HTML5";
+dentro `<head>` vanno le informazioni *sulla* pagina (il titolo della scheda,
+la codifica dei caratteri); dentro `<body>` va tutto ciò che l'utente vede.
+Questo scheletro lo scriverai così tante volte che tra un mese lo reciterai a
+memoria.
+<br />
+### 📦 I tag principali
+<br />
+Ecco i tag che userai più spesso:
+<br />
+- `<h1>` ... `<h6>`: titoli, dal più importante al meno
+- `<p>`: paragrafo di testo
+- `<a href="">`: link ipertestuale
+- `<ul>` / `<ol>` / `<li>`: liste, non ordinate e ordinate
+- `<img src="">`: immagine
+- `<div>`: contenitore generico
+- `<span>`: contenitore inline
+- `<form>`, `<input>`, `<label>`, `<button>`: i mattoni dei moduli
+<br />
+Ogni tag ha il suo significato e la sua funzione. Impararli è come imparare
+l'alfabeto di una lingua nuova: all'inizio si sbircia il dizionario, poi non
+ci pensi più.
+<br />
+### 🧠 Semantica: non è forma, è significato
+<br />
+Uno degli aspetti più importanti dell'HTML moderno è la **semantica**:
+usare i tag giusti per i contenuti giusti.
+<br />
+Un titolo va in un `<h1>`, non in un `<div>`. Un blocco di navigazione? C'è
+`<nav>`. Un articolo? `<article>`. Un piè di pagina? `<footer>`.
+
+> Perché conta? Perché browser, motori di ricerca e screen reader capiscono il
+> **ruolo** di ogni pezzo della pagina. Scrivere HTML semantico significa
+> essere chiari non solo per gli umani, ma anche per le macchine che leggono
+> il tuo sito, e per le persone che navigano con tecnologie assistive.
+
+### 🛡️ Il primo modulo: arruolati nei Guardiani della Notte
+<br />
+Ok, teoria fatta: è ora di scrivere codice. Supponiamo che tu debba creare il
+modulo di adesione ufficiale ai Guardiani della Notte.
+<br />
+Crea una cartella nuova e, dentro, un file `index.html` con lo scheletro visto
+sopra. Poi, nel `<body>`, metti questo (un **form HTML** puro, senza CSS né
+JavaScript):
+
+```html
+<!-- il titolo principale -->
+<h1>Modulo di adesione ai Guardiani della Notte</h1>
+
+<!-- il nostro form -->
+<form>
+  <!-- l'etichetta del campo -->
+  <label for="name">Nome:</label><br />
+  <!-- il campo di testo in cui scrivere -->
+  <input type="text" id="name" name="name" required /><br /><br />
+
+  <label for="lastname">Cognome:</label><br />
+  <input type="text" id="lastname" name="lastname" required /><br /><br />
+
+  <label for="email">Email:</label><br />
+  <input type="email" id="email" name="email" required /><br /><br />
+
+  <label>
+    <!-- un input di tipo checkbox -->
+    <input type="checkbox" name="oath" required />
+    Accetto di tenere fede al giuramento dei Guardiani.
+  </label><br /><br />
+
+  <!-- il pulsante per confermare -->
+  <button type="submit">Entra nella Guardia</button>
+</form>
+```
+
+Ora salva e apri `index.html` nel browser con un doppio click. Eccola lì: la
+tua prima pagina. Brutta come la notte, d'accordo, ma **tua**, e già
+funzionante: prova a inviare il form senza compilare i campi e guarda il
+browser protestare per i `required`.
+<br />
+Nota anche il `for` delle label che punta all'`id` degli input: è semantica
+applicata: cliccare sull'etichetta attiva il campo, e gli screen reader sanno
+quale descrizione appartiene a quale casella.
+<br />
+Per ora il modulo non fa nulla con i dati. Nei prossimi capitoli lo
+**vestiremo con il CSS** e gli daremo **funzionalità con JavaScript**.
+<br />
+### 🧠 Cosa hai imparato
+<br />
+- HTML è il linguaggio di base per costruire la **struttura** di una pagina web
+- è fatto di **tag** che descrivono i diversi elementi: testi, link, form
+- i tag **semantici** rendono il codice più chiaro, accessibile e professionale
+- con pochi tag hai già creato una pagina completa, con tanto di validazione integrata
+<br />
+### ✅ Conclusione
+<br />
+HTML è semplice da imparare ma incredibilmente potente: è il primo passo per
+costruire qualcosa che gli altri possono vedere, leggere, compilare e vivere.
+<br />
+Nel **prossimo capitolo** lo rendiamo più bello e ordinato con il secondo
+mattoncino: il **CSS**. Perché, diciamocelo: i Guardiani della Notte meritano
+un'interfaccia un po' più curata.
+</Card>

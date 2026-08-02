@@ -1,36 +1,29 @@
-import Stories from "@/components/stories/stories";
-import { storiesListApi } from "@/utils/api.utils";
+import BlogArchive from "@/components/sections/blog-archive";
+import { coursesApi, standaloneStoriesApi } from "@/utils/api.utils";
 import { Metadata } from "next";
 
-const useStories = async () => {
-  const token = process.env.AUTH_TOKEN;
-  return await storiesListApi(token ?? "");
-};
-
 const StoriesPage = async () => {
-  const stories = await useStories();
+  const token = process.env.AUTH_TOKEN ?? "";
+  const courses = await coursesApi(token);
+  const stories = await standaloneStoriesApi(token);
   return (
-    <>
-      <div className="gn-page">
-        <Stories stories={stories} />
-      </div>
-    </>
+    <div className="gn-page">
+      <BlogArchive stories={stories} courses={courses} />
+    </div>
   );
 };
 
 export default StoriesPage;
 
 export const metadata: Metadata = {
-  title: "Gabriele Napoli | Fullstack Developer",
-  description: `I’m a senior Angular and React developer. For backend, I like to use Node.js and, in
-            particular, Fastify with Prisma.`,
+  title: "Stories & Articles by Gabriele Napoli | Notes from the Desk",
+  description: `Articles and guides on Angular, RxJS, Next.js and the JavaScript ecosystem, written by Gabriele Napoli, fullstack developer in Milan.`,
   keywords: [
-    "Gabriele",
-    "Napoli",
-    "Developer",
-    "Angular",
-    "React",
-    "Node",
-    "About",
+    "Gabriele Napoli",
+    "Angular articles",
+    "RxJS guide",
+    "Next.js tutorial",
+    "JavaScript blog",
+    "Fullstack Developer Milan",
   ],
 };

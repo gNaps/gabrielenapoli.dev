@@ -1,0 +1,121 @@
+<Card>
+## LLM, chatbot, agenti: chi fa cosa
+
+<br />
+Scena vista mille volte: qualcuno dice "me l'ha detto ChatGPT", un altro
+risponde "eh ma gli LLM si inventano le cose", e intanto in ufficio è
+arrivata la direttiva di "mettere un agent AI" da qualche parte. Tre parole,
+usate come sinonimi, che sinonimi non sono.
+<br />
+Questo articolo è per chi l'AI la usa (o la subisce) senza fare il mestiere:
+niente codice, niente matematica. Solo una distinzione che, una volta vista,
+non si smette più di vedere. E che spiega parecchi comportamenti strani di
+questi strumenti.
+<br />
+### 🧠 L'LLM: il motore
+<br />
+Partiamo dal fondo. Un **LLM** (Large Language Model, "grande modello
+linguistico") è il pezzo di tecnologia che sta sotto a tutto: un programma
+addestrato su una quantità enorme di testo, che ha imparato a fare una cosa
+sola, incredibilmente bene: **prevedere come continua un testo**. Gli dai
+delle parole, lui produce le parole più plausibili che seguono. Tutto qui.
+Che da "tutto qui" escano traduzioni, riassunti, poesie e codice funzionante
+è la parte sorprendente della storia.
+<br />
+Nomi come **GPT, Claude, Gemini o Llama** sono famiglie di motori: versioni
+diverse, potenze diverse, stesso principio.
+<br />
+Ma è importante capire cosa un LLM, da solo, **non è**:
+<br />
+- non è un archivio di fatti: non "consulta" niente, produce testo plausibile
+- non ha memoria: ogni richiesta parte da zero
+- non è collegato a Internet: sa solo quello che ha visto durante l'addestramento
+- non fa azioni: riceve testo, restituisce testo, fine
+
+> Ed ecco spiegato il mistero delle "invenzioni" (le famose allucinazioni):
+> un motore che prevede il testo più plausibile produce frasi *credibili*,
+> non necessariamente *vere*. Non sta mentendo, e non è rotto: sta facendo
+> esattamente il suo lavoro. La plausibilità non è verità, e confonderle è
+> l'errore numero uno di chi usa questi strumenti.
+
+### 💬 Il chatbot: l'automobile costruita attorno al motore
+<br />
+Nessuno di noi usa un motore appoggiato su un bancone: usiamo automobili. E
+nessuno (o quasi) usa un LLM nudo: usiamo **chatbot**, cioè prodotti
+costruiti attorno al motore.
+<br />
+**ChatGPT è un chatbot**, non un modello: è l'automobile che Open AI ha
+costruito attorno ai suoi motori GPT. Lo stesso vale per le app di Claude e
+di Gemini. Cosa aggiunge l'automobile al motore?
+<br />
+- un'**interfaccia**: la chat, le app, la cronologia
+- la **memoria della conversazione**: il motore da solo dimentica tutto; è il prodotto che gli ripresenta ogni volta lo storico dei messaggi, dandoti l'illusione di un filo del discorso
+- le **istruzioni di comportamento**: il tono, i limiti, i "non posso aiutarti con questo"
+- sempre più spesso, degli **strumenti**: la ricerca sul web, la generazione di immagini, la lettura di documenti
+<br />
+La distinzione sembra pignola ma spiega tante discussioni confuse: "ChatGPT
+è migliorato" può voler dire che è cambiato il motore, oppure solo
+l'automobile. E quando un'azienda dice "usiamo GPT" non sta usando ChatGPT:
+sta montando il motore in un'automobile propria.
+<br />
+### 🤖 L'agente: l'autista
+<br />
+E ora la parola del momento. Se l'LLM è il motore e il chatbot è
+l'automobile, l'**agente** è quando all'automobile aggiungi **l'autista**:
+non gli chiedi più indicazioni per arrivare in centro, gli chiedi di
+*portarti* in centro.
+<br />
+Tecnicamente, un agente è un LLM messo in condizione di **fare** invece che
+solo rispondere. Tre ingredienti:
+<br />
+- un **obiettivo**: "trovami tre voli sotto i 100 euro", "sistema questo bug", "prepara il report"
+- degli **strumenti**: la possibilità di cercare sul web, leggere e scrivere file, usare programmi, mandare richieste ad altri servizi
+- un **ciclo**: prova, guarda il risultato, corregge, riprova. Da solo finché l'obiettivo non è raggiunto (o non ci riesce e te lo dice)
+<br />
+È la differenza tra chiedere "come si scrive una formula per sommare una
+colonna in Excel?" e avere qualcuno che apre il file, scrive la formula,
+controlla che il totale torni e ti dice "fatto". Gli agenti di ricerca che
+girano il web per mezz'ora e tornano con un rapporto, o gli agenti che
+scrivono e correggono codice, funzionano così. Niente magia e niente
+coscienza: lo stesso motore di prima, con le mani.
+<br />
+### 🎚️ Il confine è un dimmer, non un interruttore
+<br />
+Tuttavia va detto che i confini tra le tre categorie si stanno sfumando.
+Quando chiedi al tuo chatbot "cercami le notizie di oggi su questo tema",
+lui usa uno strumento, valuta i risultati e li rielabora: in quel momento, per qualche secondo,
+sta facendo l'agente. I chatbot moderni sono automobili
+con un po' di guida assistita, e il livello di autonomia si regola come un
+dimmer, non come un interruttore.
+<br />
+La categoria giusta, più che dallo strumento, dipende da **quanta autonomia
+gli stai dando in quel momento**.
+<br />
+### 🎯 Perché ti importa, in pratica
+<br />
+Non è una distinzione da salotto: cambia il modo in cui usi questi strumenti
+ogni giorno.
+<br />
+- **Sai perché inventa**: il motore produce testo plausibile. Per i fatti che contano, chiedi le fonti o attiva la ricerca web: stai spostando la risposta dal motore agli strumenti
+- **Sai cosa può fare davvero**: un chatbot che descrive perfettamente come mandare un'email *non può mandarla*. Se un servizio promette azioni, chiediti: che strumenti ha? È un agente o solo un motore eloquente?
+- **Sai come sbagliano**: il chatbot sbaglia a parole (frasi false), l'agente sbaglia *coi fatti* (azioni sbagliate: il file cancellato, la mail partita). Più autonomia concedi, più serve supervisione
+- **Sai decifrare il marketing**: "agente AI" in una brochure ora è una domanda precisa: quale motore, quali strumenti, chi controlla i risultati?
+
+> C'è un filo che lega tutto, ed è lo stesso che ripeto a chi programma:
+> questi strumenti **amplificano chi sa giudicare quello che producono**.
+> Più il sistema è autonomo, più il tuo lavoro si sposta dal fare al
+> verificare. Vale per il codice ([ne ho scritto
+> qui](/stories/vibe-coding-vs-spec-driven-development)) e vale identico per
+> il report che l'agente ti consegna già impaginato.
+
+### ✅ Il bigino da portare via
+<br />
+- **LLM**: il motore. Prevede testo, non sa niente di te e non fa azioni.
+- **Chatbot**: l'automobile. Il motore più interfaccia, memoria della conversazione e regole.
+- **Agente**: l'autista. Il motore con obiettivo, strumenti e un ciclo di lavoro autonomo. Fa le cose, non le descrive soltanto.
+<br />
+La prossima volta che qualcuno mescola le tre parole, saprai in quale strato
+della torta si trova il problema di cui parla. E se ti va di scendere ancora
+di un livello e capire come fa il motore a scegliere le parole, il viaggio
+[continua qui](/stories/come-un-llm-sceglie-le-parole).
+</Card>

@@ -1,0 +1,187 @@
+<Card>
+## 21 - Il flusso completo, dal click al pixel
+
+<br />
+Confessione: al progetto dei Guardiani manca ancora un pezzo, e forse non te
+ne sei accorto. Il form **spedisce** le adesioni, il database le
+**custodisce**... ma il frontend non ha mai **mostrato il registro**. Per
+vedere chi c'è nella Guardia, finora, dovevi aprire `localhost:3000/guardiani`
+e leggerti il JSON nudo. Non proprio un'esperienza da capitolo 4, quello
+sull'occhio, la testa e il cuore.
+<br />
+Oggi completiamo l'opera: una pagina che **mostra l'elenco**, accoglie le
+nuove reclute e si **aggiorna da sola** dopo ogni arruolamento. Il ciclo
+completo (form → API → database → interfaccia) tutto insieme, per la prima
+volta.
+<br />
+### 🏗️ La pagina del registro
+<br />
+Partiamo dall'HTML. Al modulo che conosci aggiungiamo la sezione dell'elenco:
+
+```html
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Registro dei Guardiani della Notte</title>
+  <link rel="stylesheet" href="guardiani.css" />
+  <script src="guardiani.js" defer></script>
+</head>
+<body>
+  <h1 id="titolo-pagina">Registro dei Guardiani</h1>
+
+  <!-- l'elenco: lo riempirà JavaScript -->
+  <ul id="registro" class="registro"></ul>
+
+  <!-- il form di arruolamento -->
+  <form class="form-dark">
+    <label for="name">Nome:</label>
+    <input type="text" id="name" name="name" class="campo" required />
+
+    <button class="btn-invio">Entra nella Guardia</button>
+    <p id="errore" class="errore-form"></p>
+  </form>
+</body>
+</html>
+```
+
+Due novità: la `<ul id="registro">` **vuota** (la riempirà JavaScript con i
+dati veri) e un paragrafo per gli errori, perché il capitolo scorso non è
+passato invano. Due tocchi di CSS per le new entry:
+
+```css
+.registro {
+  max-width: 500px;
+  margin: 24px auto;
+  padding: 0;
+  list-style: none;
+}
+
+.registro li {
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  background-color: #2e2e2e;
+  border-radius: 6px;
+  color: #f2f2f2;
+}
+
+.errore-form {
+  color: #ff6b6b;
+}
+```
+
+### 📖 Leggere e mostrare: la funzione chiave
+<br />
+E ora il cuore del capitolo, in `guardiani.js`: la funzione che chiede
+l'elenco al server e lo disegna nella pagina. È il `caricaGuardiani` del
+capitolo scorso più la manipolazione del DOM del capitolo 8, vecchi amici
+che finalmente lavorano insieme:
+
+```javascript
+const registro = document.querySelector('#registro');
+const form = document.querySelector('.form-dark');
+const errore = document.querySelector('#errore');
+
+async function caricaRegistro() {
+  try {
+    const risposta = await fetch('http://localhost:3000/guardiani');
+    if (!risposta.ok) {
+      throw new Error(`Il server ha risposto ${risposta.status}`);
+    }
+    const guardiani = await risposta.json();
+
+    // svuota l'elenco e ridisegnalo da zero
+    registro.textContent = '';
+    for (const guardiano of guardiani) {
+      const voce = document.createElement('li');
+      voce.textContent = `${guardiano.nome} - ${guardiano.ruolo}`;
+      registro.appendChild(voce);
+    }
+  } catch (err) {
+    errore.textContent = 'Impossibile caricare il registro. Il server è acceso?';
+  }
+}
+
+// al caricamento della pagina, popola subito l'elenco
+caricaRegistro();
+```
+
+Nota una scelta che sembra un dettaglio e invece è sicurezza: i dati entrano
+nella pagina con **`textContent`**, mai con `innerHTML`. Il nome del
+guardiano arriva dal database, cioè, in origine, **da un utente**: se
+qualcuno si fosse arruolato come `<script>...</script>`, con `innerHTML`
+quel codice *verrebbe eseguito* nel browser di chiunque apra il registro (si
+chiama **XSS**, la cugina frontend della SQL injection). Con `textContent` è
+solo testo, sempre. Mai fidarsi del client, nemmeno quando i suoi dati
+tornano indietro.
+<br />
+### ✍️ Arruolare e aggiornare
+<br />
+Il submit ora usa tutto quello che sai, e alla fine **richiama
+`caricaRegistro()`**, chiudendo il cerchio:
+
+```javascript
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  errore.textContent = '';
+
+  const campoNome = document.querySelector('#name');
+
+  try {
+    const risposta = await fetch('http://localhost:3000/guardiani', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nome: campoNome.value }),
+    });
+
+    if (!risposta.ok) {
+      throw new Error(`Il server ha risposto ${risposta.status}`);
+    }
+
+    campoNome.value = '';   // pulisci il campo
+    await caricaRegistro(); // e mostra il registro aggiornato
+  } catch (err) {
+    errore.textContent = 'Arruolamento fallito. Riprova tra poco.';
+  }
+});
+```
+
+Apri la pagina: l'elenco si popola da solo, con Jon e chiunque sia
+sopravvissuto ai tuoi esperimenti. Arruola una recluta: il campo si svuota e
+il nome **compare nell'elenco**, subito. Riavvia pure il server: ci sono
+ancora tutti. Nessuna magia: solo ogni capitolo di questa guida al suo
+posto.
+<br />
+### 🔭 Il viaggio completo, al rallentatore
+<br />
+Nel capitolo 2 ti avevo promesso che avremmo capito "cosa succede quando
+clicchi un pulsante". Guardalo adesso, fotogramma per fotogramma:
+<br />
+1. l'utente scrive "Grenn" e clicca: il **DOM** genera l'evento `submit`
+2. il nostro **JavaScript** lo intercetta, blocca il ricaricamento e compone una `POST` con `fetch`
+3. la **richiesta HTTP** parte: metodo, header, body JSON
+4. **Fastify** la riceve, la instrada, **valida** il nome (mai fidarsi del client)
+5. il backend esegue l'**INSERT parametrizzato** su SQLite: Grenn è nel database, per sempre
+6. torna la **risposta** `201 Created` col guardiano completo di `id`
+7. il frontend richiama il registro (`GET`), riceve il **JSON** aggiornato
+8. il **DOM** si ridisegna: l'utente vede Grenn nell'elenco
+<br />
+Otto passaggi, una manciata di millisecondi, e **ogni singolo passaggio lo
+hai costruito tu**. Quando nel capitolo 2 dicevo che dietro un click "c'è un
+viaggio", era una promessa: adesso è una mappa che sai leggere (e
+percorrere) da solo.
+<br />
+### ✅ Conclusione
+<br />
+Il ciclo è chiuso: frontend, backend e database non sono più tre argomenti di
+studio ma tre organi dello stesso corpo, e li hai visti battere insieme. Da
+qui in poi, ogni tecnologia nuova che incontrerai (un framework, un ORM, un
+servizio cloud) andrà semplicemente a sostituire o potenziare uno di questi
+organi. Lo scheletro, ormai, lo conosci.
+<br />
+E non è ancora il momento dei saluti: nell'**ultima parte della guida**
+sistemiamo le buone abitudini: come si organizza un progetto vero, quel Git
+che ti avevo promesso ormai diciotto capitoli fa, e la mappa per continuare
+il viaggio da solo. Tieni il registro a portata di mano: alla Guardia servono
+sempre nuove reclute.
+</Card>

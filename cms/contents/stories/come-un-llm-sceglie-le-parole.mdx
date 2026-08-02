@@ -1,0 +1,119 @@
+<Card>
+## Come fa un LLM a scegliere le parole?
+
+<br />
+Nell'[articolo precedente](/stories/llm-chatbot-agenti-chi-fa-cosa) abbiamo
+messo ordine tra motori, automobili e autisti, e ho descritto l'LLM come un
+motore che "prevede come continua un testo". Definizione comoda, ma che apre
+subito la domanda successiva: *e come fa?* Come fa un programma a decidere
+che dopo "il gatto è salito sul" viene "tetto" e non "fattura"?
+<br />
+Oggi scendiamo di un livello, come promesso. Sempre ad alta quota: niente
+formule da università, solo un'idea sorprendente e un esempio con quattro
+numeri in croce. L'idea è questa: **per un LLM, il significato è geometria**.
+<br />
+### 🧩 Passo uno: il testo diventa numeri
+<br />
+I computer non capiscono le parole: capiscono i numeri. Quindi la prima cosa
+che succede al tuo messaggio è una traduzione, in due mosse.
+<br />
+Prima il testo viene spezzato in **token**: pezzetti di parole, più o meno
+sillabe lunghe. "Impossibile" potrebbe diventare "Im-poss-ibile", le parole
+comuni restano intere. È il motivo per cui i limiti dei modelli si misurano
+in token e non in parole.
+<br />
+Poi ogni token viene convertito in un **embedding**: una lunga lista di
+numeri, spesso migliaia, che funziona come un insieme di **coordinate**.
+Esattamente come latitudine e longitudine posizionano una città sulla Terra,
+l'embedding posiziona una parola in un enorme spazio del significato: uno
+spazio dove non ci sono due dimensioni ma migliaia, e dove **le parole con
+significati simili finiscono vicine**.
+<br />
+"Gatto" abita vicino a "felino", "micio" e "cucciolo". "Fattura" sta in un
+altro quartiere, insieme a "IVA", "scadenza" e "commercialista". Il modello
+non ha mai visto un gatto: ha visto miliardi di frasi, e da come le parole si
+accompagnano tra loro ha costruito la mappa.
+
+> Questa mappa nasconde una magia che fece epoca: le *direzioni* hanno un
+> senso. Nei primi modelli di embedding si scoprì che prendendo il punto di
+> "re", togliendo "uomo" e aggiungendo "donna", si atterrava vicinissimo a
+> "regina". Nessuno lo aveva programmato: la struttura del significato era
+> emersa da sola dalla statistica del linguaggio.
+
+### 🎲 Passo due: la previsione, una parola alla volta
+<br />
+Ora che tutto è geometria, il motore può lavorare. Dato tutto il contesto (la
+tua domanda, la conversazione, quello che ha già scritto), il modello calcola
+**un punteggio per ogni token del suo vocabolario**: quanto è plausibile che
+sia il prossimo? Ne esce una classifica di probabilità: dopo "il gatto è
+salito sul", "tetto" avrà un punteggio altissimo, "divano" buono, "fattura"
+microscopico.
+<br />
+Poi il modello **ne pesca uno**, lo aggiunge al testo, e ricomincia da capo
+per la parola successiva. Una alla volta, fino alla fine della risposta.
+<br />
+Questo semplice ciclo spiega tre comportamenti che hai sicuramente notato:
+<br />
+- **le risposte compaiono "a scatti"**: non è un effetto grafico, stai vedendo il ciclo in diretta, token dopo token
+- **la stessa domanda dà risposte diverse**: la pesca non prende sempre il primo in classifica. Una dose regolabile di casualità (si chiama *temperatura*) rende il testo naturale invece che robotico
+- **quando sbaglia, insiste**: ogni parola pescata diventa contesto per le successive. Se il modello imbocca una strada sbagliata, le parole dopo saranno coerenti... con l'errore. Le allucinazioni più convincenti nascono così
+<br />
+### 📐 Il coseno: il righello dello spazio del significato
+<br />
+Resta una domanda pratica: in uno spazio a migliaia di dimensioni, come si
+misura quanto due cose sono "vicine di significato"? Lo strumento più usato
+si chiama **similarità del coseno**, e l'idea si capisce con due dimensioni
+soltanto.
+<br />
+Immagina ogni parola come una **freccia** che parte dal centro della mappa.
+La similarità del coseno misura **l'angolo tra due frecce**: se puntano
+nella stessa direzione il valore è vicino a 1, se non c'entrano niente
+l'una con l'altra si avvicina a 0, se puntano in direzioni opposte va verso
+-1. Non conta quanto sono lunghe le frecce: conta solo dove puntano. La
+direzione, in questa mappa, *è* il significato.
+<br />
+Facciamo i conti su una mappa giocattolo a 2 dimensioni:
+
+```text
+similarità(A, B) = (A · B) / (|A| × |B|)
+in parole: prodotto delle coordinate, diviso le lunghezze delle frecce
+
+gatto   = [0.9, 0.2]
+felino  = [0.8, 0.3]
+fattura = [0.1, 0.9]
+
+similarità(gatto, felino)  ≈ 0.99   → quasi la stessa direzione
+similarità(gatto, fattura) ≈ 0.32   → quartieri diversi della mappa
+```
+
+Quattro numeri e un righello, e la macchina "sa" che gatto e felino parlano
+della stessa cosa, senza che nessuno glielo abbia spiegato. Nei sistemi veri
+le coordinate sono migliaia invece che due, ma il righello è lo stesso.
+<br />
+### 🔎 Dove incontri il coseno tutti i giorni
+<br />
+La similarità del coseno è il cavallo da lavoro di tutto ciò che è "ricerca
+per significato":
+<br />
+- la **ricerca semantica**: cerchi "come disdire l'abbonamento" e trovi il documento intitolato "procedura di recesso", anche se non c'è una parola in comune. Le due frasi sono frecce vicine
+- i **suggerimenti** stile "chi ha letto questo ha letto anche": articoli vicini nella mappa
+- il pezzo forte: quando un'AI risponde usando **i tuoi documenti** (il famoso RAG di cui riparleremo), sotto il cofano succede questo: la tua domanda diventa una freccia, il sistema trova i paragrafi con le frecce più vicine e li consegna al motore, che risponde basandosi su quelli
+
+> Una precisazione da persona onesta: dentro l'LLM vero e proprio succedono
+> cose più sofisticate di un confronto tra angoli (i curiosi cerchino
+> "attention", il meccanismo con cui il modello decide a quali parole del
+> contesto dare peso). Ma embedding e coseno sono la porta d'ingresso
+> giusta: se hai capito che il significato è diventato geometria, hai capito
+> il cuore di tutta questa tecnologia.
+
+### ✅ Cosa portarti a casa
+<br />
+- il testo viene spezzato in **token** e ogni token diventa **coordinate** in uno spazio del significato: simile vuol dire vicino
+- il modello genera **una parola alla volta**: classifica di probabilità, pesca controllata, e si ricomincia. Streaming, risposte variabili e allucinazioni coerenti si spiegano tutte da qui
+- la **similarità del coseno** è il righello di quello spazio: misura l'angolo tra le frecce, e alimenta ricerca semantica e affini
+<br />
+E torna il ritornello dell'articolo scorso, stavolta con il perché sotto: il
+motore non "capisce" come capiamo noi, naviga una mappa statistica del
+linguaggio, brillantemente e senza garanzie. La plausibilità non è verità:
+adesso sai anche da dove nasce, quella plausibilità.
+</Card>

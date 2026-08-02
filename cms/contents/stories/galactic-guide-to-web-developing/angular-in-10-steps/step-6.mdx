@@ -1,0 +1,260 @@
+<Card>
+## 06 - Forms: raccogliere dati senza impazzire
+
+<br />
+Quasi ogni applicazione, prima o poi, deve chiedere qualcosa all'utente: un
+login, una ricerca, un checkout. I **form** sono il punto dove i dati entrano
+nell'app, e infatti sono anche il punto dove si annidano più bug: input non
+validati, errori mostrati al momento sbagliato, submit che partono a vuoto.
+<br />
+Angular offre due approcci per gestirli:
+<br />
+- **Template-driven forms**: si scrive quasi tutto nell'HTML, ideali per form semplici
+- **Reactive forms**: il modello del form vive nel TypeScript, pensati per form complessi
+<br />
+In questo capitolo li vediamo entrambi, con le validazioni e qualche consiglio
+su quando scegliere l'uno o l'altro.
+<br />
+### 🧩 Template-driven: il form nell'HTML
+<br />
+L'approccio template-driven si appoggia alla direttiva `ngModel`, che conosci
+già dal capitolo sul data binding: è il two-way binding applicato ai campi di
+un form. Il grosso del lavoro sta nel template, il componente resta leggero.
+
+```typescript
+import { Component, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-iscrizione',
+  imports: [FormsModule],
+  templateUrl: './iscrizione.component.html'
+})
+export class IscrizioneComponent {
+  nome = signal('');
+
+  submit() {
+    console.log('inviato:', this.nome());
+  }
+}
+```
+
+```html
+<form (ngSubmit)="submit()">
+  <label>
+    Nome:
+    <input name="nome" [(ngModel)]="nome" />
+  </label>
+  <p>Ciao, {{ nome() }}!</p>
+
+  <button type="submit">Invia</button>
+</form>
+```
+
+Due dettagli che fanno inciampare tutti la prima volta:
+
+> Al two-way binding si passa il **signal**, non la sua chiamata: si scrive
+> `[(ngModel)]="nome"`, mentre `{{ nome() }}` resta una lettura e vuole le
+> parentesi. E dentro un `<form>`, ogni campo con `ngModel` deve avere
+> l'attributo `name`, altrimenti Angular protesta.
+
+### Validare un form template-driven
+<br />
+La tentazione, dopo il capitolo sui signals, sarebbe costruirsi la validazione
+a mano con un paio di `computed`. Si può fare, ma non serve: Angular tiene già
+la contabilità di ogni campo, se è stato toccato (`touched`), se è cambiato
+(`dirty`), se è valido, e la espone attraverso lo stesso `ngModel`. Basta
+chiederla con una **template reference variable**:
+
+```html
+<form (ngSubmit)="submit()">
+  <label>
+    Nome:
+    <input
+      name="nome"
+      [(ngModel)]="nome"
+      required
+      minlength="3"
+      #nomeCtrl="ngModel"
+    />
+  </label>
+
+  @if (nomeCtrl.touched && nomeCtrl.invalid) {
+    <div class="errore">
+      @if (nomeCtrl.hasError('required')) {
+        <p>Il campo è obbligatorio</p>
+      }
+      @if (nomeCtrl.hasError('minlength')) {
+        <p>Servono almeno 3 caratteri</p>
+      }
+    </div>
+  }
+
+  <button type="submit">Invia</button>
+</form>
+```
+
+Cosa sta succedendo:
+<br />
+- `required` e `minlength` sono normali attributi HTML che Angular trasforma in validatori
+- `#nomeCtrl="ngModel"` ci dà accesso allo stato del campo direttamente nel template
+- gli errori compaiono solo dopo che il campo è stato toccato: niente form rosso al primo caricamento
+<br />
+Per form di due o tre campi, questo approccio è onesto e veloce. Quando i campi
+diventano dieci, o si aggiungono e tolgono dinamicamente, il template si
+trasforma in un groviglio. Ed è lì che entrano in gioco i reactive forms.
+<br />
+### 🔧 Reactive forms: il form nel TypeScript
+<br />
+Nei **reactive forms** il modello del form è un oggetto che costruisci nel
+componente, con tre mattoni:
+<br />
+- **FormControl**: un singolo campo
+- **FormGroup**: un gruppo di controlli, tipicamente l'intero form
+- **FormArray**: una lista dinamica di controlli, per i campi che si aggiungono a runtime
+<br />
+Il template si limita a collegarsi al modello. Ecco un form di profilo con
+validazioni e una lista dinamica di contatti:
+
+```typescript
+import { Component } from '@angular/core';
+import {
+  FormArray,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+
+@Component({
+  selector: 'app-profilo',
+  imports: [ReactiveFormsModule],
+  templateUrl: './profilo.component.html'
+})
+export class ProfiloComponent {
+  profiloForm = new FormGroup({
+    nome: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    email: new FormControl('', [Validators.required, Validators.email]),
+    contatti: new FormArray([new FormControl('', Validators.email)]),
+  });
+
+  get nome() {
+    return this.profiloForm.get('nome');
+  }
+
+  get email() {
+    return this.profiloForm.get('email');
+  }
+
+  get contatti() {
+    return this.profiloForm.get('contatti') as FormArray;
+  }
+
+  aggiungiContatto() {
+    this.contatti.push(new FormControl('', Validators.email));
+  }
+
+  onSubmit() {
+    if (this.profiloForm.valid) {
+      console.log(this.profiloForm.value);
+    } else {
+      // rende visibili gli errori di tutti i campi
+      this.profiloForm.markAllAsTouched();
+    }
+  }
+}
+```
+
+E il template:
+
+```html
+<form [formGroup]="profiloForm" (ngSubmit)="onSubmit()">
+  <label>
+    Nome:
+    <input type="text" formControlName="nome" />
+  </label>
+  @if (nome?.touched && nome?.invalid) {
+    <div class="errore">
+      @if (nome?.hasError('required')) {
+        <p>Il nome è obbligatorio</p>
+      }
+      @if (nome?.hasError('minlength')) {
+        <p>Servono almeno 3 caratteri</p>
+      }
+    </div>
+  }
+
+  <label>
+    Email:
+    <input type="email" formControlName="email" />
+  </label>
+  @if (email?.touched && email?.invalid) {
+    <div class="errore">
+      @if (email?.hasError('required')) {
+        <p>L'email è obbligatoria</p>
+      }
+      @if (email?.hasError('email')) {
+        <p>Il formato non è valido</p>
+      }
+    </div>
+  }
+
+  <div formArrayName="contatti">
+    @for (contatto of contatti.controls; track $index) {
+      <input [formControlName]="$index" placeholder="Contatto {{ $index + 1 }}" />
+    }
+  </div>
+  <button type="button" (click)="aggiungiContatto()">Aggiungi contatto</button>
+
+  <button type="submit">Invia</button>
+</form>
+```
+
+Nota il flusso del submit: il bottone è sempre cliccabile e, se il form non è
+valido, `markAllAsTouched()` fa comparire tutti gli errori. È una scelta
+deliberata: disabilitare il bottone con `[disabled]="profiloForm.invalid"` è
+comodo, ma lascia l'utente davanti a un bottone spento senza spiegargli il
+perché. Un click che rivela gli errori è un'esperienza più chiara.
+
+> Dai tempi di Angular 14 i reactive forms sono **tipizzati**: il compilatore sa
+> che `profiloForm.value.nome` è una stringa e ti segnala l'errore se provi a
+> leggere un campo che non esiste. Se il `new FormGroup(...)` a mano ti sembra
+> verboso, guarda anche `FormBuilder`: iniettato con `inject(FormBuilder)`,
+> riduce la cerimonia con la sintassi `fb.group({...})`.
+
+### Quale approccio scegliere
+<br />
+La mia bussola, dopo anni di form:
+<br />
+- **Template-driven** quando il form è piccolo, statico e le validazioni sono quelle standard HTML: login, ricerca, newsletter
+- **Reactive** quando ci sono campi dinamici, validazioni incrociate, logica condizionale o quando il form va testato per bene: il modello in TypeScript si testa senza toccare il DOM
+<br />
+Nel dubbio, reactive: un template-driven che cresce si riscrive, un reactive
+sovradimensionato al massimo ha qualche riga in più.
+<br />
+### I validator pronti all'uso
+<br />
+Angular fornisce una serie di validatori già fatti, utilizzabili sia come
+attributi (template-driven) sia da `Validators` (reactive):
+<br />
+- `Validators.required`: il campo non può essere vuoto
+- `Validators.email`: formato email
+- `Validators.minLength(n)` / `Validators.maxLength(n)`: lunghezza minima e massima
+- `Validators.min(n)` / `Validators.max(n)`: valori numerici
+- `Validators.pattern(regex)`: qualsiasi cosa esprimibile con una regex
+<br />
+Quando non bastano, puoi scrivere validatori custom: sono semplici funzioni che
+ricevono il controllo e restituiscono un oggetto errori o `null`. Ci torneremo
+quando serviranno.
+<br />
+### Dove siamo arrivati
+<br />
+Ora sai raccogliere dati in entrambi i modi che Angular mette a disposizione:
+template-driven con `ngModel` e lo stato esposto nel template, reactive con il
+modello in TypeScript, le validazioni programmatiche e i campi dinamici via
+`FormArray`. E soprattutto sai quando usare l'uno e quando l'altro.
+<br />
+Nel **prossimo capitolo** parliamo di **servizi e dependency injection**: dove
+mettere la logica e i dati che i componenti devono condividere, a partire da
+quel `inject()` che continua a spuntare negli esempi.
+</Card>

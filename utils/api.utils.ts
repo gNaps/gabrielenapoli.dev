@@ -1,7 +1,10 @@
+import { allCourses } from "@/cms/courses";
 import { allExperiences } from "@/cms/experiences";
 import { allProjects } from "@/cms/projects";
 import { allStacks } from "@/cms/stacks";
 import { allStories } from "@/cms/stories";
+import { Course } from "@/models/course.model";
+import { Story } from "@/models/story.model";
 
 export const projectsHomeApi = async (token: string) => {
   // const PROJECTS_QUERY = `{
@@ -235,6 +238,37 @@ export const experiencesApi = async (token: string) => {
   // return responseBody as AllExperiencesData;
 
   return allExperiences.sort((a, b) => a.order - b.order);
+};
+
+export const coursesApi = async (token: string) => {
+  return allCourses;
+};
+
+export const courseDetailApi = async (slug: string, token: string) => {
+  return allCourses.find((c) => c.slug === slug)!;
+};
+
+/* Chapters of a course, as Story entries in course order. */
+export const courseChaptersApi = (course: Course): Story[] => {
+  return course.chapterSlugs
+    .map((slug) => allStories.find((s) => s.slug === slug))
+    .filter((s): s is Story => !!s);
+};
+
+/* Course membership of a story, with its position, null if standalone. */
+export const courseForStoryApi = (storySlug: string) => {
+  for (const course of allCourses) {
+    const index = course.chapterSlugs.indexOf(storySlug);
+    if (index !== -1) return { course, index };
+  }
+  return null;
+};
+
+/* Stories that are not chapters of any course. */
+export const standaloneStoriesApi = async (token: string) => {
+  return allStories.filter(
+    (s) => !allCourses.some((c) => c.chapterSlugs.includes(s.slug))
+  );
 };
 
 export const stacksApi = async (token: string) => {

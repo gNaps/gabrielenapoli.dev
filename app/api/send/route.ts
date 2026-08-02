@@ -13,8 +13,7 @@ export async function POST(request: NextRequest) {
       to: ["gabriele.nap@gmail.com"],
       subject: "Richiesta contatto",
       react: EmailTemplate({
-        firstname: body.firstname,
-        surname: body.surname,
+        name: body.name,
         email: body.email,
         message: body.message,
       }),

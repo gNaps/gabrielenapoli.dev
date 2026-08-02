@@ -1,0 +1,111 @@
+<Card>
+## 22 - Organizzare un progetto web
+
+<br />
+Facciamo un gioco: apri la cartella del progetto dei Guardiani e guardala con
+gli occhi di qualcun altro. `index.html`, `guardiani.css`, `guardiani.js`,
+`server.js`, `guardia.db`, `package.json`, tutto in un unico mucchio.
+Funziona? Perfettamente. Ma immagina di tornarci tra sei mesi, o di doverla
+spiegare a un collega: da dove si comincia?
+<br />
+I progetti veri non muoiono perché il codice non funziona. Muoiono perché
+**nessuno ci capisce più niente**. Quest'ultima parte della guida è dedicata
+alle abitudini che tengono in vita i progetti, e si parte dalla più
+sottovalutata: l'ordine.
+<br />
+### 🗂️ Separare frontend e backend
+<br />
+La prima mossa è riconoscere che nel nostro mucchio convivono **due
+applicazioni diverse**, l'abbiamo imparato per tutta la guida: il frontend
+vive nel browser, il backend sul server. La struttura deve raccontarlo:
+
+```text
+guardiani/
+├── frontend/
+│   ├── index.html
+│   ├── css/
+│   │   └── guardiani.css
+│   └── js/
+│       └── guardiani.js
+├── backend/
+│   ├── server.js
+│   ├── package.json
+│   └── guardia.db
+└── README.md
+```
+
+Nulla di rivoluzionario, ma nota cosa è successo: la cartella ora **risponde
+alle domande prima che vengano poste**. Dove sta l'interfaccia? `frontend/`.
+Dove girano le API? `backend/`. E quel `README.md` nuovo è la porta
+d'ingresso: due righe su cos'è il progetto e come si avvia. Il primo lettore
+del tuo README sarai tu, tra sei mesi.
+<br />
+### 🧩 Modularità: file piccoli, compiti chiari
+<br />
+Il nostro `server.js` per ora è un file solo, e va bene così. Ma
+immaginalo tra un anno, con i castelli, le spedizioni oltre la Barriera e il
+login: cinquemila righe in un file sono il mucchio di prima, solo dentro un
+file. La cura si chiama **modularità**: spezzare il codice in moduli, ognuno
+con un compito.
+<br />
+Ricordi gli `import`/`export` di ES6, annunciati nel capitolo su JavaScript?
+Servono a questo. Un backend che cresce, per esempio, tende naturalmente a
+dividersi così:
+
+```text
+backend/
+├── server.js          # avvio: crea l'app e la mette in ascolto
+├── routes/
+│   └── guardiani.js   # le rotte /guardiani
+├── db/
+│   └── database.js    # la connessione e le query
+└── package.json
+```
+
+Ogni file esporta ciò che serve agli altri, e chi legge trova le cose dove si
+aspetta di trovarle. Lo stesso principio vale sul frontend, e infatti i
+framework del capitolo 9 lo istituzionalizzano: i **componenti** sono
+esattamente questo, modularità con le regole.
+<br />
+### 🎯 Separazione delle responsabilità
+<br />
+La modularità dice *dividi*; la **separazione delle responsabilità** dice
+*come*: ogni pezzo deve avere **un solo mestiere**. È il principio più
+importante di questo capitolo, e in realtà lo pratichi da un pezzo senza
+saperlo:
+<br />
+- HTML struttura, CSS stile, JavaScript comportamento: **tre file, tre mestieri** (capitoli 6-8)
+- il frontend presenta, il backend decide, il database custodisce (capitoli 10-19)
+- nel server: le rotte ricevono, la validazione controlla, le query salvano
+<br />
+La bussola per capire se lo stai rispettando è una domanda: *"questo pezzo di
+codice, quante ragioni ha per cambiare?"* Se la risposta è più di una (la
+funzione che valida E salva E formatta la risposta) è il momento di
+dividere.
+
+> Vale anche il gemello di questo principio: **DRY**, Don't Repeat Yourself.
+> Se ti accorgi di copiare e incollare lo stesso blocco per la terza volta,
+> quello è un modulo (o una funzione) che chiede di nascere. Codice duplicato
+> significa bug da correggere due volte, e una delle due la dimenticherai.
+
+### 🧭 Le convenzioni: la cortesia tra sviluppatori
+<br />
+Ultimo tassello, piccolo ma quotidiano: i **nomi**. Cartelle in minuscolo,
+nomi che descrivono il contenuto (`guardiani.js`, non `roba2.js`), coerenza
+nello stile: se una rotta si chiama `routes/guardiani.js`, la prossima si
+chiamerà `routes/castelli.js`, non `routes/GestioneCastelli.js`. Le
+convenzioni non sono pedanteria: sono il motivo per cui uno sviluppatore
+esperto si orienta in un progetto mai visto in dieci minuti. Regalale al
+prossimo che aprirà la tua cartella.
+<br />
+### ✅ Conclusione
+<br />
+L'ordine non è estetica: è **manutenibilità**, la differenza tra un progetto
+che cresce e uno che collassa sotto il proprio peso. Struttura che racconta,
+moduli con un compito solo, responsabilità separate, nomi che parlano: quattro
+abitudini che costano poco oggi e valgono oro domani.
+<br />
+E a proposito di progetti che crescono: come si tiene traccia di *chi ha
+cambiato cosa, quando e perché*? Nel **prossimo capitolo** arriva finalmente
+lui, il grande promesso del capitolo 3: **Git**.
+</Card>

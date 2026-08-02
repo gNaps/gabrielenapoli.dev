@@ -1,0 +1,149 @@
+<Card>
+## 11 - HTTP e il protocollo client-server
+
+<br />
+Nel capitolo 2 ti ho dato la mappa: client di qua, server di là, e in mezzo un
+ciclo continuo di richieste e risposte. Ora che siamo in sala macchine, quella
+mappa non basta più: per costruire (o anche solo capire) un backend serve
+conoscere la lingua in cui le due parti si parlano. Quella lingua è **HTTP**,
+e in questo capitolo la impariamo per bene.
+<br />
+### ✉️ Anatomia di una richiesta
+<br />
+Una richiesta HTTP è un messaggio di testo con una struttura fissa. Eccone
+una vera, riga per riga:
+
+```http
+POST /login HTTP/1.1
+Host: barriera.example.com
+Content-Type: application/json
+
+{ "email": "jon@barriera.net", "password": "ghost" }
+```
+
+I pezzi sono quattro:
+<br />
+- il **metodo** (`POST`): il verbo, cosa voglio fare
+- il **percorso** (`/login`): la risorsa a cui mi rivolgo
+- gli **header** (`Host`, `Content-Type`...): informazioni di contorno
+- il **body**: i dati veri e propri, quando servono
+<br />
+Vediamoli uno per uno.
+<br />
+### 🔤 I metodi: GET, POST, PUT, DELETE
+<br />
+Il metodo dichiara l'intenzione della richiesta. I quattro fondamentali li
+hai già incrociati; ora mettiamoli a fuoco:
+<br />
+- **GET**: dammi qualcosa. Non ha body e non modifica nulla sul server: puoi ripeterla cento volte senza fare danni. È la richiesta che il browser fa per ogni pagina che apri
+- **POST**: ti mando qualcosa di nuovo. Ha un body con i dati, e sul server *succede qualcosa*: si crea, si salva, si registra
+- **PUT**: sostituisci questa cosa con la versione che ti mando
+- **DELETE**: elimina questa cosa
+<br />
+C'è anche un cugino stretto, `PATCH`, per le modifiche parziali: lo vedremo
+meglio nel prossimo capitolo, quando questi verbi si incastreranno in uno
+schema elegante.
+<br />
+### 🏷️ Gli header: il contorno che conta
+<br />
+Gli **header** sono coppie chiave-valore che accompagnano richieste e
+risposte: non sono i dati, sono informazioni *sui* dati e sul contesto. Quelli
+che incontrerai subito:
+<br />
+- `Content-Type`: il formato del body (`application/json` quasi sempre, nel nostro mondo)
+- `Accept`: il formato in cui il client *vorrebbe* la risposta
+- `Authorization`: le credenziali, chi sta facendo questa richiesta
+- `User-Agent`: chi è il client (che browser, che app)
+<br />
+L'`Authorization` merita due righe in più, perché chiude un cerchio aperto
+nel capitolo sul backend. Dopo il login di prima, il server risponde con un
+**token**; da quel momento il client lo allega a ogni richiesta:
+
+```http
+GET /guardiani HTTP/1.1
+Host: barriera.example.com
+Authorization: Bearer abc123def456
+```
+
+È così che il server sa *chi sei* a ogni richiesta (autenticazione) e può
+decidere *cosa puoi fare* (autorizzazione). Niente magia: un header.
+<br />
+### 📦 Il body: i dati veri
+<br />
+Il **body** è il carico utile: i dati del form, il commento da salvare, il
+file da caricare. Nel web moderno il formato standard di fatto è il **JSON**
+(JavaScript Object Notation), che, buone notizie, hai già visto: è quasi
+identico agli oggetti JavaScript del capitolo 8.
+
+```json
+{
+  "nome": "Samwell Tarly",
+  "ruolo": "attendente",
+  "corvo": true
+}
+```
+
+Leggibile per gli umani, facilissimo da produrre e consumare per le macchine:
+per questo ha conquistato il web.
+<br />
+### 🚦 La risposta e i codici di stato
+<br />
+La risposta ha la stessa struttura (header + body), più una riga di stato che
+riassume com'è andata:
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{ "token": "abc123def456" }
+```
+
+Quel numero è il **codice di stato**, e imparare a leggerlo è come imparare a
+leggere le espressioni del server in faccia. I codici che vedrai più spesso:
+<br />
+- **200 OK**: tutto bene, ecco quello che hai chiesto
+- **201 Created**: creato, come da richiesta
+- **400 Bad Request**: la richiesta è malformata, ricontrolla cosa mi hai mandato
+- **401 Unauthorized**: chi sei? Qui serve autenticarsi
+- **403 Forbidden**: so chi sei, ma non puoi farlo
+- **404 Not Found**: questa risorsa non esiste
+- **500 Internal Server Error**: il problema stavolta è mio, non tuo
+
+> Il trucco per orientarsi è la prima cifra: **2xx** successo, **3xx**
+> redirezione, **4xx** errore del client ("hai sbagliato tu"), **5xx** errore
+> del server ("ho sbagliato io"). Nota anche la coppia 401/403: è
+> l'autenticazione contro l'autorizzazione del capitolo scorso, tradotta in
+> numeri.
+
+### 🍽️ Cos'è una API
+<br />
+Ora hai tutti gli ingredienti per la definizione più importante di questa
+sezione. Una **API** (Application Programming Interface) è il **contratto**
+con cui un software espone le proprie funzionalità ad altri software. Nel
+web: l'insieme degli indirizzi che il server mette a disposizione, con i
+metodi che accettano, i dati che si aspettano e le risposte che promettono.
+<br />
+La metafora classica è il ristorante: tu (il client) non entri in cucina (il
+server) a prepararti il piatto. Ordini dal **menu** (l'API) tramite il
+cameriere (la richiesta HTTP), e il piatto arriva (la risposta). Il menu ti
+dice cosa puoi chiedere e cosa riceverai. **Come** la cucina prepari il
+piatto non ti riguarda, ed è proprio questo il bello: la cucina può cambiare
+chef, ricette e fornitori, e finché il menu resta quello tu non te ne accorgi
+nemmeno.
+<br />
+Le API non sono solo le tue: il web è pieno di **API pubbliche** pronte da
+usare: il meteo, le mappe, i tassi di cambio, perfino i Pokémon. Il tuo
+frontend può ordinare da qualsiasi menu esposto su Internet, ed è così che le
+app si costruiscono anche componendo servizi altrui.
+<br />
+### ✅ Conclusione
+<br />
+Ora HTTP non è più una sigla: sai leggere una richiesta riga per riga
+(metodo, percorso, header, body) e interpretare la risposta dal suo codice di
+stato. E sai cos'è davvero una API: un contratto, un menu, una promessa.
+<br />
+Nel **prossimo capitolo** questi verbi si incastrano in uno schema che ti
+accompagnerà per sempre: le quattro operazioni che ogni applicazione fa sui
+dati. Si chiama **CRUD**, e dopo averlo visto non riuscirai più a non
+vederlo ovunque.
+</Card>

@@ -1,0 +1,208 @@
+<Card>
+## 14 - Il primo backend vero: le API dei Guardiani
+
+<br />
+Tutto quello che abbiamo costruito in questa guida converge qui. Il modulo
+HTML dei Guardiani (capitolo 6), vestito di CSS (7), reso vivo da JavaScript
+(8), che finalmente parla con un server vero (13) attraverso le API CRUD
+(12) usando il protocollo HTTP (11). Oggi il cerchio si chiude:
+**l'adesione di Samwell arriva a destinazione**.
+<br />
+### 📚 Il registro della Guardia
+<br />
+Riprendiamo il `server.js` del capitolo scorso e trasformiamolo nel registro
+ufficiale. I dati, per ora, vivranno in un semplice array in memoria. Segna
+questo dettaglio, a fine capitolo tornerà a bussare.
+
+```javascript
+import Fastify from 'fastify';
+
+const app = Fastify();
+
+// il registro della Guardia: per ora vive in memoria
+let guardiani = [
+  { id: 1, nome: 'Jon Snow', ruolo: 'lord comandante' },
+];
+let prossimoId = 2;
+
+// Read: l'elenco completo
+app.get('/guardiani', () => guardiani);
+
+// Read: un singolo guardiano
+app.get('/guardiani/:id', (request, reply) => {
+  const guardiano = guardiani.find((g) => g.id === Number(request.params.id));
+  if (!guardiano) {
+    return reply.code(404).send({ errore: 'Guardiano non trovato' });
+  }
+  return guardiano;
+});
+
+// Create: arruolamento
+app.post('/guardiani', (request, reply) => {
+  const { nome, ruolo } = request.body;
+
+  // mai fidarsi del client: il server valida sempre
+  if (!nome) {
+    return reply.code(400).send({ errore: 'Il nome è obbligatorio' });
+  }
+
+  const guardiano = { id: prossimoId++, nome, ruolo: ruolo ?? 'recluta' };
+  guardiani.push(guardiano);
+  return reply.code(201).send(guardiano);
+});
+
+// Update: promozione (o retrocessione)
+app.patch('/guardiani/:id', (request, reply) => {
+  const guardiano = guardiani.find((g) => g.id === Number(request.params.id));
+  if (!guardiano) {
+    return reply.code(404).send({ errore: 'Guardiano non trovato' });
+  }
+  Object.assign(guardiano, request.body);
+  return guardiano;
+});
+
+// Delete: congedo
+app.delete('/guardiani/:id', (request, reply) => {
+  guardiani = guardiani.filter((g) => g.id !== Number(request.params.id));
+  return reply.code(204).send();
+});
+
+await app.listen({ port: 3000 });
+console.log('Il registro della Guardia è in ascolto su http://localhost:3000');
+```
+
+Rileggilo con calma: è il capitolo 12 diventato codice. Gli endpoint sono
+esattamente quelli della tabella CRUD: stesso indirizzo, verbi diversi,
+operazioni diverse. I codici di stato sono quelli del capitolo 11: `404` per
+il guardiano che non c'è, `400` per la richiesta senza nome (**mai fidarsi
+del client**, capitolo 10: anche se il form ha il `required`, il server
+ricontrolla), `201` per la creazione, `204 No Content` per la cancellazione
+andata a buon fine.
+<br />
+Riavvia il server e collaudiamo dal terminale con `curl`, il coltellino
+svizzero delle richieste HTTP:
+
+```bash
+# Read: l'elenco
+curl http://localhost:3000/guardiani
+
+# Create: arruoliamo Sam
+curl -X POST http://localhost:3000/guardiani \
+  -H "Content-Type: application/json" \
+  -d '{"nome": "Samwell Tarly"}'
+
+# e rileggiamo l'elenco: ora sono in due
+curl http://localhost:3000/guardiani
+```
+
+Un backend completo, collaudato, funzionante. Ora colleghiamo il frontend.
+<br />
+### ⏳ Il debito da saldare: async e await
+<br />
+Nel capitolo su JavaScript ti avevo promesso che alle operazioni "che
+richiedono tempo" avremmo dedicato lo spazio giusto. Eccolo, perché ci serve
+adesso: una richiesta HTTP **non è istantanea**: parte, viaggia, e la
+risposta arriva *dopo*. JavaScript gestisce questo "dopo" con le **Promise**:
+un oggetto che rappresenta un valore che arriverà.
+<br />
+La sintassi moderna per lavorarci è di una semplicità disarmante:
+
+```javascript
+const risposta = await fetch('http://localhost:3000/guardiani');
+const guardiani = await risposta.json();
+```
+
+`fetch` è la funzione del browser per fare richieste HTTP, e `await`
+significa letteralmente "aspetta che il risultato arrivi, poi continua".
+Unica regola: `await` si usa dentro funzioni marcate **`async`**. Tutto qui,
+il resto è pratica.
+<br />
+### 🚧 Il muro invisibile: CORS
+<br />
+Prima di collegare il form, ti salvo da un pomeriggio di imprecazioni. Se il
+frontend (aperto da file o da un altro indirizzo) chiama il tuo server, il
+browser **bloccherà la richiesta**. Nessun bug: è la **CORS**
+(Cross-Origin Resource Sharing), una protezione per cui un sito non può
+chiamare i server di un altro dominio *a meno che quel server non lo permetta
+esplicitamente*.
+<br />
+Il permesso lo diamo noi, con un plugin ufficiale:
+
+```bash
+npm install @fastify/cors
+```
+
+E due righe in cima a `server.js`:
+
+```javascript
+import cors from '@fastify/cors';
+
+await app.register(cors); // per ora: tutti possono chiamarci
+```
+
+> In produzione non si spalanca la porta così: si dichiara *quale* dominio può
+> chiamare il server. Per lo sviluppo locale va benissimo, ma ricordati che
+> questa porta esiste: prima o poi un errore CORS lo incontrerai comunque, e
+> adesso saprai cosa significa.
+
+### 🔗 Il gran finale: il form incontra il server
+<br />
+Apriamo il `guardiani.js` del capitolo 8 e cambiamo il destino di quei dati:
+non più un messaggio finto costruito al volo, ma una vera `POST` al registro.
+
+```javascript
+const form = document.querySelector('.form-dark');
+
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const nome = document.querySelector('#name').value;
+
+  // spediamo l'adesione al server, come da capitolo 11
+  const risposta = await fetch('http://localhost:3000/guardiani', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nome }),
+  });
+
+  const guardiano = await risposta.json();
+
+  const messaggio = document.createElement('p');
+  messaggio.classList.add('benvenuto');
+  messaggio.textContent = `Benvenuto nella Guardia, ${guardiano.nome}. Sei la recluta n. ${guardiano.id}.`;
+
+  form.replaceWith(messaggio);
+});
+```
+
+Nota le differenze dal capitolo 8: la funzione dell'evento ora è `async`, la
+richiesta è la stessa `POST` che facevi con curl (metodo, header, body JSON),
+e il numero di recluta **arriva dal server**: è l'`id` che il backend ha
+assegnato, non un numero inventato dal frontend.
+<br />
+Apri la pagina, compila, invia. Poi vai su `http://localhost:3000/guardiani`:
+Samwell è lì, **nel registro**. Compila di nuovo con un altro nome: l'elenco
+cresce. Frontend e backend, ognuno col suo mestiere, che collaborano via
+HTTP. Questa, tutta intera, è una web app.
+<br />
+### 🧊 Il colpo di scena finale
+<br />
+Prima di festeggiare, un ultimo esperimento. Ferma il server (`Ctrl+C`),
+riavvialo con `node server.js` e rileggi l'elenco:
+<br />
+Samwell è **sparito**.
+<br />
+Nessun bug, anche stavolta: i nostri dati vivono in un array **in memoria**,
+e la memoria muore col processo. Ogni riavvio, un'amnesia totale. Per un
+esperimento va bene; per un'applicazione vera è inaccettabile: i dati devono
+sopravvivere a riavvii, aggiornamenti e crash.
+<br />
+Serve un posto dove i dati vivano **per sempre**, indipendentemente dal
+server: si chiama **database**, ed è l'argomento della **prossima parte
+della guida**. La Guardia merita un registro che non dimentichi i suoi nomi.
+<br />
+Ma prima di consegnarle quel registro, c'è un'ultima lezione da imparare:
+come **difenderlo**. Hai notato che chiunque, adesso, può congedare Jon Snow
+con una riga di curl? Nel **prossimo capitolo** mettiamo il server in
+sicurezza.
+</Card>

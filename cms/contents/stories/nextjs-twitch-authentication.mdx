@@ -1,442 +1,262 @@
 <Card>
-Today, I will explain how to create a frontend that interfaces with Twitch’s official APIs using Next.js. The application we will be building allows users to log in with their Twitch accounts and then displays the channels they are following, indicating if they are on live or not. The frontend will be developed using the latest version of NEXT.js (13) with the NextAuth library for authentication.
+## Login con Twitch in Next.js e Auth.js
 
 <br />
-
-Before to start, some useful links:
-
+Oggi costruiamo un'app Next.js dove l'utente **entra col suo account Twitch**
+e vede la lista dei canali che segue, con l'indicazione di chi è in live in
+quel momento. OAuth vero, API vere, niente scorciatoie: alla fine avrai un
+flusso di autenticazione completo che puoi riusare per qualsiasi provider.
 <br />
-
+I link utili prima di partire:
+<br />
 - [Docs API Twitch](https://dev.twitch.tv/docs/api)
-- [Docs NEXT.js](https://nextjs.org/docs)
-- [Docs NextAuth](https://authjs.dev/getting-started/introduction)
-- [DEMO LINK](https://twitch-nextjs-example.vercel.app/)
-- [GITHUB REPO](https://github.com/gNaps/twitch-nextjs-example)
-
+- [Docs Next.js](https://nextjs.org/docs)
+- [Docs Auth.js](https://authjs.dev)
 <br />
-
-### Setup project
-
+### 🔧 Setup: la console Twitch
 <br />
+Il primo passo è sulla [console developer di
+Twitch](https://dev.twitch.tv/console): crea un account se non ce l'hai, poi
+registra una nuova applicazione. Il campo importante è l'**OAuth Redirect
+URL**, dove va inserito:
 
-Ok, let’s go!
-The first thing to do is to create, if you haven’t already, an account on [Twitch’s developer console](https://dev.twitch.tv/console). Once done, we can proceed to create a new application. It’s crucial to register the following URL as a possible callback URL:
-
-<br />
-
-[http://localhost:3000/api/auth/callback/twitch](http://localhost:3000/api/auth/callback/twitch)
-
-<br />
-
-This URL will be used by the NextAuth library to handle the redirect callback after logging in to Twitch. Remember to save the `clientId` and `secretKey` of your application in an `.env` file, as they will be needed to call Twitch’s authenticated endpoints.
-
-<br />
-
-Now, we can start by creating the `NEXT.js` project. Open your terminal in the folder where you want to work and run the script:
-
-<br />
-
-```bash
-npx create-next-app@latest
+```text
+http://localhost:3000/api/auth/callback/twitch
 ```
 
-<br />
-
-Follow the wizard to set up the project. I recommend choosing to install `TailwindCSS` as well, as it will be used within this guide.
-
-Finally, install these two libraries that we will use later:
-
-<br />
+È l'indirizzo a cui Twitch rispedirà l'utente dopo il login, ed è Auth.js a
+gestirlo per noi. Dalla console recupera **Client ID** e **Client Secret** e
+mettili in un file `.env.local`:
 
 ```bash
-yarn add next-auth
+AUTH_TWITCH_ID=il-tuo-client-id
+AUTH_TWITCH_SECRET=il-tuo-client-secret
+AUTH_SECRET=una-stringa-casuale-lunga
 ```
 
+Quel `AUTH_SECRET` serve ad Auth.js per firmare le sessioni: generalo con
+`npx auth secret` o con qualsiasi generatore di stringhe casuali.
+
+> Occhio ai nomi delle variabili: in Next.js tutto ciò che ha il prefisso
+> `NEXT_PUBLIC_` finisce **nel bundle del browser**, leggibile da chiunque
+> apra i DevTools. Client secret e chiavi di firma non devono mai averlo: le
+> variabili `AUTH_*` qui sopra restano sul server, dove i segreti devono
+> stare.
+
+### 📦 Setup: il progetto
 <br />
+Creiamo il progetto e installiamo Auth.js (il pacchetto si chiama ancora
+`next-auth`, nella versione 5):
 
 ```bash
-yarn add react-icons
+npx create-next-app@latest twitch-follows
+cd twitch-follows
+npm install next-auth@beta
 ```
 
+### 🔑 La configurazione di Auth.js
 <br />
-
-### About authentication
-
-<br />
-
-NextAuth is a library that allows us to handle login functionality very easily. Moreover, the library provides a built-in provider for Twitch, but we will customize it because we need to add some specific scopes to our access token.
-
-The first step is to create a file named route.ts inside the app/api/auth/[...nextauth] directory. You can think of the dynamic 
-[…nextauth] folder as a catch-all for all requests to the api/auth path that the library executes. The file is a route handler that allow you to create custom request handlers.
+Tutta la configurazione vive in un file `auth.ts` nella radice del progetto:
+qui dichiariamo il provider Twitch (Auth.js ne ha uno pronto), gli **scope**
+che ci servono e due callback per portarci a casa il token di accesso.
 
 ```typescript
-import NextAuth, { AuthOptions } from "next-auth";
+// auth.ts
+import NextAuth from 'next-auth';
+import Twitch from 'next-auth/providers/twitch';
 
-export interface TwitchProfile extends Record<string, any> {
-  sub: string;
-  preferred_username: string;
-  email: string;
-  picture: string;
-}
-
-export default function TwitchProvider(options: any): any {
-  return {
-    wellKnown: "https://id.twitch.tv/oauth2/.well-known/openid-configuration",
-    id: "twitch",
-    name: "Twitch",
-    type: "oauth",
-    authorization: {
-      params: {
-        scope: "openid user:read:email user:read:follows",
-        claims: {
-          id_token: {
-            email: null,
-            picture: null,
-            preferred_username: null,
-          },
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  providers: [
+    Twitch({
+      authorization: {
+        params: {
+          // oltre al login, chiediamo di leggere i canali seguiti
+          scope: 'openid user:read:email user:read:follows',
         },
       },
-    },
-    idToken: true,
-    profile(profile: any) {
-      return {
-        id: profile.sub,
-        name: profile.preferred_username,
-        email: profile.email,
-        image: profile.picture,
-      };
-    },
-    style: {
-      logo: "/twitch.svg",
-      logoDark: "/twitch-dark.svg",
-      bg: "#fff",
-      text: "#65459B",
-      bgDark: "#65459B",
-      textDark: "#fff",
-    },
-    options,
-  };
-}
-
-export const authOptions: AuthOptions = {
-  secret: process.env.SECRET_AUTH,
-  providers: [
-    TwitchProvider({
-      clientId: process.env.NEXT_PUBLIC_CLIENT_ID,
-      clientSecret: process.env.NEXT_PUBLIC_CLIENT_SECRET,
     }),
   ],
   callbacks: {
-    async session({ session, token, user }) {
-      return { ...session, token };
+    jwt({ token, account }) {
+      // al primo login, salviamo il token Twitch e l'id utente
+      if (account) {
+        token.accessToken = account.access_token;
+        token.userId = account.providerAccountId;
+      }
+      return token;
     },
-    async jwt({ token, user, account, profile }) {
-      return { ...token, ...account };
+    session({ session, token }) {
+      // e li esponiamo nella sessione, per usarli lato server
+      session.accessToken = token.accessToken as string;
+      session.userId = token.userId as string;
+      return session;
     },
   },
-};
-
-const handler = NextAuth(authOptions);
-
-export { handler as GET, handler as POST };
+});
 ```
 
+Tre cose da notare. Primo: il provider ufficiale basta e avanza, ci
+aggiungiamo solo gli `scope` extra (il predefinito gestisce il login, ma per
+leggere i canali seguiti serve `user:read:follows`). Secondo: client id e
+secret non compaiono nel codice, Auth.js li legge da solo dalle variabili
+`AUTH_TWITCH_*`. Terzo: i callback `jwt` e `session` sono il passaggio di
+mano del token: Twitch lo consegna ad Auth.js, noi lo travasiamo nella
+sessione per poterlo usare nelle chiamate API.
 <br />
-As you can see, I have override the NextAuth provider in order to add additional
-scopes to the access token that we will recieve from Twitch. Furthermore, we
-have the option to create callbacks that we use to extend our session with
-additional data.
-<br />
-
-We can now create a React provider that will extend the SessionProvider exporter from the NextAuth library. We define it to be used exclusively on the client side with the ‘use client’ syntax. In this way, we can continue developing our application with server-side functionality.
-
-<br />
+Il route handler è di una modestia imbarazzante:
 
 ```typescript
-'use client'
+// app/api/auth/[...nextauth]/route.ts
+import { handlers } from '@/auth';
 
-import { SessionProvider } from "next-auth/react"
-
-export default function Provider ({
-  children,
-  session
-}: {
-  children: React.ReactNode
-  session: any
-}): React.ReactNode {
-  return <SessionProvider session={session}>
-    {children}
-  </SessionProvider>
-}
+export const { GET, POST } = handlers;
 ```
 
+### 🚪 La pagina di login
 <br />
+Niente `use client`, niente hook: una **server action** e un bottone.
 
-Therefore, we inject the provider into our Layout.tsx .
+```tsx
+// app/login/page.tsx
+import { signIn } from '@/auth';
 
-<br />
-
-```typescript
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const session = await getServerSession(authOptions);
+export default function LoginPage() {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <Provider session={session}>{children}</Provider>
-      </body>
-    </html>
+    <main className="login">
+      <form
+        action={async () => {
+          'use server';
+          await signIn('twitch', { redirectTo: '/' });
+        }}
+      >
+        <button type="submit">Entra con Twitch</button>
+      </form>
+    </main>
   );
 }
 ```
 
+### 📡 Le chiamate alle API di Twitch
 <br />
-
-### UI
-
-<br />
-
-We can start with the development of the interface, beginning with the login page.
+I canali seguiti si leggono da `GET /channels/followed` (è il motivo dello
+scope `user:read:follows` di prima), i dettagli dei canali da `GET /users` e
+le dirette in corso da `GET /streams/followed`. Le API di Twitch sono
+paginate, quindi ci scriviamo un piccolo helper che gira le pagine fino in
+fondo:
 
 ```typescript
-"use client";
+// lib/twitch.ts
+const TWITCH_API = 'https://api.twitch.tv/helix';
 
-import { signIn, useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
-import { BsTwitch } from "react-icons/bs";
+async function twitchGetAll(path: string, accessToken: string) {
+  const items: any[] = [];
+  let cursor: string | undefined;
 
-const Login = () => {
-  const { data: session } = useSession();
-
-  if (session) {
-    redirect("/");
-  }
-
-  return (
-    <div className="w-screen h-screen flex justify-center items-center">
-      <div className="flex flex-col items-center gap-5a">
-        <BsTwitch className="h-12 w-12" />
-        <button
-          className="bg-violet-700 p-3 text-gray-50"
-          onClick={() => signIn()}
-        >
-          Sign in!
-        </button>
-      </div>
-    </div>
-  );
-};
-
-export default Login;
-```
-
-<br />
-
-As you can see here, I’m simply checking whether the user is logged in and, if not, displaying a login button. All of this is done using the hooks provided by NextAuth.
-Now let’s get to the heart of this project, our homepage!
-
-```typescript
-import { getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]/route";
-import {
-  getFollows,
-  getFollowsDetails,
-  getFollowsStream,
-} from "@/api/twitch-api";
-import Topbar from "@/components/topbar.component";
-import ChannelCard from "@/components/channel-card.component";
-import { redirect } from 'next/navigation'
-
-export default async function Home() {
-  const session: any = await getServerSession(authOptions);
-  const channels = [];
-
-  if (!!session) {
-    const accessToken = session.token.access_token;
-    const userId = session.token.providerAccountId;
-
-    const follows = await getFollows(userId, accessToken);
-    const followsIds = follows.map((f: any) => f.to_id).join("&id=");
-
-    const { data: followsDetails } = await getFollowsDetails(
-      followsIds,
-      accessToken
-    );
-
-    followsDetails.sort((a: any, b: any) => {
-      let x = a.display_name.toLowerCase();
-      let y = b.display_name.toLowerCase();
-
-      if (x > y) {
-        return 1;
-      }
-      if (x < y) {
-        return -1;
-      }
-      return 0;
+  do {
+    const url = `${TWITCH_API}${path}${cursor ? `&after=${cursor}` : ''}`;
+    const response = await fetch(url, {
+      headers: {
+        'Client-Id': process.env.AUTH_TWITCH_ID!,
+        Authorization: `Bearer ${accessToken}`,
+      },
     });
 
-    const followsStream = await getFollowsStream(userId, accessToken);
-
-    for (const followDetail of followsDetails) {
-      const follow = followsStream.find(
-        (f: any) => f.user_id === followDetail.id
-      );
-      follow
-        ? channels.push({ ...follow, ...followDetail, liveId: follow.id })
-        : channels.push(followDetail);
+    if (!response.ok) {
+      throw new Error(`Twitch ha risposto ${response.status}`);
     }
 
-    return (
-      <>
-        <Topbar image={session.token.picture} username={session.user.name} />
-        <main>
-          {channels.map((f: any) => (
-            <ChannelCard
-              isLive={f.liveId}
-              name={f.display_name}
-              description={f.description}
-              profile={f.profile_image_url}
-              liveTitle={f.title}
-              livePreview={f.thumbnail_url}
-            />
-          ))}
-        </main>
-      </>
-    );
-  } else {
-    redirect('/login')
-  }
+    const data = await response.json();
+    items.push(...data.data);
+    cursor = data.pagination?.cursor;
+  } while (cursor);
+
+  return items;
+}
+
+// i canali seguiti dall'utente
+export const getFollowedChannels = (userId: string, token: string) =>
+  twitchGetAll(`/channels/followed?user_id=${userId}&first=100`, token);
+
+// i dettagli dei canali (avatar, descrizione)
+export const getUsers = (ids: string[], token: string) =>
+  twitchGetAll(`/users?id=${ids.join('&id=')}`, token);
+
+// chi è in live adesso, tra i canali seguiti
+export const getFollowedStreams = (userId: string, token: string) =>
+  twitchGetAll(`/streams/followed?user_id=${userId}&first=100`, token);
+```
+
+### 🏠 La homepage
+<br />
+La pagina principale è un server component: legge la sessione con `auth()`,
+chiama le tre API e incrocia i risultati. Tutto sul server, il token non
+tocca mai il browser.
+
+```tsx
+// app/page.tsx
+import { auth } from '@/auth';
+import { redirect } from 'next/navigation';
+import {
+  getFollowedChannels,
+  getFollowedStreams,
+  getUsers,
+} from '@/lib/twitch';
+
+export default async function Home() {
+  const session = await auth();
+  if (!session) redirect('/login');
+
+  const { accessToken, userId } = session;
+
+  const follows = await getFollowedChannels(userId, accessToken);
+  const details = await getUsers(
+    follows.map((f) => f.broadcaster_id),
+    accessToken
+  );
+  const streams = await getFollowedStreams(userId, accessToken);
+
+  const channels = details
+    .sort((a, b) => a.display_name.localeCompare(b.display_name))
+    .map((channel) => ({
+      ...channel,
+      stream: streams.find((s) => s.user_id === channel.id),
+    }));
+
+  return (
+    <main className="channels">
+      {channels.map((channel) => (
+        <article key={channel.id} className="channel">
+          <img src={channel.profile_image_url} alt={channel.display_name} />
+          <h2>{channel.display_name}</h2>
+          {channel.stream ? (
+            <p className="live">🔴 LIVE · {channel.stream.title}</p>
+          ) : (
+            <p className="offline">offline</p>
+          )}
+        </article>
+      ))}
+    </main>
+  );
 }
 ```
 
+Il flusso completo: sessione → canali seguiti → dettagli (ordinati per nome)
+→ live in corso → merge. Lo stile lo lascio a te: la struttura è tutta qui.
+
+> Una nota sul token scaduto: il token di Twitch dura qualche ora, e quando
+> scade le API rispondono `401`. La gestione minima è intercettare l'errore
+> e rimandare l'utente al login (`signOut` seguito da redirect); quella seria
+> usa il **refresh token** che Twitch fornisce, rinnovando l'access token nel
+> callback `jwt` quando sta per scadere. Per un progetto dimostrativo la
+> prima basta; sappi che la seconda esiste, prima di andare in produzione.
+
+### ✅ Conclusione
 <br />
-Here again, I’m checking if the user is logged in; if not, I redirect him to the
-login page. Then I proceed to call 3 Twitch endpoints that allow me to retrieve
-all the channels that the user is following and whether they are currently on
-live or not.
-<br />
-
-Let’s see the methods that call the Twitch APIs.
-At first I retrieve all the channels followed by the user using a recursive method to iterate through the pagination of the Twitch APIs.
-
-```typescript
-export const getFollows = async (
-  userId: number,
-  accessToken: string,
-  after: string = "",
-  follows: any = []
-): Promise<any> => {
-  const response = await fetch(
-    `${TWITCH_URL_API}/users/follows?from_id=${userId}${
-      after ? `&after=${after}` : ""
-    }`,
-    {
-      headers: {
-        "Client-Id": process.env.NEXT_PUBLIC_CLIENT_ID,
-        Authorization: "Bearer " + accessToken,
-      },
-    }
-  );
-  const data = await response.json();
-
-  follows = [...follows, ...data.data];
-  if (data.pagination && data.pagination.cursor) {
-    return await getFollows(
-      userId,
-      accessToken,
-      data.pagination.cursor,
-      follows
-    );
-  }
-
-  return follows;
-};
-```
-
-Then, once I have retrieved the channel IDs, I can call the /user endpoint to fetch the details.
-
-```typescript
-export const getFollowsDetails = async (ids: any, accessToken: string) => {
-  const response = await fetch(`${TWITCH_URL_API}/users?${ids}`, {
-    headers: {
-      "Client-Id": process.env.NEXT_PUBLIC_CLIENT_ID,
-      Authorization: "Bearer " + accessToken,
-    },
-  });
-  const data = await response.json();
-
-  return data;
-};
-```
-
-Finally, I call the /streams/followed endpoint to see which channels are currently live.
-
-```typescript
-export const getFollowsStream = async (
-  userId: number,
-  accessToken: string,
-  after: string = "",
-  follows: any = []
-) => {
-  const response = await fetch(
-    `${TWITCH_URL_API}/streams/followed?user_id=${userId}${
-      after ? `&after=${after}` : ""
-    }`,
-    {
-      headers: {
-        "Client-Id": process.env.NEXT_PUBLIC_CLIENT_ID,
-        Authorization: "Bearer " + accessToken,
-      },
-    }
-  );
-  const data = await response.json();
-
-  follows = [...follows, ...data.data];
-  if (data.pagination && data.pagination.cursor) {
-    return await getFollowsStream(
-      userId,
-      accessToken,
-      data.pagination.cursor,
-      follows
-    );
-  }
-
-  return follows;
-};
-```
-
-### Token expired problem
-
-An issue you might encounter is when the access token provided by Twitch has expired. To handle this scenario, you can add a try-catch block in your home page. On server side, if the Twitch APIs respond with a 401 error, you should [clear the cookies](https://nextjs.org/docs/app/api-reference/functions/cookies) to remove the NextAuth session and redirect the user to the login page.
-
-```typescript
-"use client";
-
-import { useEffect, useRef } from "react";
-
-export default function SignOutAction({ deleteTokens }: any) {
-  const deleteTokensRef = useRef(deleteTokens);
-
-  useEffect(() => {
-    deleteTokensRef.current = deleteTokens;
-  });
-
-  useEffect(() => {
-    deleteTokensRef.current();
-
-    setTimeout(() => window.location.reload(), 500);
-  }, []);
-
-  return null;
-}
-```
-
-And that’s it! I remind you that you can find a working demo of this project at the following link: [https://twitch-nextjs-example.vercel.app](https://twitch-nextjs-example.vercel.app)
-
-Or you can find the entire source code on GitHub: [https://github.com/gNaps/twitch-nextjs-example](https://github.com/gNaps/twitch-nextjs-example)
-
+Ricapitolando: un'app registrata sulla console Twitch, Auth.js che gestisce
+tutto il ballo OAuth con un provider e due callback, il token custodito lato
+server e tre chiamate API incrociate per costruire la pagina. Il bello di
+questo flusso è che è **riutilizzabile pari pari**: cambia il provider
+(Google, GitHub, Discord...), cambiano gli scope e gli endpoint, ma lo
+scheletro resta identico. Imparalo una volta con Twitch, e ogni "Accedi con"
+che incontrerai sarà una variazione sul tema.
 </Card>

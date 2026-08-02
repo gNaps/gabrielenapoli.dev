@@ -1,0 +1,290 @@
+<Card>
+## 07 - CSS: lo stile dell'interfaccia
+
+<br />
+Finora abbiamo costruito l'impalcatura della nostra pagina HTML. Tutto
+funziona, ma... diciamolo: è un po' triste. Bianco, nero, tutto attaccato,
+font anonimo. Perfetto per un necrologio, meno per una web app moderna.
+<br />
+È qui che entra in gioco il nostro amico **CSS**: il linguaggio che dà stile,
+colori e forma alle pagine web. Se l'HTML è lo scheletro, il CSS è **il
+vestito, l'espressione e l'eleganza**.
+<br />
+### ✨ Che cos'è il CSS?
+<br />
+CSS sta per **Cascading Style Sheets**, fogli di stile a cascata. Fu
+introdotto a metà anni '90, quando i siti cominciavano ad aver bisogno non
+solo di testi e link ma anche di un layout gradevole e coerente. Prima del
+CSS ogni browser faceva un po' come voleva: immagina il caos.
+<br />
+Oggi il CSS è lo standard universale per definire lo stile delle pagine web.
+Con il CSS possiamo:
+<br />
+- cambiare colori, font e spaziature
+- disporre gli elementi in griglia o in riga
+- gestire animazioni, transizioni e visibilità
+- rendere un sito **responsive**, cioè adattabile a ogni schermo
+<br />
+### 🎯 Selettori: dire al browser "voglio modificare *questo*"
+<br />
+Per applicare uno stile a un elemento dobbiamo prima **selezionarlo**. Il CSS
+funziona così:
+
+```css
+selettore {
+  proprietà: valore;
+}
+```
+
+Per esempio:
+
+```css
+h1 {
+  color: navy;
+}
+```
+
+I selettori più comuni sono tre:
+<br />
+- **per tipo di elemento**: `p`, `h1`, `form`
+- **per classe**, col punto: `.box`, `.button-primary`
+- **per ID**, col cancelletto: `#form-iscrizione`
+
+```css
+#titolo {
+  font-size: 24px;
+}
+
+.button {
+  background-color: black;
+  color: white;
+}
+```
+
+E quando usare l'uno o l'altro? Regola pratica:
+<br />
+- il **tag** per gli stili generici, validi per tutti gli elementi di quel tipo
+- la **classe** quando vuoi riutilizzare lo stile su più elementi: è il selettore che userai il 90% delle volte
+- l'**ID** per un solo elemento specifico, perché deve essere univoco nella pagina
+<br />
+### ❔ Come si applica, concretamente?
+<br />
+Ci sono tre modi per portare il CSS in una pagina HTML.
+<br />
+**1. Inline**, direttamente sull'elemento con l'attributo `style`:
+
+```html
+<p style="color: red;">Attenzione: il nemico è alle porte!</p>
+```
+
+Semplice e veloce, ma poco riutilizzabile: sporca il codice.
+<br />
+**2. Interno**, dentro un tag `<style>` nell'`<head>`:
+
+```html
+<head>
+  <style>
+    p {
+      color: navy;
+    }
+  </style>
+</head>
+```
+
+Va bene per prototipi o pagine singole; appena la pagina cresce, diventa
+difficile da mantenere.
+<br />
+**3. Esterno**, in un file `.css` separato collegato con un `<link>`:
+
+```html
+<!-- nell'HTML -->
+<link rel="stylesheet" href="stile.css" />
+```
+
+```css
+/* nel file stile.css */
+p {
+  color: darkgreen;
+}
+```
+
+Riutilizzabile, pulito, mantenibile: è il metodo usato nei progetti reali, ed
+è quello che useremo noi.
+<br />
+### 📦 Il box model: tutto è una scatola
+<br />
+Nel mondo CSS **ogni elemento è una scatola**, e ogni scatola ha quattro
+strati:
+<br />
+- il **contenuto**: il testo, l'immagine, quello che c'è dentro
+- il **padding**: lo spazio interno, tra contenuto e bordo
+- il **border**: il bordo della scatola
+- il **margin**: lo spazio esterno, verso gli altri elementi
+
+> Capire il box model è fondamentale per allineare, distanziare e impaginare.
+> Quando un elemento "non si sposta come dovrebbe", nove volte su dieci la
+> risposta è qui: apri i DevTools, ispezionalo, e guarda il diagramma della
+> scatola nella tab Elements.
+
+### 📐 Flexbox: l'alleato per l'impaginazione
+<br />
+Una volta i layout si costruivano con `float` e margini calcolati a mano: un
+incubo. Con **Flexbox** disponi gli elementi in riga o in colonna, li centri
+facilmente e controlli spazi e comportamenti responsive.
+
+```css
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+```
+
+Header, card, footer, moduli: con Flexbox impagini praticamente tutto.
+<br />
+### 📱 Media query: il sito si adatta a ogni schermo
+<br />
+Con le **media query** cambi lo stile in base alla dimensione dello schermo:
+
+```css
+@media (max-width: 600px) {
+  .form-container {
+    flex-direction: column;
+  }
+}
+```
+
+È questo che rende un sito **responsive**: usabile sul monitor della
+scrivania come sul telefono in metropolitana.
+<br />
+### 🛠️ Framework CSS: perché reinventare tutto?
+<br />
+Scrivere CSS da zero va benissimo per imparare, ma sui progetti grandi può
+diventare faticoso. Per questo esistono framework CSS con **classi già
+pronte**. Uno dei più diffusi oggi è **Tailwind CSS**, che segue l'approccio
+*utility-first*: invece di scrivere regole personalizzate, componi lo stile
+con classi predefinite.
+
+```html
+<button class="bg-black text-white py-2 px-4 rounded">
+  Invia
+</button>
+```
+
+Niente file CSS da scrivere: le classi fanno tutto. Per ora però niente
+framework: prima si imparano le basi, poi si scelgono le scorciatoie.
+<br />
+### 💡 Vestiamo il modulo dei Guardiani
+<br />
+Riprendiamo il modulo del capitolo scorso e diamogli vita con del CSS puro.
+Riscriviamo `index.html` aggiungendo le classi. E nota un dettaglio: i
+`<br />` di ripiego che usavamo per andare a capo **spariscono**. Ora a
+spaziare ci pensa il CSS, come si deve.
+
+```html
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>Arruolamento Guardiani della Notte</title>
+  <!-- link al foglio di stile -->
+  <link rel="stylesheet" href="guardiani.css" />
+</head>
+<body>
+  <h1 id="titolo-pagina">Modulo di adesione ai Guardiani</h1>
+
+  <form class="form-dark">
+    <label for="name">Nome:</label>
+    <input type="text" id="name" name="name" class="campo" required />
+
+    <label for="lastname">Cognome:</label>
+    <input type="text" id="lastname" name="lastname" class="campo" required />
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" class="campo" required />
+
+    <label>
+      <input type="checkbox" name="oath" required />
+      Accetto di servire fino alla morte 🧊
+    </label>
+
+    <button class="btn-invio">Entra nella Guardia</button>
+  </form>
+</body>
+</html>
+```
+
+E nella stessa cartella creiamo il file `guardiani.css`:
+
+```css
+/* la pagina: sfondo scuro da Barriera */
+body {
+  background-color: #1a1a1a;
+  font-family: sans-serif;
+}
+
+/* selettore per ID */
+#titolo-pagina {
+  text-align: center;
+  font-size: 32px;
+  color: #f2f2f2;
+}
+
+/* selettore per classe: il form */
+.form-dark {
+  background-color: #2e2e2e;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 500px;
+  margin: 40px auto;
+  color: white;
+}
+
+/* i campi di testo */
+.campo {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  padding: 8px;
+  background: #444;
+  border: none;
+  border-radius: 4px;
+  color: white;
+}
+
+/* il pulsante */
+.btn-invio {
+  display: block;
+  margin-top: 16px;
+  background-color: #000;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-invio:hover {
+  background-color: #222;
+}
+```
+
+Ricarica la pagina nel browser: dark, serio, leggibile. Un look degno della
+Guardia della Notte. E nota il `.btn-invio:hover`: quel `:hover` è una
+**pseudo-classe**, uno stile che si attiva solo quando il mouse è
+sull'elemento. Il primo assaggio di interattività, senza una riga di
+JavaScript.
+<br />
+### ✅ Conclusione
+<br />
+Il CSS è ciò che trasforma una pagina da grezza a **curata**, da leggibile a
+**memorabile**. E non è solo estetica: è usabilità, accessibilità, identità.
+Col tempo imparerai a maneggiarlo come un linguaggio visivo, e quando
+scoprirai quanto potere hai nel posizionare, animare e trasformare gli
+elementi... ti divertirai, tanto.
+<br />
+Nel **prossimo capitolo** arriva il **JavaScript**, l'anima interattiva del
+frontend. Perché dopo che la pagina è strutturata e stilizzata... è ora di
+farla muovere. ⚡
+</Card>

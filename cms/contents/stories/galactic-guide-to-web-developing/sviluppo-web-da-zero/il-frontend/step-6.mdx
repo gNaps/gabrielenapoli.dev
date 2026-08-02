@@ -1,0 +1,123 @@
+<Card>
+## 09 - Framework e librerie: perché esistono e come sceglierli
+
+<br />
+Il modulo dei Guardiani funziona, e ci sono bastate quindici righe di
+JavaScript. Ora però fai un esperimento mentale: immagina Gmail. Migliaia di
+elementi sullo schermo, dati che arrivano di continuo, ogni pezzo
+dell'interfaccia che dipende da altri dieci. Quante righe di `querySelector` e
+`textContent` serviranno? E soprattutto: chi si ricorda di aggiornare *tutto*,
+*sempre*, senza dimenticare niente?
+<br />
+Nessuno, infatti. Ed è esattamente per questo che esistono i **framework
+frontend**.
+<br />
+### 🤯 Il problema: tenere sincronizzati dati e interfaccia
+<br />
+Nel capitolo scorso abbiamo aggiornato il DOM a mano: leggi il valore, crea
+l'elemento, sostituisci. Su piccola scala è perfetto. Su grande scala diventa
+il problema numero uno del frontend: **ogni volta che un dato cambia, qualcuno
+deve ricordarsi di aggiornare ogni pezzo di interfaccia che lo mostra**.
+<br />
+Guardalo in codice. Questo è l'approccio manuale, quello che sai già fare:
+
+```javascript
+let contatore = 0;
+const bottone = document.querySelector('#incrementa');
+const output = document.querySelector('#valore');
+
+bottone.addEventListener('click', () => {
+  contatore++;
+  output.textContent = contatore; // sincronizzazione a mano
+});
+```
+
+E questo è lo stesso contatore scritto con un framework moderno (la sintassi
+varia, l'idea no):
+
+```html
+<button (click)="contatore = contatore + 1">Incrementa</button>
+<p>{{ contatore }}</p>
+```
+
+La differenza è di filosofia: nel primo caso *ordini* al browser cosa fare
+passo passo; nel secondo **descrivi come deve apparire l'interfaccia in
+funzione dei dati**, e alla sincronizzazione pensa il framework. Si chiama
+approccio **dichiarativo**, e una volta provato non si torna indietro.
+<br />
+A questo i framework aggiungono l'altra grande idea: i **componenti**, pezzi
+di interfaccia riutilizzabili che tengono insieme struttura, stile e logica.
+Il bottone lo scrivi una volta e lo usi ovunque.
+<br />
+### 🥊 I tre protagonisti
+<br />
+Il panorama è affollato, ma tre nomi dominano il mercato da anni.
+<br />
+**React**, di Meta, è tecnicamente una *libreria* (ricordi la distinzione del
+capitolo sugli strumenti?): fa una cosa sola, i componenti e il loro
+rendering, e per il resto (routing, form, stato globale) scegli tu i pezzi
+dall'ecosistema, che è il più vasto in circolazione. Massima libertà, che
+significa anche massima responsabilità: due progetti React possono non
+somigliarsi per niente.
+<br />
+**Angular**, di Google, è un *framework* completo: router, form, chiamate
+HTTP, test. Tutto incluso e tutto ufficiale, con TypeScript di serie e
+convenzioni forti. Meno libertà nel piccolo, molta meno colla nel grande: è il
+motivo per cui domina nei team enterprise e nei progetti di lunga vita.
+<br />
+**Vue** è la via di mezzo: nato dalla community (senza una big tech alle
+spalle), progressivo (puoi adottarlo un pezzo alla volta) e famoso per la
+curva di apprendimento gentile e la documentazione eccellente.
+
+> E gli altri? Svelte, SolidJS, Qwik e compagnia portano idee interessanti e
+> qualcuna finirà nel mainstream. Ma se stai imparando, i tre grandi coprono
+> la stragrande maggioranza delle offerte di lavoro: le mode passano, le basi
+> restano.
+
+### ⚖️ Le differenze di approccio, in concreto
+<br />
+- **Libreria vs framework**: React ti dà un attrezzo e ti lascia comporre la cassetta; Angular ti consegna la cassetta completa, già organizzata; Vue sta nel mezzo
+- **Template vs JSX**: Angular e Vue estendono l'HTML con sintassi speciale nei template; React mescola markup e JavaScript nel JSX. Questione di gusti, entrambe funzionano
+- **Convenzioni vs libertà**: Angular decide molto per te (e i progetti si somigliano tutti); React quasi niente (e serve più disciplina di team); Vue suggerisce senza imporre
+- **Linguaggio**: Angular è TypeScript-first; con React e Vue TypeScript è opzionale ma ormai è la norma anche lì
+<br />
+Sotto il cofano, tutti e tre risolvono lo stesso problema (dati che cambiano,
+interfaccia che segue) con meccanismi di reattività diversi ma equivalenti
+nel risultato.
+<br />
+### 🧭 Come si sceglie, davvero
+<br />
+La domanda "quale framework è il migliore?" scatena guerre di religione dal
+2015. La risposta onesta è: **dipende, e conta meno di quanto credi**. I
+criteri che pesano davvero:
+<br />
+- **Il progetto**: un'app enterprise con dieci sviluppatori e dieci anni di vita davanti spinge verso Angular; un prodotto che deve iterare veloce con un team piccolo spesso sceglie React; un progetto che cresce per gradi sta bene su Vue
+- **Il team**: il framework che il team conosce batte quello "migliore sulla carta", quasi sempre
+- **Il mercato**: guarda le offerte di lavoro della tua zona o del settore che ti interessa: è un dato, non un'opinione
+- **L'ecosistema**: librerie, componenti pronti, risposte su Stack Overflow. Tutti e tre sono ricchissimi, dormici sereno
+<br />
+E il consiglio che do sempre a chi parte: **impara bene JavaScript prima**.
+I framework passano (e cambiano versione), ma variabili, funzioni, eventi e
+DOM, le cose degli ultimi capitoli, sono il fondamento su cui si regge
+qualsiasi framework. Chi conosce solo il framework si perde al primo problema
+fuori dal sentiero; chi conosce il linguaggio impara un framework nuovo in
+qualche settimana.
+
+> Su questo sito, per la cronaca, c'è un'intera serie su Angular: dieci
+> capitoli, dalle basi a un'app completa. Quando ti sentirai pronto per un
+> framework, sai dove trovarlo.
+
+### ✅ Conclusione
+<br />
+I framework non sono magia: sono la risposta industriale a un problema che
+ora conosci in prima persona: tenere sincronizzati dati e interfaccia senza
+impazzire. React, Angular e Vue lo risolvono con filosofie diverse e dignità
+pari; la scelta giusta dipende dal progetto, dal team e dal mercato, non dai
+meme.
+<br />
+E con questo, la parte frontend della guida è davvero completa: struttura,
+stile, logica e gli strumenti industriali per farli scalare. Nel **prossimo
+capitolo** guardiamo finalmente dall'altra parte dello specchio: il
+**backend**, la parte che lavora dietro le quinte per far sì che tutto quello
+che vedi... abbia un senso.
+</Card>

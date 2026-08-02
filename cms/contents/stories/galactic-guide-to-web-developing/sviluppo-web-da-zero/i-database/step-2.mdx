@@ -1,0 +1,106 @@
+<Card>
+## 17 - Concetti base dei database relazionali
+
+<br />
+Il mondo relazionale ha una grammatica precisa, fatta di poche parole:
+tabelle, righe, colonne, chiavi. Impararle adesso, con calma, significa
+capire al volo qualsiasi database incontrerai in carriera, perché sotto
+sotto, sono tutti fatti così.
+<br />
+E naturalmente le impariamo sul registro della Guardia.
+<br />
+### 📋 Tabelle, righe e colonne
+<br />
+Una **tabella** raccoglie dati dello stesso tipo. Ogni **riga** è un elemento
+(un guardiano); ogni **colonna** è una sua proprietà (il nome, il ruolo).
+Ecco il nostro registro, versione relazionale:
+
+```text
+guardiani
+┌────┬────────────────┬─────────────────┬─────────────┐
+│ id │ nome           │ ruolo           │ castello_id │
+├────┼────────────────┼─────────────────┼─────────────┤
+│ 1  │ Jon Snow       │ lord comandante │ 1           │
+│ 2  │ Samwell Tarly  │ attendente      │ 1           │
+│ 3  │ Eddison Tollet │ recluta         │ 2           │
+└────┴────────────────┴─────────────────┴─────────────┘
+```
+
+Somiglia a un foglio di calcolo, ma con una differenza cruciale: ogni colonna
+ha un **tipo dichiarato** (`id` è un numero intero, `nome` è testo) e il
+database **rifiuta** ciò che non rispetta lo schema. Prova a salvare un
+guardiano senza nome o con un id testuale: non entra. Sono le "regole" del
+capitolo scorso, in azione.
+<br />
+Su quella colonna `castello_id` torniamo tra un attimo: è lei la protagonista
+del capitolo.
+<br />
+### 🔑 La chiave primaria
+<br />
+Ogni riga ha bisogno di un'identità inconfondibile. Due guardiani potrebbero
+chiamarsi allo stesso modo, ma devono restare distinguibili: per questo ogni
+tabella ha una **chiave primaria** (primary key), una colonna il cui valore è
+**unico** per ogni riga. Quasi sempre è un `id` numerico che il database
+stesso incrementa a ogni inserimento.
+<br />
+Ti dice niente? È l'**id 43** che il server assegnò a Samwell nel capitolo
+sul CRUD, ed è il `42` degli URL tipo `/guardiani/42`: le API usano la
+chiave primaria per indicare *quale* risorsa. I pezzi, come sempre, si
+incastrano.
+<br />
+### 🗝️ La chiave esterna: come nascono le relazioni
+<br />
+Ora la domanda da un milione di dragoni: come rappresentiamo il fatto che Jon
+presta servizio al Castello Nero? L'istinto direbbe "aggiungo una colonna col
+nome del castello". Ma se il castello ha anche una posizione, un comandante,
+un anno di costruzione? Li copiamo su ogni guardiano? E se il castello cambia
+comandante, aggiorniamo mille righe?
+<br />
+La soluzione relazionale è più elegante: i castelli diventano **una tabella a
+sé**, e i guardiani li *puntano*:
+
+```text
+castelli
+┌────┬──────────────────┬────────────────┐
+│ id │ nome             │ posizione      │
+├────┼──────────────────┼────────────────┤
+│ 1  │ Castello Nero    │ centro         │
+│ 2  │ Forte Orientale  │ costa est      │
+└────┴──────────────────┴────────────────┘
+```
+
+Quel `castello_id` nella tabella guardiani è una **chiave esterna** (foreign
+key): contiene la chiave primaria di una riga di *un'altra* tabella. Jon ha
+`castello_id = 1` → riga 1 dei castelli → Castello Nero. Il dato del castello
+esiste **in un posto solo**; tutti gli altri lo referenziano.
+<br />
+Ti suona familiare anche questo? È la **singola fonte di verità**: lo stesso
+principio che, su scala diversa, la serie su Angular qui sul sito applica
+allo stato condiviso. Le buone idee, nell'informatica, girano.
+<br />
+### 🛡️ L'integrità referenziale
+<br />
+E qui il database mostra i muscoli. Dichiarando la chiave esterna, non stai
+solo documentando la relazione: stai chiedendo al database di **difenderla**.
+Si chiama **integrità referenziale**, e in pratica significa:
+<br />
+- non puoi assegnare a un guardiano un `castello_id` che **non esiste**: il database rifiuta l'inserimento
+- non puoi cancellare il Castello Nero **finché qualcuno ci presta servizio**, oppure, se lo hai deciso tu in anticipo, la cancellazione si propaga (i famigerati `RESTRICT` e `CASCADE`: blocca, o travolgi tutto a cascata)
+
+> Questa è la differenza profonda con il file di testo, e anche con molti
+> database a documenti: le relazioni non sono una convenzione che il tuo
+> codice *spera* venga rispettata: sono un **contratto che il database fa
+> rispettare**. I riferimenti rotti, semplicemente, non possono esistere.
+
+### ✅ Conclusione
+<br />
+Grammatica acquisita: le **tabelle** con colonne tipizzate, la **chiave
+primaria** che dà identità a ogni riga, la **chiave esterna** che crea le
+relazioni e l'**integrità referenziale** che le difende. Il registro della
+Guardia ora ha una struttura degna dei suoi ottomila anni di storia.
+<br />
+Manca solo la lingua per parlarci: nel **prossimo capitolo** impariamo
+**SQL**: leggere, inserire, aggiornare e cancellare. E manteniamo una
+promessa fatta nel capitolo sulla sicurezza: vedrai coi tuoi occhi cos'è una
+SQL injection.
+</Card>

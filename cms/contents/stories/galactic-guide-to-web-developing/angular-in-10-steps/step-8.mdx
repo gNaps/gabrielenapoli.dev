@@ -1,0 +1,183 @@
+<Card>
+## 08 - Stato condiviso: i service come unica fonte di verità
+
+<br />
+Componenti, form, chiamate al server: i pezzi ci sono tutti. Ma prima o poi
+arriva la domanda che segna il passaggio dalle demo alle app vere: **come fanno
+due componenti a condividere un'informazione?**
+<br />
+Immagina: in una pagina un componente permette di selezionare un gioco, e da
+un'altra parte dell'interfaccia un secondo componente deve mostrarne i
+dettagli. Non sono padre e figlio, magari vivono in rami completamente diversi
+dell'app. Come si parlano?
+<br />
+La risposta è quella che ti ho anticipato alla fine del capitolo scorso: **con
+un service**. Nel capitolo 7 i service li abbiamo usati per le chiamate HTTP;
+oggi li vediamo nel loro secondo mestiere, che forse è anche il più importante:
+**custodire lo stato dell'applicazione**.
+<br />
+### 🧩 Il principio: lo stato vive in un posto solo
+<br />
+Ripasso lampo dal capitolo scorso: un service con `providedIn: 'root'` è un
+**singleton**: Angular ne crea una sola istanza per tutta l'app e la
+consegna, tramite la **dependency injection**, a chiunque la chieda con
+`inject()`.
+<br />
+Ed è proprio questa la chiave: se due componenti iniettano lo stesso service,
+stanno guardando **lo stesso oggetto**. Metti lo stato lì dentro, in un signal,
+e la condivisione viene da sola: chi scrive aggiorna il signal, chi legge si
+aggiorna automaticamente. È il pattern della **singola fonte di verità**: il
+dato abita in un posto solo, tutti gli altri lo osservano.
+<br />
+### 🛠️ Step 1: il service con lo stato
+<br />
+Costruiamo l'esempio del gioco selezionato. Prima versione, la più semplice
+possibile:
+
+```typescript
+// game-selection.service.ts
+import { Injectable, signal } from '@angular/core';
+
+@Injectable({ providedIn: 'root' })
+export class GameSelectionService {
+  selectedGame = signal<string | null>(null);
+
+  select(game: string) {
+    this.selectedGame.set(game);
+  }
+}
+```
+
+Funziona già. Ma c'è una raffinatezza che nei progetti veri ripaga sempre:
+così com'è, chiunque inietti il service può fare `selectedGame.set(...)` da
+qualunque punto dell'app, e dopo sei mesi non sai più chi modifica cosa.
+Meglio esporre il signal in **sola lettura** e far passare le scritture dai
+metodi del service:
+
+```typescript
+import { Injectable, signal } from '@angular/core';
+
+@Injectable({ providedIn: 'root' })
+export class GameSelectionService {
+  private _selectedGame = signal<string | null>(null);
+
+  // il mondo esterno può leggere...
+  readonly selectedGame = this._selectedGame.asReadonly();
+
+  // ...ma per scrivere passa da qui
+  select(game: string) {
+    this._selectedGame.set(game);
+  }
+
+  clear() {
+    this._selectedGame.set(null);
+  }
+}
+```
+
+Ora il service è l'unico punto dove la selezione può cambiare. Quando qualcosa
+non torna, sai esattamente dove guardare.
+<br />
+### 🧪 Step 2: il componente che scrive
+<br />
+Il selettore inietta il service e chiama il suo metodo:
+
+```typescript
+// game-selector.component.ts
+import { Component, inject } from '@angular/core';
+import { GameSelectionService } from './game-selection.service';
+
+@Component({
+  selector: 'app-game-selector',
+  template: `
+    <h3>Seleziona un gioco:</h3>
+    <button (click)="select('Zelda')">Zelda</button>
+    <button (click)="select('Metaphor')">Metaphor</button>
+  `
+})
+export class GameSelectorComponent {
+  private gameService = inject(GameSelectionService);
+
+  select(game: string) {
+    this.gameService.select(game);
+  }
+}
+```
+
+### 👁️ Step 3: il componente che legge
+<br />
+Il dettaglio inietta lo stesso service e si limita a leggere il signal:
+
+```typescript
+// game-details.component.ts
+import { Component, inject } from '@angular/core';
+import { GameSelectionService } from './game-selection.service';
+
+@Component({
+  selector: 'app-game-details',
+  template: `
+    <h3>Gioco selezionato:</h3>
+    @if (selectedGame()) {
+      <p>{{ selectedGame() }}</p>
+    } @else {
+      <p>Nessun gioco selezionato</p>
+    }
+  `
+})
+export class GameDetailsComponent {
+  selectedGame = inject(GameSelectionService).selectedGame;
+}
+```
+
+Fine. Clicchi "Zelda" nel primo componente e il secondo si aggiorna
+all'istante, senza che i due si conoscano: nessun riferimento diretto, nessun
+evento da propagare su per l'albero. Il service fa da punto d'incontro, i
+signals fanno il resto.
+<br />
+### E lo stato derivato?
+<br />
+Anche i `computed` del capitolo 5 stanno benissimo dentro un service. Se il
+dettaglio deve sapere *se* c'è una selezione, non serve un secondo stato da
+tenere sincronizzato:
+
+```typescript
+readonly hasSelection = computed(() => this._selectedGame() !== null);
+```
+
+Stessa regola di sempre: tutto ciò che è derivabile si deriva, non si duplica.
+<br />
+### Padre-figlio o lontani parenti?
+<br />
+Un service non è l'unico modo per far comunicare i componenti, ed è bene
+scegliere lo strumento in base alla distanza:
+
+> Tra **padre e figlio diretti** bastano gli input (li hai già visti nel
+> capitolo 4 con `input()`) e gli output per gli eventi verso l'alto. Il
+> service entra in gioco quando i componenti sono **lontani** nell'albero, o
+> quando lo stato deve **sopravvivere alla navigazione**: cambi pagina, torni
+> indietro, e la selezione è ancora lì, perché il singleton vive quanto l'app.
+
+### 📌 Quando usare un service per lo stato
+<br />
+- più componenti devono leggere o scrivere lo stesso valore
+- lo stato deve sopravvivere alla navigazione tra pagine
+- vuoi separare la logica dalla presentazione, e testarla senza montare componenti
+<br />
+E un'onestà dovuta: per la stragrande maggioranza delle app, **service +
+signals è tutto quello che serve**. Librerie di state management come NgRx
+hanno senso su progetti grandi, con team numerosi e requisiti particolari
+(undo/redo, tracciabilità di ogni cambiamento). Non partire da lì: parti dal
+service, e fatti convincere dal progetto a cambiare, non dalla moda.
+<br />
+### Dove siamo arrivati
+<br />
+Il quadro dello stato è completo: i signals dentro i componenti per lo stato
+locale, i service con signals per lo stato condiviso, `asReadonly()` per
+proteggere le scritture e i `computed` per i valori derivati. Con questo
+pattern in mano, la struttura di un'app Angular moderna non ha più segreti di
+architettura.
+<br />
+Nel **prossimo capitolo** chiudiamo il modulo base con due attrezzi di
+finitura: gli **interceptor**, per mettere le mani su tutte le chiamate HTTP in
+un punto solo, e le **pipe**, per presentare i dati come si deve.
+</Card>

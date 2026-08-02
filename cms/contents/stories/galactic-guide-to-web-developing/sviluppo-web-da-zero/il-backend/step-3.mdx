@@ -1,0 +1,105 @@
+<Card>
+## 12 - Il concetto di CRUD
+
+<br />
+Nel capitolo scorso abbiamo detto che il backend custodisce i dati e li
+governa con la sua logica. Bene: ma cosa ci si *fa*, concretamente, con i
+dati? La risposta è sorprendentemente corta. Con i dati si fanno quattro
+cose. Quattro. Sempre quelle, in qualsiasi applicazione del mondo.
+<br />
+Si chiamano **CRUD**, e una volta che le vedi non riesci più a non vederle.
+<br />
+### 🔤 Le quattro operazioni
+<br />
+CRUD è un acronimo:
+<br />
+- **C**reate: creare un dato nuovo
+- **R**ead: leggere dati esistenti
+- **U**pdate: modificare un dato esistente
+- **D**elete: cancellare un dato
+<br />
+Rendiamolo concreto con i nostri Guardiani della Notte. Immagina che il
+backend custodisca il registro ufficiale della Guardia:
+<br />
+- una nuova recluta compila il modulo → **Create**: si aggiunge un guardiano al registro
+- il Lord Comandante consulta l'elenco → **Read**: si leggono i guardiani
+- Jon Snow viene promosso → **Update**: si modifica il suo ruolo
+- un disertore viene congedato (diciamo così) → **Delete**: si rimuove dal registro
+<br />
+E adesso il trucco per non dimenticarlo mai: prendi qualsiasi app che usi.
+Instagram? Crei un post, leggi il feed, modifichi la bio, cancelli una foto.
+Un e-commerce? Aggiungi al carrello, guardi il catalogo, cambi la quantità,
+rimuovi un articolo. Gmail, Spotify, il gestionale dell'ufficio: **sotto
+mentite spoglie, è sempre CRUD**. Cambiano i vestiti, il ballo è quello.
+<br />
+### 🔁 La mappatura sui metodi HTTP
+<br />
+I verbi HTTP del capitolo scorso (GET, POST, PUT, DELETE) non stavano lì
+per caso: adesso i pezzi si incastrano, perché **ogni operazione CRUD ha il
+suo verbo**:
+<br />
+- **Create** → `POST`: ti mando una cosa nuova da salvare
+- **Read** → `GET`: dammi dei dati
+- **Update** → `PUT` o `PATCH`: aggiorna questa cosa
+- **Delete** → `DELETE`: cancellala (almeno qui, nessuna sorpresa)
+<br />
+Ed ecco il cugino `PATCH` che ti avevo promesso: la distinzione con `PUT` è
+sottile ma utile da sapere. `PUT` **sostituisce l'intera risorsa** (ti rimando
+il guardiano completo, versione nuova), `PATCH` ne **modifica solo una parte**
+(ti mando solo il campo ruolo). Nella pratica quotidiana incontrerai molto
+spesso `PATCH` per le modifiche parziali.
+<br />
+Ecco come appare il registro della Guardia visto dalle sue API:
+
+```http
+GET    /guardiani       → l'elenco dei guardiani
+GET    /guardiani/42    → il guardiano numero 42
+POST   /guardiani       → arruola un nuovo guardiano
+PATCH  /guardiani/42    → aggiorna il guardiano 42
+DELETE /guardiani/42    → congeda il guardiano 42
+```
+
+Nota l'eleganza: **l'indirizzo dice su cosa agisci, il verbo dice cosa fai**.
+Stesso indirizzo (`/guardiani/42`), tre operazioni diverse a seconda del
+metodo. Questa combinazione di risorse e verbi è il cuore dello stile
+**REST**, il modo più diffuso di progettare API: un nome che sentirai
+pronunciare in ogni team in cui metterai piede.
+<br />
+### 📬 Un giro completo
+<br />
+Vediamo un'operazione dall'inizio alla fine, come nel capitolo 2 ma con gli
+occhi nuovi. Il frontend arruola una recluta:
+
+```http
+POST /guardiani HTTP/1.1
+Content-Type: application/json
+
+{ "nome": "Samwell Tarly", "ruolo": "attendente" }
+```
+
+E il server risponde:
+
+```http
+HTTP/1.1 201 Created
+Content-Type: application/json
+
+{ "id": 43, "nome": "Samwell Tarly", "ruolo": "attendente" }
+```
+
+Guarda cosa è successo: il server ha accettato la richiesta, ha salvato Sam
+nel registro, gli ha assegnato un **id** (il numero 43, che d'ora in poi lo
+identificherà in ogni `GET`, `PATCH` o `DELETE`) e ha risposto con il `201
+Created` che ormai sai leggere al volo. Se il guardiano 999 non esistesse?
+`404 Not Found`. Richiesta malformata? `400`. I codici di stato del capitolo
+scorso, qui, iniziano a lavorare per te.
+<br />
+### ✅ Conclusione
+<br />
+CRUD è una di quelle idee che ripagano per sempre: quattro operazioni, quattro
+verbi HTTP, e all'improvviso ogni API del mondo ti sembra familiare: perché
+lo è. Quando più avanti scriverai le tue API, o ne consumerai una dal
+frontend, questo capitolo sarà la mappa che hai in tasca.
+<br />
+E la teoria finisce qui: nel **prossimo capitolo** scriviamo il nostro primo
+server vero. Piccolo indizio: lo faremo in un linguaggio che conosci già.
+</Card>

@@ -1,0 +1,219 @@
+<Card>
+## 08 - JavaScript: la logica nel browser
+
+<br />
+Struttura: fatta. Stile: fatto. Il modulo dei Guardiani della Notte è solido e
+ha pure un bel look scuro. C'è solo un problema: se lo compili e premi il
+bottone... non succede niente di interessante. La pagina è bella, ma è ferma.
+<br />
+È il momento del terzo pilastro: **JavaScript**, l'unico linguaggio di
+programmazione che il browser sa eseguire. Se l'HTML è lo scheletro e il CSS è
+il vestito, JavaScript è **i muscoli e i riflessi**: reagisce a quello che fa
+l'utente, prende decisioni, cambia la pagina in tempo reale.
+<br />
+### 🔌 Portare JavaScript nella pagina
+<br />
+Come per il CSS, il codice va collegato all'HTML. Il modo giusto è un file
+separato, caricato con il tag `<script>` dentro l'`<head>`:
+
+```html
+<script src="guardiani.js" defer></script>
+```
+
+Quel `defer` è importante: dice al browser "scarica pure il file, ma eseguilo
+solo **dopo** aver costruito il DOM". Ricordi l'albero del capitolo sul
+browser? Se il nostro codice cercasse un bottone prima che il browser lo abbia
+creato, troverebbe il nulla. Con `defer`, l'ordine è sempre quello giusto.
+<br />
+### 📦 Le variabili: dare un nome alle cose
+<br />
+Una variabile è una scatola con un'etichetta: ci metti dentro un valore e lo
+richiami per nome. In JavaScript moderno si dichiara in due modi:
+
+```javascript
+const nomeGuardiano = 'Jon Snow'; // non cambierà mai più
+let reclute = 3;                  // può cambiare nel tempo
+
+reclute = reclute + 1; // ok: le reclute ora sono 4
+```
+
+La regola che ti risparmierà mille bug: **usa `const` di default**, e passa a
+`let` solo quando il valore deve davvero cambiare. Meno cose possono mutare,
+meno cose possono rompersi.
+<br />
+Dentro le variabili puoi mettere di tutto: testi (le *stringhe*), numeri,
+veri/falsi (i *booleani*), liste di valori (gli *array*) e strutture con più
+proprietà (gli *oggetti*):
+
+```javascript
+const motto = 'La notte si raduna';        // stringa
+const annoFondazione = -8000;              // numero (circa)
+const accettaReclute = true;               // booleano
+const castelli = ['Castello Nero', 'Forte Orientale']; // array
+const guardiano = { nome: 'Jon', ruolo: 'Lord Comandante' }; // oggetto
+```
+
+> Nei tutorial più vecchi troverai anche `var`: è il modo antico di dichiarare
+> variabili, con qualche comportamento bizzarro che `let` e `const` hanno
+> sistemato. Riconoscilo quando lo vedi, ma non usarlo nel codice nuovo.
+
+### ⚙️ Le funzioni: azioni con un nome
+<br />
+Se la variabile è una scatola, la **funzione** è una ricetta: un blocco di
+istruzioni con un nome, pronto per essere eseguito quando serve, anche mille
+volte.
+
+```javascript
+function saluta(nome) {
+  return `Benvenuto alla Barriera, ${nome}!`;
+}
+
+saluta('Jon');   // "Benvenuto alla Barriera, Jon!"
+saluta('Sam');   // "Benvenuto alla Barriera, Sam!"
+```
+
+Due cose da notare. La prima: `nome` è un **parametro**, un segnaposto che
+prende il valore passato alla chiamata. La seconda: quel testo tra backtick
+(`` ` ``) è una **template literal**, che permette di inserire variabili nel
+testo con `${...}`: molto più comodo che incollare stringhe con il `+`.
+<br />
+Esiste anche una sintassi più compatta, la **arrow function**, che incontrerai
+ovunque nel codice moderno:
+
+```javascript
+const saluta = (nome) => `Benvenuto alla Barriera, ${nome}!`;
+```
+
+Stessa sostanza, meno cerimonia.
+<br />
+### 👂 Gli eventi: reagire all'utente
+<br />
+Ed eccoci al punto di svolta. Il browser genera un **evento** per qualsiasi
+cosa accada (un click, un tasto premuto, un form inviato) e JavaScript può
+mettersi in ascolto con `addEventListener`:
+
+```javascript
+const bottone = document.querySelector('.btn-invio');
+
+bottone.addEventListener('click', () => {
+  console.log('Qualcuno vuole arruolarsi!');
+});
+```
+
+Leggi la prima riga con calma, perché è metà del mestiere:
+`document.querySelector('.btn-invio')` cerca nel DOM il primo elemento che
+corrisponde a quel **selettore CSS**: sì, proprio i selettori del capitolo
+scorso, che qui si riciclano pari pari. La seconda parte dice: "quando su questo
+elemento avviene un `click`, esegui questa funzione".
+<br />
+E `console.log`? Scrive nella tab **Console** dei DevTools. Aprila (`F12`),
+clicca il bottone, e guarda i tuoi messaggi apparire: è il primo strumento di
+indagine di ogni sviluppatore.
+<br />
+### 🌳 Manipolare il DOM
+<br />
+Ascoltare non basta: vogliamo anche **cambiare** la pagina. Il DOM che il
+browser costruisce non è un disegno statico: JavaScript può leggerlo e
+modificarlo in tempo reale:
+
+```javascript
+const titolo = document.querySelector('#titolo-pagina');
+
+titolo.textContent = 'La Guardia ti osserva'; // cambia il testo
+titolo.classList.add('evidenziato');          // aggiunge una classe CSS
+```
+
+I ferri del mestiere sono pochi e si imparano in fretta:
+<br />
+- `document.querySelector(...)`: trova un elemento (con un selettore CSS)
+- `.textContent`: legge o cambia il testo di un elemento
+- `.classList.add / .remove / .toggle`: gestisce le classi CSS
+- `document.createElement(...)`: crea un elemento nuovo di zecca
+- `.value`: legge quello che l'utente ha scritto in un campo
+<br />
+### 🛡️ Il modulo prende vita
+<br />
+Mettiamo insieme tutto (variabili, funzioni, eventi, DOM) e completiamo la
+trilogia dei Guardiani. Crea `guardiani.js` nella cartella del progetto (il
+`<script>` con `defer` lo abbiamo già collegato):
+
+```javascript
+// troviamo il form nella pagina
+const form = document.querySelector('.form-dark');
+
+form.addEventListener('submit', (event) => {
+  // blocca l'invio della pagina: gestiamo tutto noi
+  event.preventDefault();
+
+  // leggiamo il nome inserito dall'utente
+  const nome = document.querySelector('#name').value;
+
+  // creiamo il messaggio di benvenuto
+  const messaggio = document.createElement('p');
+  messaggio.classList.add('benvenuto');
+  messaggio.textContent = `Benvenuto nella Guardia, ${nome}. La tua veglia ha inizio.`;
+
+  // sostituiamo il form con il messaggio
+  form.replaceWith(messaggio);
+});
+```
+
+E una classe in più in `guardiani.css`, per vestire il messaggio:
+
+```css
+.benvenuto {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #2e2e2e;
+  border-radius: 8px;
+  color: #f2f2f2;
+  text-align: center;
+}
+```
+
+Ricarica, compila, premi "Entra nella Guardia": il form scompare e al suo
+posto compare il benvenuto, col tuo nome dentro. Nota `event.preventDefault()`:
+di default l'invio di un form ricarica la pagina; noi lo blocchiamo e
+decidiamo cosa succede. È lo stesso principio su cui si reggono le Single Page
+Application del capitolo 2, solo che lì lo fa un framework, qui l'hai fatto
+tu.
+<br />
+### 🚀 ES6+: il JavaScript moderno
+<br />
+Un'ultima cosa, che è quasi una rivelazione. Il JavaScript che hai scritto
+oggi (`const`, `let`, le arrow function, le template literal) non è sempre
+esistito: è arrivato nel 2015 con **ES6** (ECMAScript 2015), l'aggiornamento
+che ha trasformato il linguaggio. Da allora esce una versione nuova ogni anno,
+ed è per questo che si parla di "ES6+".
+<br />
+Quindi congratulazioni: hai già usato ES6 per tutto il capitolo senza saperlo.
+Altre due chicche che incontrerai prestissimo:
+
+```javascript
+// destrutturazione: estrai proprietà con un colpo solo
+const guardiano = { nome: 'Jon', casata: 'Stark' };
+const { nome, casata } = guardiano;
+
+// spread: copia ed espandi array e oggetti
+const veterani = ['Jeor', 'Aemon'];
+const guardia = [...veterani, 'Jon']; // ['Jeor', 'Aemon', 'Jon']
+```
+
+E poi i **moduli** (`import`/`export`, per dividere il codice in più file) e
+le **Promise** con `async/await`, per gestire le operazioni che richiedono
+tempo, tipo le richieste HTTP del capitolo 2. A quelle dedicheremo lo spazio
+che meritano più avanti.
+<br />
+### ✅ Conclusione
+<br />
+Guarda cosa hai in mano adesso: una pagina strutturata con l'HTML, vestita con
+il CSS e viva grazie a JavaScript. I tre pilastri del frontend, tutti e tre al
+lavoro nello stesso progetto. E nessuno dei tre, come promesso, vince da
+solo.
+<br />
+C'è un'ultima cosa da vedere prima di chiudere questa parte: il nostro form è
+di 15 righe di JavaScript, ma le app vere ne hanno centinaia di migliaia. Come
+si fa a non impazzire? Nel **prossimo capitolo** parliamo di **framework e
+librerie** (Angular, React, Vue) e di come domano la complessità.
+</Card>

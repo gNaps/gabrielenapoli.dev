@@ -1,0 +1,156 @@
+<Card>
+## 09 - Interceptor e pipe: gli attrezzi di finitura
+
+<br />
+Penultimo capitolo del modulo base, e lo dedichiamo a due strumenti che non
+costruiscono pagine ma rendono migliore tutto il resto:
+<br />
+- gli **interceptor**, per mettere le mani su ogni chiamata HTTP da un punto solo: token, log, gestione errori
+- le **pipe**, per trasformare i dati direttamente nel template: date, valute, testi da accorciare
+<br />
+Sono i classici attrezzi che, una volta scoperti, ti chiedi come facevi prima.
+<br />
+### 🚦 Interceptor: la dogana delle richieste
+<br />
+Un **interceptor** si mette in mezzo tra la tua app e il server: ogni richiesta
+HTTP in uscita, e ogni risposta in entrata, passa da lì. Come una dogana, può
+lasciar passare, modificare, registrare o respingere.
+<br />
+I casi d'uso reali sono sempre gli stessi quattro, e prima o poi ti serviranno
+tutti:
+<br />
+- aggiungere il **token di autenticazione** a ogni chiamata
+- **loggare** richieste e tempi di risposta
+- gestire gli **errori** in un punto centrale (401 → redirect al login)
+- mostrare un **loader globale** quando c'è traffico in corso
+<br />
+Il punto è sempre lo stesso: senza interceptor, questa logica andrebbe copiata
+in ogni service. Con l'interceptor la scrivi una volta.
+<br />
+### 🛠 Esempio: il token su ogni richiesta
+<br />
+Oggi un interceptor è una semplice funzione di tipo `HttpInterceptorFn`:
+riceve la richiesta e la funzione `next` per farla proseguire.
+
+```typescript
+// auth.interceptor.ts
+import { HttpInterceptorFn } from '@angular/common/http';
+
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const token = localStorage.getItem('token');
+
+  // le richieste HTTP sono immutabili: si clona, non si modifica
+  const reqClone = token
+    ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
+    : req;
+
+  return next(reqClone);
+};
+```
+
+Due dettagli da notare. Il primo: le richieste sono **immutabili**, quindi non
+si modificano ma si **clonano** con le differenze (`req.clone(...)`). Il
+secondo: essendo una funzione eseguita nel contesto di Angular, dentro un
+interceptor puoi usare `inject()`: un `AuthService` vero, al posto del
+localStorage, si inietta esattamente come nei capitoli scorsi.
+<br />
+Si registra in `app.config.ts`, agganciandolo al `provideHttpClient` che
+conosciamo dal capitolo 7:
+
+```typescript
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './auth.interceptor';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideHttpClient(withInterceptors([authInterceptor]))],
+};
+```
+
+> Nei progetti meno recenti troverai gli interceptor come **classi** che
+> implementano `HttpInterceptor`, registrate con il provider `HTTP_INTERCEPTORS`
+> (o con `withInterceptorsFromDi()`). Stessa idea, più cerimonia: per il codice
+> nuovo usa le funzioni.
+
+Un secondo esempio, giusto per vedere che si può agire anche sulla risposta:
+un log dei tempi di ogni chiamata.
+
+```typescript
+import { HttpInterceptorFn } from '@angular/common/http';
+import { finalize } from 'rxjs';
+
+export const timingInterceptor: HttpInterceptorFn = (req, next) => {
+  const start = Date.now();
+  return next(req).pipe(
+    finalize(() => console.log(`${req.method} ${req.url}: ${Date.now() - start}ms`))
+  );
+};
+```
+
+Gli interceptor si mettono in fila: `withInterceptors([authInterceptor,
+timingInterceptor])` li esegue nell'ordine in cui li elenchi.
+<br />
+### 🪄 Pipe: formattare senza sporcare
+<br />
+Cambiamo completamente zona: dalle richieste HTTP al template. Le **pipe**
+trasformano un valore al momento di mostrarlo, con la sintassi `|`:
+
+```html
+<p>{{ oggi | date:'longDate' }}</p>
+<p>{{ prezzo | currency:'EUR' }}</p>
+<p>{{ nome | uppercase }}</p>
+```
+
+Il dato resta intatto nel componente; a cambiare è solo la presentazione. È la
+differenza tra tenere `prezzo = 59.99` e ritrovarsi nel componente una stringa
+"59,99 €" che poi non puoi più usare per fare i conti.
+<br />
+Le pipe pronte all'uso che uso più spesso:
+<br />
+- `date`: formatta date, con locale e formato configurabili
+- `currency`: numeri come valuta
+- `uppercase` / `lowercase` / `titlecase`: maiuscole e minuscole
+- `number`: separatori delle migliaia e decimali
+- `json`: stampa un oggetto come JSON, preziosa in fase di debug
+- `async`: si sottoscrive a un Observable per te. Se nel capitolo 7 il `subscribe()` manuale ti era sembrato rumoroso, questa è l'alternativa
+
+> Anche le pipe vanno **importate** nel componente che le usa, come tutto nel
+> mondo standalone: `imports: [DatePipe, CurrencyPipe]` e così via. Se il
+> template ti dà errore su una pipe "che dovrebbe esserci", è quasi sempre
+> questo.
+
+### ✍️ Scrivere una pipe personalizzata
+<br />
+Quando le pipe di serie non bastano, scriverne una è questione di minuti.
+Esempio classico: accorciare un testo troppo lungo.
+
+```typescript
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({ name: 'shorten' })
+export class ShortenPipe implements PipeTransform {
+  transform(value: string, limit = 10): string {
+    return value.length > limit ? value.slice(0, limit) + '…' : value;
+  }
+}
+```
+
+Nel template, dopo averla importata:
+
+```html
+<p>{{ descrizione | shorten:20 }}</p>
+```
+
+Un dettaglio che spiega perché le pipe sono così efficienti: di default sono
+**pure**, cioè Angular le riesegue solo quando il valore in ingresso cambia.
+Puoi metterne venti in una lista senza pensarci: non è lì che l'app rallenta.
+<br />
+### Dove siamo arrivati
+<br />
+Con interceptor e pipe il modulo base è **completo**: componenti, router,
+signals, form, HTTP, stato condiviso e ora anche gli attrezzi trasversali per
+richieste e presentazione. Tutto quello che segue è mestiere e pratica.
+<br />
+E la pratica arriva subito: nel **prossimo capitolo**, l'ultimo della serie,
+mettiamo insieme ogni singolo pezzo e costruiamo un'app completa: una
+**libreria digitale di videogiochi**. Porta i dadi.
+</Card>
