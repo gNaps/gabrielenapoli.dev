@@ -1,114 +1,71 @@
-"use client";
-
-import IllustrationSlot from "@/components/layout/illustration-slot";
-import { useLang } from "@/components/providers/language-provider";
+import { getSiteCopy } from "@/cms/site-copy";
+import heroImage from "@/public/cms/hero.webp";
+import Image from "next/image";
 import Link from "next/link";
 
-const SHIP_TAGS = ["React", "Electron", "SQL Server"];
-
 export default function Hero() {
-  const { lang, t } = useLang();
-
+  const { lang, t } = getSiteCopy();
   return (
-    <section className="hero">
-      <div className="hero-grid">
-        <div className="hero-col">
-          <div className="panel sh-12 hero-head">
-            <div className="focus-lines" aria-hidden />
-            <div className="hero-eyebrow">{t.eyebrowVol}</div>
-            <h1 className="hero-title">
-              {lang === "en" ? (
-                <>
-                  Fullstack developer
-                  <br />
-                  and <em>AI enthusiast</em>,
-                  <br />
-                  shipping reliable web apps.
-                </>
-              ) : (
-                <>
-                  Fullstack developer
-                  <br />
-                  e <em>AI enthusiast</em>,
-                  <br />
-                  che spedisce app affidabili.
-                </>
-              )}
-            </h1>
-            <p className="hero-blurb">{t.heroBlurb}</p>
-            <div className="hero-ctas">
-              <Link href="/#work" className="btn btn--primary">
-                {t.ctaWork}
-              </Link>
-              <Link href="/#contact" className="btn btn--ghost">
-                {t.ctaTalk}
-              </Link>
-            </div>
-          </div>
-
-          <div className="statrow">
-            <div className="panel sh-12 stat-card">
-              <div className="stat-card__head">
-                <span className="eyebrow" style={{ letterSpacing: "0.26em" }}>
-                  {t.statusLabel}
-                </span>
-                <span className="stat-card__lv">LV.28</span>
-              </div>
-              <div className="stat-list">
-                {t.stats.map((stat) => (
-                  <div key={stat.label} className="statbar">
-                    <span className="statbar__label">{stat.label}</span>
-                    <span className="statbar__track">
-                      <span
-                        className="statbar__fill"
-                        style={{ width: `${stat.width}%` }}
-                      />
-                    </span>
-                    <span className="statbar__value">{stat.value}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="hero-vtext sh-12 sh-accent">
-              <div className="hatch" aria-hidden />
-              <div className="vtext">ミラノの開発者</div>
-            </div>
+    <section
+      id="top"
+      className="hero-scroll"
+      data-sticky="hero"
+      aria-label="Introduction"
+    >
+      <div className="hero-stage">
+        <div className="hero-title" data-hero-title>
+          <p className="eyebrow hero-eyebrow">
+            Gabriele Napoli ·{" "}
+            {lang === "en" ? "Milan, Italy" : "Milano, Italia"} · Full stack
+            developer
+          </p>
+          <h1>
+            {lang === "en"
+              ? "Fullstack developer and "
+              : "Sviluppatore fullstack e "}
+            <span className="accent">AI enthusiast</span>,{" "}
+            <span className="hero-muted">
+              {lang === "en"
+                ? "building reliable web apps."
+                : "creo applicazioni web affidabili."}
+            </span>
+          </h1>
+          <div className="hero-ctas">
+            <Link href="/#work" className="btn btn--primary">
+              {t.ctaWork}
+            </Link>
+            <Link href="/#contact" className="btn btn--ghost">
+              {t.ctaTalk}
+            </Link>
           </div>
         </div>
-
-        <div className="hero-col">
-          <div className="panel panel--img sh-12" style={{ minHeight: 400 }}>
-            <IllustrationSlot
-              label="HERO · 挿絵"
-              priority
-              sizes="(max-width: 820px) 100vw, 50vw"
-              src="/cms/hero.webp"
+        <div className="hero-media" data-hero-media>
+          <div className="hero-image" data-hero-img>
+            <Image
+              src={heroImage}
+              alt="Gabriele Napoli, fullstack developer in Milan"
+              fill
+              preload
+              sizes="100vw"
+              className="cover"
             />
-            <div className="panel-caption">{t.panelCaption}</div>
-            <div className="sfx sfx--hero">ドン!</div>
           </div>
-
-          <div className="panel sh-12 ship-card">
-            <div className="ship-card__status">
-              <span className="blink-dot" />
-              {t.nowShipping}
+          <div className="hero-shade" />
+          <div className="hero-caption" data-hero-cap>
+            <div>
+              <p className="eyebrow accent">{t.nowShipping}</p>
+              <h2>NapSQL 2.0</h2>
+              <p className="ship-description">{t.shipDesc}</p>
             </div>
-            <div className="ship-card__title-row">
-              <strong className="ship-card__title">NapSQL 2.0</strong>
-              <Link href="/projects/napsql" className="ship-card__read">
-                {t.readMore}
-              </Link>
-            </div>
-            <p className="ship-card__desc">{t.shipDesc}</p>
-            <div className="ship-card__tags">
-              {SHIP_TAGS.map((tag) => (
-                <span key={tag} className="tag">
-                  {tag}
-                </span>
-              ))}
-            </div>
+            <Link href="/projects/napsql" className="btn btn--glass">
+              {lang === "en" ? "Read the case study →" : "Scopri il progetto →"}
+            </Link>
           </div>
         </div>
+        <span className="scroll-hint" aria-hidden="true">
+          {lang === "en" ? "Scroll to explore" : "Scorri per esplorare"}
+          <span>↓</span>
+        </span>
       </div>
     </section>
   );

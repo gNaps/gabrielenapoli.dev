@@ -1,5 +1,4 @@
 <Card>
-## RxJS: zip vs combineLatest vs withLatestFrom vs forkJoin
 
 <br />
 Se lavori con Angular, da RxJS non scappi. E prima o poi arriva il momento in
@@ -14,7 +13,7 @@ Questa oneshot è il remake di un pezzo che avevo scritto nel 2023: stessa
 storia, ridisegnata da cima a fondo. E stavolta con tutti e quattro i
 protagonisti in scena.
 <br />
-### 🎨 Lo scenario
+## 🎨 Lo scenario
 <br />
 Dobbiamo disegnare delle icone colorate, e le informazioni ci arrivano da
 **due persone diverse**: la prima ci dice il *colore*, la seconda il *tipo*
@@ -48,7 +47,7 @@ color$.next('purple');
 Nota il finale: quattro colori, ma solo tre icone. Questo piccolo squilibrio
 è quello che renderà visibili le differenze tra gli operatori.
 <br />
-### 🤐 zip: uno per ciascuno, in coppia
+## 🤐 zip: uno per ciascuno, in coppia
 <br />
 `zip` accoppia le emissioni **per posizione**: il primo colore con la prima
 icona, il secondo con la seconda, e così via. Come una cerniera, appunto.
@@ -78,7 +77,7 @@ serve l'accoppiata esatta per indice. È il caso più raro dei quattro.
 > valori si **accumulano in un buffer** in attesa del compagno. Su stream
 > infiniti e sbilanciati è memoria che cresce, silenziosamente.
 
-### 🔄 combineLatest: reagisci a ogni cambiamento
+## 🔄 combineLatest: reagisci a ogni cambiamento
 <br />
 Il grande assente della prima versione di questo articolo, e ironicamente il
 più usato dei quattro. `combineLatest` emette **l'ultima combinazione
@@ -119,7 +118,7 @@ combineLatest([query$, page$, sort$])
 > risultati e nessun errore. La cura è dargli un valore iniziale, con
 > `startWith` o con un `BehaviorSubject`.
 
-### 🎯 withLatestFrom: un protagonista, un contesto
+## 🎯 withLatestFrom: un protagonista, un contesto
 <br />
 Qui il rapporto non è più alla pari: c'è una sorgente **primaria** che
 comanda, e una secondaria che viene solo *consultata*. Nel nostro caso il
@@ -153,7 +152,7 @@ configurazione corrente: l'evento comanda, lo stato accompagna.
 > valore, le emissioni della primaria **vengono scartate**. È il motivo per
 > cui nel nostro esempio il colore "red" sparisce senza lasciare traccia.
 
-### 🏁 forkJoin: aspetta che tutti abbiano finito
+## 🏁 forkJoin: aspetta che tutti abbiano finito
 <br />
 `forkJoin` è il più drastico: ignora tutto quello che succede durante il
 viaggio ed emette **una volta sola**, quando **tutte** le sorgenti hanno
@@ -185,14 +184,14 @@ funziona alla perfezione, perché completano da sole dopo la risposta.)
 > eventi), `forkJoin` non emetterà mai niente. Nessun errore, nessun avviso:
 > solo un caricamento eterno. Se ti è successo, ora sai chi era.
 
-### 🧭 Quale scelgo? Il bigino
+## 🧭 Quale scelgo? Il bigino
 <br />
 - **zip**: mi servono le coppie *per posizione*, primo con primo, secondo con secondo
 - **combineLatest**: voglio reagire a *ogni cambiamento* con gli ultimi valori di tutti (form, filtri)
 - **withLatestFrom**: ho un *evento* che comanda e uno *stato* da leggere al passaggio
 - **forkJoin**: aspetto che *tutte* le sorgenti finiscano e mi serve solo il risultato finale (gruppi di HTTP)
 <br />
-### ✅ Conclusione
+## ✅ Conclusione
 <br />
 Quattro operatori che in superficie "combinano observable", e quattro
 contratti completamente diversi su *quando* emettere. È il motivo per cui

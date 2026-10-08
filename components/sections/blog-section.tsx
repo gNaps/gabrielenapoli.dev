@@ -1,39 +1,32 @@
-"use client";
-
-import { useReveal } from "@/components/layout/use-reveal";
-import { useLang } from "@/components/providers/language-provider";
+import { getSiteCopy } from "@/cms/site-copy";
 import { Course } from "@/models/course.model";
 import { Story } from "@/models/story.model";
 import Link from "next/link";
 import BlogGrid from "./blog-grid";
-
 export default function BlogSection({
   stories,
   courses,
-  viewAllHref,
+  viewAllHref = "/stories",
 }: {
   stories: Story[];
   courses?: Course[];
   viewAllHref?: string;
 }) {
-  const { t } = useLang();
-  const ref = useReveal<HTMLElement>();
-
+  const { t, lang } = getSiteCopy();
   return (
-    <section id="blog" ref={ref} className="reveal mt-section">
-      <div className="section-head">
-        <h2 className="section-title">{t.blogTitle}</h2>
-        <span className="eyebrow">
-          {t.evBlog}
-          {viewAllHref && (
-            <>
-              {"  ·  "}
-              <Link href={viewAllHref}>{t.viewAll}</Link>
-            </>
-          )}
-        </span>
+    <section id="blog" className="section-dark section-space">
+      <div className="container">
+        <div className="section-head" data-reveal>
+          <div>
+            <p className="eyebrow accent">Stories</p>
+            <h2 className="section-title">{t.blogTitle}</h2>
+          </div>
+          <Link href={viewAllHref} className="text-link">
+            {lang === "en" ? "All stories →" : "Tutti gli articoli →"}
+          </Link>
+        </div>
+        <BlogGrid stories={stories} courses={courses} />
       </div>
-      <BlogGrid stories={stories} courses={courses} />
     </section>
   );
 }

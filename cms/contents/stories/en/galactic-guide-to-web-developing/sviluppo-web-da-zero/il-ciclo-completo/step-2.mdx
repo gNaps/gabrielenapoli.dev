@@ -1,0 +1,149 @@
+<Card>
+
+<br />
+A confession: the Watch project still lacks a piece you may have missed. The form **sends** applications, the database **stores** them, but the frontend has never **displayed the register**. To see members, you opened `localhost:3000/guardiani` and read raw JSON. Hardly chapter 4's experience of eye, mind and heart.
+<br />
+Today, we finish it: a page **displaying the list**, welcoming recruits and **updating itself** after every enlistment. The complete cycle (form → API → database → interface) together for the first time.
+<br />
+## 🏗️ The register page
+<br />
+Start with HTML. Add a list section to the familiar form:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Night’s Watch register della Notte</title>
+  <link rel="stylesheet" href="guardiani.css" />
+  <script src="guardiani.js" defer></script>
+</head>
+<body>
+  <h1 id="titolo-pagina">Night’s Watch register</h1>
+
+  <!-- the list: JavaScript will populate it -->
+  <ul id="registro" class="registro"></ul>
+
+  <!-- the recruitment form -->
+  <form class="form-dark">
+    <label for="name">First name:</label>
+    <input type="text" id="name" name="name" class="campo" required />
+
+    <button class="btn-invio">Join the Watch</button>
+    <p id="errore" class="errore-form"></p>
+  </form>
+</body>
+</html>
+```
+
+Two additions: the **empty** `<ul id="registro">` (JavaScript fills it with real data), and an error paragraph, because last chapter was not wasted. A little CSS for these newcomers:
+
+```css
+.registro {
+  max-width: 500px;
+  margin: 24px auto;
+  padding: 0;
+  list-style: none;
+}
+
+.registro li {
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  background-color: #2e2e2e;
+  border-radius: 6px;
+  color: #f2f2f2;
+}
+
+.errore-form {
+  color: #ff6b6b;
+}
+```
+
+## 📖 Reading and displaying: the key function
+<br />
+The heart, in `guardiani.js`: request the server's list and draw it on the page. Last chapter's `caricaGuardiani` plus chapter 8's DOM manipulation, old friends finally working together:
+
+```javascript
+const registro = document.querySelector('#registro');
+const form = document.querySelector('.form-dark');
+const errore = document.querySelector('#errore');
+
+async function caricaRegistro() {
+  try {
+    const risposta = await fetch('http://localhost:3000/guardiani');
+    if (!risposta.ok) {
+      throw new Error(`The server responded with ${risposta.status}`);
+    }
+    const guardiani = await risposta.json();
+
+    // clear the list and redraw it
+    registro.textContent = '';
+    for (const guardiano of guardiani) {
+      const voce = document.createElement('li');
+      voce.textContent = `${guardiano.nome} - ${guardiano.ruolo}`;
+      registro.appendChild(voce);
+    }
+  } catch (err) {
+    errore.textContent = 'Unable to load the register. Is the server running?';
+  }
+}
+
+// populate the list on page load
+caricaRegistro();
+```
+
+Notice a choice that looks minor but matters for security: data enters through **`textContent`**, never `innerHTML`. A watchman's name comes from the database, originally **from a user**. Inserting untrusted markup with `innerHTML` can cause code execution in visitors' browsers (**XSS**, SQL injection's frontend cousin). With `textContent`, it always stays text. Never trust the client, even when its data comes back.
+<br />
+## ✍️ Enlisting and updating
+<br />
+Submission now uses everything you know and **calls `caricaRegistro()` again** at the end, closing the loop:
+
+```javascript
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  errore.textContent = '';
+
+  const campoNome = document.querySelector('#name');
+
+  try {
+    const risposta = await fetch('http://localhost:3000/guardiani', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nome: campoNome.value }),
+    });
+
+    if (!risposta.ok) {
+      throw new Error(`The server responded with ${risposta.status}`);
+    }
+
+    campoNome.value = '';   // clear the field
+    await caricaRegistro(); // show the updated register
+  } catch (err) {
+    errore.textContent = 'Recruitment failed. Try again shortly.';
+  }
+});
+```
+
+Open the page: the list fills automatically with Jon and whoever survived your experiments. Enlist someone: the field clears and their name **appears immediately**. Restart the server: everyone remains. Every chapter is doing its job.
+<br />
+## 🔭 The complete journey in slow motion
+<br />
+Chapter 2 promised to explain "what happens when you click a button". Watch frame by frame:
+<br />
+1. The user types "Grenn" and clicks: the **DOM** generates `submit`.
+2. Our **JavaScript** intercepts it, prevents reloading and composes a `POST` using `fetch`.
+3. The **HTTP request** leaves: method, headers, JSON body.
+4. **Fastify** receives and routes it, **validating** the name (never trust the client).
+5. The backend executes a **parameterized INSERT** on SQLite: Grenn is stored persistently.
+6. A **`201 Created` response** returns, including the watchman's `id`.
+7. The frontend requests the register again (`GET`), receiving updated **JSON**.
+8. The **DOM** updates: Grenn appears in the list.
+<br />
+Eight steps, a handful of milliseconds, and **you built every one**. Chapter 2's journey behind a click was a promise; now it is a map you can read and follow yourself.
+<br />
+## ✅ Conclusion
+<br />
+The cycle closes: frontend, backend and database are three organs of one body rather than separate subjects, and you have seen them work together. Every new technology (framework, ORM, cloud service) will replace or strengthen one organ. You know the skeleton.
+<br />
+No farewells yet: the **last section** covers good habits, organizing projects, the Git promised eighteen chapters ago, and a map to continue alone. Keep the register handy: the Watch always needs recruits.
+</Card>

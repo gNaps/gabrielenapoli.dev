@@ -1,53 +1,36 @@
-"use client";
-
 import { nowItems, uses } from "@/cms/now";
-import IllustrationSlot from "@/components/layout/illustration-slot";
-import { useReveal } from "@/components/layout/use-reveal";
-import { useLang } from "@/components/providers/language-provider";
-
+import { getSiteCopy } from "@/cms/site-copy";
 export default function NowSection() {
-  const { lang, t } = useLang();
-  const ref = useReveal<HTMLElement>();
-
+  const { t, lang } = getSiteCopy();
   return (
-    <section id="now" ref={ref} className="reveal mt-section">
+    <section id="now" className="now-section container">
+      <div data-reveal>
+        <p className="eyebrow accent">
+          {t.evNow} <span className="now-date">· {t.nowUpdated}</span>
+        </p>
+        <h2 className="section-title">{t.nowTitle}</h2>
+      </div>
       <div className="now-grid">
-        <div className="panel panel--ink sh-10 sh-accent now-card">
-          <div className="now-card__eyebrow">
-            <span className="blink-dot" />
-            {t.evNow}
+        {nowItems.map((item) => (
+          <div className="now-card" key={item.label.en} data-reveal>
+            <p className="eyebrow accent">{item.label[lang]}</p>
+            <h3>{item.value[lang]}</h3>
           </div>
-          <h2 className="now-card__title">{t.nowTitle}</h2>
-          <div className="now-list">
-            {nowItems.map((item) => (
-              <div key={item.label.en} className="now-row">
-                <span className="now-row__label">{item.label[lang]}</span>
-                <span className="now-row__value">{item.value[lang]}</span>
-              </div>
-            ))}
-          </div>
-          <div className="now-updated">{t.nowUpdated}</div>
+        ))}
+      </div>
+      <div className="uses-panel" data-reveal>
+        <div>
+          <p className="eyebrow accent">{t.evUses}</p>
+          <h3>{t.usesTitle}</h3>
         </div>
-        <div className="about-col">
-          <div
-            className="panel panel--img sh-10"
-            style={{ flex: 1, minHeight: 220 }}
-          >
-            <IllustrationSlot label="NOW · 挿絵" src="/cms/now.webp" />
-          </div>
-          <div id="uses" className="panel uses-card">
-            <div className="eyebrow">{t.evUses}</div>
-            <h3 className="uses-card__title">{t.usesTitle}</h3>
-            <div className="uses-list">
-              {uses.map((item) => (
-                <div key={item.label.en} className="uses-row">
-                  <span className="uses-row__label">{item.label[lang]}</span>
-                  <span className="uses-row__value">{item.value[lang]}</span>
-                </div>
-              ))}
+        <dl>
+          {uses.map((item) => (
+            <div key={item.label.en}>
+              <dt>{item.label[lang]}</dt>
+              <dd>{item.value[lang]}</dd>
             </div>
-          </div>
-        </div>
+          ))}
+        </dl>
       </div>
     </section>
   );

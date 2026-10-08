@@ -1,5 +1,4 @@
 <Card>
-## 03 - I componenti: i mattoncini di Angular
 
 <br />
 Benvenuto nel terzo capitolo! L'ambiente di sviluppo è pronto, quindi da qui in poi
@@ -10,7 +9,7 @@ Ora ti mostro cosa significa in pratica: alla fine di questo capitolo saprai cre
 uno, capire quando ha senso farlo e iniziare a ragionare "a componenti" quando
 strutturi un'applicazione.
 <br />
-### 🧩 Cos'è un componente
+## 🧩 Cos'è un componente
 <br />
 Un componente è un **pezzo riutilizzabile di interfaccia** che tiene insieme tre cose:
 <br />
@@ -28,7 +27,7 @@ Apri un sito qualsiasi e li vedi subito: l'header con logo e menu, la card prodo
 con immagine, prezzo e bottone, il form di contatto, il footer. Ogni elemento che si
 ripete, o che ha una logica tutta sua, è un buon candidato a diventare componente.
 <br />
-### Perché conviene
+## Perché conviene
 <br />
 Te lo riassumo con i motivi che pesano davvero nel lavoro di tutti i giorni:
 <br />
@@ -41,7 +40,7 @@ Te lo riassumo con i motivi che pesano davvero nel lavoro di tutti i giorni:
 Quando l'app cresce, aggiungere una funzionalità diventa spesso questione di
 combinare componenti che hai già.
 <br />
-### 🔧 Com'è fatto un componente in Angular
+## 🔧 Com'è fatto un componente in Angular
 <br />
 In Angular un componente è una **classe TypeScript** decorata con `@Component`:
 
@@ -64,7 +63,7 @@ I pezzi sono tre:
 2. La **classe**, con le proprietà (i dati) e i metodi (le azioni)
 3. Il **template**, cioè HTML normale più la sintassi di binding di Angular
 <br />
-### Una parola sugli standalone component
+## Una parola sugli standalone component
 <br />
 Se hai incrociato Angular qualche anno fa, ricorderai che ogni componente andava
 dichiarato dentro un **NgModule**, con relativo boilerplate. Dalla versione 14 sono
@@ -79,7 +78,7 @@ nomineremo solo quando serviranno a capire codice esistente.
 > `standalone: true`, è scritto per una versione vecchia di Angular. Non è sbagliato,
 > ma non è più il modo consigliato di lavorare.
 
-### 🛠 Creiamo il primo componente
+## 🛠 Creiamo il primo componente
 <br />
 Riprendiamo il progetto del capitolo precedente:
 
@@ -210,7 +209,7 @@ Avvia il server con `ng serve`, vai su `http://localhost:4200` e gioca con i due
 bottoni: stai già usando proprietà, eventi e interpolazione senza aver scritto una
 riga di codice "di collegamento". Questo è il punto di Angular.
 <br />
-### 🔄 Il data binding, in breve
+## 🔄 Il data binding, in breve
 <br />
 Nel componente appena scritto abbiamo già usato due tipi di **data binding**, il
 meccanismo con cui template e classe si parlano. In tutto sono quattro:
@@ -242,7 +241,7 @@ meccanismo con cui template e classe si parlano. In tutto sono quattro:
 Per ora ti basta riconoscerli. Al data binding, e ai **signals** che ti avevo
 anticipato nel primo capitolo, dedicheremo un capitolo intero più avanti.
 <br />
-### Il ciclo di vita di un componente
+## Il ciclo di vita di un componente
 <br />
 Ogni componente vive una vita: nasce, reagisce ai cambiamenti e prima o poi viene
 distrutto. Angular ti permette di agganciarti a questi momenti con i
@@ -270,7 +269,7 @@ export class MyComponent implements OnInit, OnDestroy {
 Non serve impararli tutti adesso. `ngOnInit` e `ngOnDestroy` coprono la maggior
 parte dei casi reali, gli altri li incontreremo strada facendo.
 <br />
-### Qualche buona abitudine
+## Qualche buona abitudine
 <br />
 Tre regole che mi hanno risparmiato parecchi mal di testa nei progetti veri:
 <br />
@@ -278,7 +277,7 @@ Tre regole che mi hanno risparmiato parecchi mal di testa nei progetti veri:
 - **Componenti piccoli**: se il template supera le 100 righe, probabilmente dentro ci vivono due o tre componenti che chiedono di uscire
 - **Una responsabilità sola**: `UserCardComponent` mostra un utente. Se lo stesso componente mostra la lista, il dettaglio, il form e la validazione, qualcosa è andato storto
 <br />
-### I comandi CLI che uso davvero
+## I comandi CLI che uso davvero
 <br />
 Oltre a `ng g c nome`, questi flag tornano utili spesso:
 
@@ -299,7 +298,7 @@ ng g c mio-comp --dry-run
 Il `--dry-run` in particolare vale oro: prima di generare qualcosa in un progetto
 grosso, controlli dove andranno a finire i file.
 <br />
-### Dove siamo arrivati
+## Dove siamo arrivati
 <br />
 Ora sai cos'è un componente, perché è l'unità di misura di qualsiasi app Angular,
 come crearne uno con la CLI e come collegare dati ed eventi al template. Non è

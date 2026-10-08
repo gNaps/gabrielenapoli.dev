@@ -1,4 +1,3 @@
-import ChapterDivider from "@/components/layout/chapter-divider";
 import AboutSection from "@/components/sections/about-section";
 import BlogSection from "@/components/sections/blog-section";
 import ContactSection from "@/components/sections/contact-section";
@@ -14,18 +13,21 @@ import {
   standaloneStoriesApi,
 } from "@/utils/api.utils";
 import { Metadata } from "next";
+import { personStructuredData, SITE_URL, PERSON_ID } from "@/utils/seo.utils";
 
 export default async function Home() {
-  const token = process.env.AUTH_TOKEN ?? "";
-  const projects = await projectsHomeApi(token);
-  const courses = await coursesApi(token);
-  const stories = (await standaloneStoriesApi(token))
+  const projects = await projectsHomeApi();
+  const courses = await coursesApi();
+  const stories = (await standaloneStoriesApi())
     .filter((s) => s.homepage)
     .slice(0, 2);
-  const experiences = await experiencesApi(token);
-  for (const exp of experiences) {
-    exp.description = await getExperienceBySlug(exp.slug);
-  }
+  const experiences = await experiencesApi();
+  const chapters = await Promise.all(
+    experiences.map(async (exp) => ({
+      ...exp,
+      description: await getExperienceBySlug(exp.slug),
+    })),
+  );
 
   return (
     <>
@@ -34,27 +36,39 @@ export default async function Home() {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "Person",
-            name: "Gabriele Napoli",
-            jobTitle: "Fullstack Developer",
-            url: "https://gabrielenapoli.dev",
-            sameAs: [
-              "https://github.com/gNaps",
-              "https://www.linkedin.com/in/gabriele-napoli-a87529185/",
-              "https://www.instagram.com/napsryu/",
+            "@graph": [
+              personStructuredData,
+              {
+                "@type": "WebSite",
+                "@id": `${SITE_URL}/#website`,
+                name: "Gabriele Napoli",
+                url: SITE_URL,
+                inLanguage: ["en", "it"],
+                publisher: { "@id": PERSON_ID },
+              },
+              {
+                "@type": "WebPage",
+                url: SITE_URL,
+                name: "Gabriele Napoli | Full Stack Developer in Milan",
+                inLanguage: "en",
+                about: { "@id": PERSON_ID },
+                isPartOf: { "@id": `${SITE_URL}/#website` },
+              },
             ],
-          }),
+          }).replace(/</g, "\\u003c"),
         }}
       />
-      <div className="gn-page" id="top">
+      <div className="home-page">
         <Hero />
-        <ChapterDivider label="・第一章・" />
         <AboutSection />
         <WorkSection projects={projects} viewAllHref="/projects" />
-        <TimelineSection experiences={experiences} />
-        <BlogSection stories={stories} courses={courses} viewAllHref="/stories" />
+        <TimelineSection experiences={chapters} />
+        <BlogSection
+          stories={stories}
+          courses={courses}
+          viewAllHref="/stories"
+        />
         <NowSection />
-        <ChapterDivider label="・最終章・" last />
         <ContactSection />
       </div>
     </>
@@ -62,34 +76,15 @@ export default async function Home() {
 }
 
 export const metadata: Metadata = {
-  title: "Gabriele Napoli | Fullstack JavaScript Developer in Milan",
+  title: "Gabriele Napoli | Full Stack Developer in Milan",
   description:
-    "I’m Gabriele Napoli, a fullstack JavaScript developer based in Milan. I build modern, scalable web applications using Angular, React, Node.js, and more. With +5 years of experience in web development, I build full-stack JavaScript applications that are fast, clean, and scalable. I’m passionate about technology, constantly learning, and love turning ideas into real, usable products.",
-  keywords: [
-    "Gabriele Napoli",
-    "Fullstack Developer",
-    "Javascript Developer",
-    "React Developer Milan",
-    "Angular Developer Milan",
-    "Node.js Developer",
-    "Sviluppatore Web Milano",
-    "Frontend Backend Developer",
-  ],
+    "Gabriele Napoli, senior full stack developer in Milan. Angular, React, Next.js and Node.js: 8+ years of experience, projects and practical development guides.",
+  alternates: { canonical: "/" },
   openGraph: {
-    title: "Gabriele Napoli | Fullstack Developer",
+    url: "/",
+    title: "Gabriele Napoli | Full Stack Developer in Milan",
     description:
-      "Crafting robust web applications with Angular, React, and Node.js.",
-    url: "https://gabrielenapoli.dev",
-    siteName: "Gabriele Napoli | Fullstack Developer",
-    images: [
-      {
-        url: "https://gabrielenapoli.dev/cms/about_me.webp",
-        width: 1200,
-        height: 630,
-        alt: "Gabriele Napoli | Fullstack Developer",
-      },
-    ],
+      "Gabriele Napoli, senior full stack developer in Milan. Angular, React, Next.js and Node.js: projects, experience and practical development guides.",
     locale: "en_US",
-    type: "website",
   },
 };

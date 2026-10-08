@@ -1,5 +1,4 @@
 <Card>
-## 06 - Forms: raccogliere dati senza impazzire
 
 <br />
 Quasi ogni applicazione, prima o poi, deve chiedere qualcosa all'utente: un
@@ -15,7 +14,7 @@ Angular offre due approcci per gestirli:
 In questo capitolo li vediamo entrambi, con le validazioni e qualche consiglio
 su quando scegliere l'uno o l'altro.
 <br />
-### 🧩 Template-driven: il form nell'HTML
+## 🧩 Template-driven: il form nell'HTML
 <br />
 L'approccio template-driven si appoggia alla direttiva `ngModel`, che conosci
 già dal capitolo sul data binding: è il two-way binding applicato ai campi di
@@ -58,7 +57,7 @@ Due dettagli che fanno inciampare tutti la prima volta:
 > parentesi. E dentro un `<form>`, ogni campo con `ngModel` deve avere
 > l'attributo `name`, altrimenti Angular protesta.
 
-### Validare un form template-driven
+## Validare un form template-driven
 <br />
 La tentazione, dopo il capitolo sui signals, sarebbe costruirsi la validazione
 a mano con un paio di `computed`. Si può fare, ma non serve: Angular tiene già
@@ -104,7 +103,7 @@ Per form di due o tre campi, questo approccio è onesto e veloce. Quando i campi
 diventano dieci, o si aggiungono e tolgono dinamicamente, il template si
 trasforma in un groviglio. Ed è lì che entrano in gioco i reactive forms.
 <br />
-### 🔧 Reactive forms: il form nel TypeScript
+## 🔧 Reactive forms: il form nel TypeScript
 <br />
 Nei **reactive forms** il modello del form è un oggetto che costruisci nel
 componente, con tre mattoni:
@@ -222,7 +221,7 @@ perché. Un click che rivela gli errori è un'esperienza più chiara.
 > verboso, guarda anche `FormBuilder`: iniettato con `inject(FormBuilder)`,
 > riduce la cerimonia con la sintassi `fb.group({...})`.
 
-### Quale approccio scegliere
+## Quale approccio scegliere
 <br />
 La mia bussola, dopo anni di form:
 <br />
@@ -232,7 +231,7 @@ La mia bussola, dopo anni di form:
 Nel dubbio, reactive: un template-driven che cresce si riscrive, un reactive
 sovradimensionato al massimo ha qualche riga in più.
 <br />
-### I validator pronti all'uso
+## I validator pronti all'uso
 <br />
 Angular fornisce una serie di validatori già fatti, utilizzabili sia come
 attributi (template-driven) sia da `Validators` (reactive):
@@ -247,7 +246,7 @@ Quando non bastano, puoi scrivere validatori custom: sono semplici funzioni che
 ricevono il controllo e restituiscono un oggetto errori o `null`. Ci torneremo
 quando serviranno.
 <br />
-### Dove siamo arrivati
+## Dove siamo arrivati
 <br />
 Ora sai raccogliere dati in entrambi i modi che Angular mette a disposizione:
 template-driven con `ngModel` e lo stato esposto nel template, reactive con il

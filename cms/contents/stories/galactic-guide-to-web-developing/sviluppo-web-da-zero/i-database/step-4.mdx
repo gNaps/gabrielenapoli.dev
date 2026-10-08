@@ -1,12 +1,11 @@
 <Card>
-## 19 - Collegare un'app al database
 
 <br />
 Sei capitoli fa, Samwell spariva a ogni riavvio. Oggi si chiude il cerchio:
 colleghiamo il server Fastify a un database vero e diamo alla Guardia il
 registro permanente che le abbiamo promesso.
 <br />
-### 🔌 Come parlano, in generale
+## 🔌 Come parlano, in generale
 <br />
 Prima la panoramica, perché vale per qualsiasi stack. Il database, come
 sappiamo, è di solito un server a sé: il backend gli si collega attraverso un
@@ -24,7 +23,7 @@ backend, che valida, controlla i permessi e decide quali query eseguire. Ora
 capisci fino in fondo il capitolo 10: il backend è il guardiano *anche* dei
 dati.
 <br />
-### 🗃️ Il nostro database: SQLite
+## 🗃️ Il nostro database: SQLite
 <br />
 Per il primo collegamento scegliamo **SQLite**, il database perfetto per
 imparare: niente server da installare e configurare, perché l'intero database vive
@@ -97,7 +96,7 @@ I dati ora vivono nel file `guardia.db`, e sopravvivono a riavvii, crash e
 aggiornamenti. La promessa è mantenuta: la Guardia ha un registro che non
 dimentica i suoi nomi.
 <br />
-### 💉 Il punto interrogativo che ti salva la vita
+## 💉 Il punto interrogativo che ti salva la vita
 <br />
 Prima di festeggiare troppo, torna sull'`INSERT` e guarda quel `?`:
 
@@ -117,7 +116,7 @@ di una recluta, senza mai diventare parte del comando.
 > Ogni driver e ogni linguaggio ha la sua sintassi per farlo; d'ora in poi,
 > quando vedi una query costruita con il `+`, ti deve suonare un allarme.
 
-### 🧙 Gli ORM: parlare al database a oggetti
+## 🧙 Gli ORM: parlare al database a oggetti
 <br />
 Scrivere SQL a mano va benissimo, e sapere farlo è irrinunciabile. Ma nei
 progetti grandi, tradurre all'infinito righe-in-oggetti e oggetti-in-query
@@ -162,7 +161,7 @@ entrambi: ORM per il quotidiano, SQL puro per le query complesse. (E per la
 cronaca: Fastify più Prisma è esattamente lo stack con cui lavoro davvero:
 questa coppia la ritroverai nei progetti di questo sito.)
 <br />
-### ✅ Conclusione
+## ✅ Conclusione
 <br />
 Guarda l'architettura completa che hai attraversato, capitolo dopo capitolo:
 un frontend che raccoglie dati e li spedisce via HTTP, un backend che valida,

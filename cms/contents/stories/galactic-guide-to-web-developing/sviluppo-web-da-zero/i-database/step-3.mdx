@@ -1,5 +1,4 @@
 <Card>
-## 18 - Query SQL di base
 
 <br />
 Le tabelle ci sono, le chiavi pure. Ora serve la lingua per parlare col
@@ -13,7 +12,7 @@ Dici *cosa* vuoi, non *come* ottenerlo: al piano di esecuzione pensa il
 database. Ti ricorda qualcosa? È la stessa filosofia dei framework frontend
 del capitolo 9. Te l'avevo detto che le buone idee girano.
 <br />
-### 🔍 SELECT: leggere
+## 🔍 SELECT: leggere
 <br />
 Il comando che scriverai più di tutti nella vita:
 
@@ -42,7 +41,7 @@ LIMIT 10;
 massimo. Si legge come una frase: "dammi i guardiani dove il ruolo è recluta,
 ordinati per nome, al massimo dieci". Dichiarativo, appunto.
 <br />
-### ✍️ INSERT, UPDATE, DELETE: scrivere
+## ✍️ INSERT, UPDATE, DELETE: scrivere
 <br />
 Gli altri tre si presentano da soli, anche perché li conosci già sotto
 mentite spoglie:
@@ -69,7 +68,7 @@ verbi HTTP erano la mappatura per il web; SQL è la mappatura per i dati.
 > dell'orrore che inizia con un WHERE dimenticato: scrivilo *prima* del
 > resto della query, e sui database veri, prova prima con una SELECT.
 
-### 🤝 JOIN: interrogare le relazioni
+## 🤝 JOIN: interrogare le relazioni
 <br />
 Le chiavi esterne del capitolo scorso servivano a questo momento. "Dammi i
 guardiani **con il nome del loro castello**" richiede dati da due tabelle, e
@@ -98,7 +97,7 @@ chiave esterna incontra la chiave primaria, e dammi le colonne di entrambi
 I JOIN hanno varianti e profondità che scoprirai col tempo; per ora ti basta
 questo, che copre una quantità sorprendente di casi reali.
 <br />
-### 💉 La promessa mantenuta: ecco la SQL injection
+## 💉 La promessa mantenuta: ecco la SQL injection
 <br />
 Nel capitolo sulla sicurezza ti ho promesso che avresti visto coi tuoi occhi
 perché "mai fidarsi del client" è questione di vita o di morte. Il momento è
@@ -136,7 +135,7 @@ perché sia sofisticata, ma perché è *facile da commettere*.
 > dal comando, con le query parametrizzate. Tienilo a mente ancora per
 > qualche pagina.
 
-### ✅ Conclusione
+## ✅ Conclusione
 <br />
 Ora parli la lingua dei dati: `SELECT` con filtri, ordinamenti e limiti,
 `INSERT`, `UPDATE` e `DELETE` (con rispetto per il `WHERE`), e il `JOIN` che

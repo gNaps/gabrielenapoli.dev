@@ -1,0 +1,72 @@
+<Card>
+
+<br />
+A scene you have seen a thousand times: someone says "ChatGPT told me", someone else replies "but LLMs make things up", and meanwhile the office has received a directive to "put an AI agent" somewhere. Three terms used as synonyms that are not synonyms at all.
+<br />
+This article is for anyone who uses AI (or has it imposed on them) without working in the field: no code, no math. Just a distinction that, once you see it, you cannot unsee. And one that explains plenty of these tools' strange behaviors.
+<br />
+## 🧠 The LLM: the engine
+<br />
+Let us start at the bottom. An **LLM** (Large Language Model) is the technology underneath everything: a program trained on an enormous amount of text that has learned to do one thing incredibly well: **predict how a piece of text continues**. Give it some words and it produces the most plausible words that follow. That is all. The surprising part is that this "all" gives us translations, summaries, poems and working code.
+<br />
+Names such as **GPT, Claude, Gemini and Llama** are families of engines: different versions, different capabilities, the same principle.
+<br />
+But it is important to understand what an LLM on its own **is not**:
+<br />
+- It is not a database of facts: it does not "look things up"; it produces plausible text.
+- It has no memory: each request starts from scratch.
+- It is not connected to the internet: it knows only what it encountered during training.
+- It does not take actions: it receives text and returns text. That is it.
+
+> And that explains the mystery of "made-up answers" (the famous hallucinations): an engine that predicts the most plausible text produces *believable* sentences, not necessarily *true* ones. It is not lying, and it is not broken: it is doing exactly its job. Plausibility is not truth, and confusing the two is the number one mistake people make with these tools.
+
+## 💬 The chatbot: the car built around the engine
+<br />
+None of us uses an engine sitting on a countertop: we use cars. And almost nobody uses a bare LLM: we use **chatbots**, products built around the engine.
+<br />
+**ChatGPT is a chatbot**, not a model: it is the car OpenAI built around its GPT engines. The same goes for the Claude and Gemini apps. What does the car add to the engine?
+<br />
+- An **interface**: the chat, the apps, the history.
+- **Conversation memory**: the engine forgets everything on its own; the product presents the message history again each time, creating the impression of an ongoing conversation.
+- **Behavioral instructions**: the tone, the limits, the "I cannot help with that" responses.
+- Increasingly, **tools**: web search, image generation and document reading.
+<br />
+The distinction may sound fussy, but it explains many confused discussions: "ChatGPT has improved" might mean the engine has changed, or just the car. And when a company says "we use GPT", it does not mean it uses ChatGPT: it is putting the engine into a car of its own.
+<br />
+## 🤖 The agent: the driver
+<br />
+Now for the term of the moment. If the LLM is the engine and the chatbot is the car, an **agent** is what you get when you add **a driver**: you no longer ask for directions downtown; you ask it to *take you* downtown.
+<br />
+Technically, an agent is an LLM equipped to **act** rather than simply respond. Three ingredients:
+<br />
+- A **goal**: "find me three flights under 100 euros", "fix this bug", "prepare the report".
+- **Tools**: the ability to search the web, read and write files, use programs and send requests to other services.
+- A **loop**: try, inspect the result, correct, try again. Independently, until the goal is reached (or it fails and tells you).
+<br />
+It is the difference between asking "how do I write a formula to sum a column in Excel?" and having someone open the file, write the formula, check that the total adds up and tell you "done". Research agents that explore the web for half an hour and return with a report, or agents that write and fix code, work this way. No magic and no consciousness: the same engine as before, now with hands.
+<br />
+## 🎚️ The boundary is a dimmer, not a switch
+<br />
+That said, the boundaries between these three categories are becoming blurred. When you ask your chatbot "find today's news on this topic", it uses a tool, evaluates the results and reworks them: for those few seconds, it is acting as an agent. Modern chatbots are cars with some driver assistance, and their autonomy is adjusted like a dimmer rather than a switch.
+<br />
+The right category depends less on the tool itself than on **how much autonomy you are giving it at that moment**.
+<br />
+## 🎯 Why it matters in practice
+<br />
+This is not an academic distinction: it changes how you use these tools every day.
+<br />
+- **You know why it invents things**: the engine produces plausible text. For facts that matter, ask for sources or enable web search: you are moving the answer from the engine to the tools.
+- **You know what it can actually do**: a chatbot that perfectly explains how to send an email *cannot send it* on that basis alone. If a service promises actions, ask yourself: what tools does it have? Is it an agent, or just an eloquent engine?
+- **You know how they fail**: the chatbot gets words wrong (false statements); the agent gets *actions* wrong (a deleted file, an email sent). The more autonomy you grant, the more supervision you need.
+- **You can decode the marketing**: "AI agent" in a brochure now prompts a precise question: which engine, which tools, and who checks the results?
+
+> One thread ties everything together, and it is the same thing I tell developers: these tools **amplify the abilities of people who can judge their output**. The more autonomous the system, the more your work shifts from doing to checking. This applies to code ([I wrote about it here](/stories/en/vibe-coding-vs-spec-driven-development)) and just as much to the neatly formatted report the agent hands you.
+
+## ✅ Your take-home cheat sheet
+<br />
+- **LLM**: the engine. Predicts text, knows nothing about you and takes no actions.
+- **Chatbot**: the car. The engine plus an interface, conversation memory and rules.
+- **Agent**: the driver. The engine with a goal, tools and an autonomous working loop. It does things rather than merely describing them.
+<br />
+The next time someone mixes up these three terms, you will know which layer of the cake their problem belongs to. And if you want to go one level deeper and understand how the engine chooses its words, the journey [continues here](/stories/en/come-un-llm-sceglie-le-parole).
+</Card>

@@ -1,0 +1,95 @@
+<Card>
+
+<br />
+Welcome to this Angular guide! If you are new to modern frontend development, or have worked with HTML and a little JavaScript and now want to build web applications using current technologies, you are in the right place.
+<br />
+In this first article, I will explain **what Angular is**, where it comes from, **why it is so widely used**, and **what you can build with it**. Do not worry: no unnecessary jargon, just what you need to understand where you are stepping (spoiler: somewhere interesting).
+<br />
+## 🔍 What is Angular?
+<br />
+**Angular** is an open-source framework developed by Google that lets you create **modern, interactive and scalable web applications**. It is not a library like jQuery or React (which can be thought of as the V in an MVC application): Angular is **a complete framework**, offering **all the tools you need** to build an app from scratch without adding a thousand external libraries.
+<br />
+Angular is widely used in enterprise software, but not exclusively. The framework can build all kinds of applications and is particularly suited to:
+
+- **Single Page Applications (SPAs)**: apps that do not reload the page every time you change sections.
+- **Progressive Web Apps (PWAs)**: web apps that feel native.
+- **Complex business applications**: with state management, authentication, forms and advanced routing.
+- **Dashboards, CRMs, management systems, internal portals** and much more.
+<br />
+## 🕰 A little history
+<br />
+Angular began in 2010 as **AngularJS** (version 1.x). It was very different from today's framework, based on plain JavaScript and "magical" two-way binding. In 2016, Google released **Angular 2**, completely rewritten in **TypeScript**, with a stronger, more modern architecture. Since then, the framework has continued evolving with regular releases every six months. At the time this introduction was written, in June 2025, version 20 made Angular more powerful and simpler than ever, thanks to features introduced in recent releases such as **signals** and **standalone components**. In this guide, we will work with **modern versions**, making use of these APIs.
+<br />
+## 🔁 What is an SPA and how does it work?
+<br />
+As mentioned, Angular is primarily designed to build **Single Page Applications (SPAs)**. An SPA is a web application that:
+
+- Is **loaded once** by the browser.
+- Changes its content dynamically **without reloading the whole page**.
+- Uses **JavaScript** to manage internal navigation.
+<br />
+This rendering approach is also called CSR, or client-side rendering, and differs from SSR and SSG.
+<br />
+To understand the differences, let us clarify **how a web page is rendered**:
+<br />
+## 📦 CSR (Client-Side Rendering)
+<br />
+- Angular's **default** approach.
+- The entire app loads in the browser.
+- Faster after the first load.
+- Great for interactive apps, but less favorable for SEO.
+<br />
+With CSR, the server sends the client a single HTML file (in Angular, `index.html`) that loads the JavaScript needed to run the application. This moves rendering work to the client, allowing the browser to update pages dynamically without necessarily reloading the whole page or returning to the server.
+<br />
+## 🛠 SSR (Server-Side Rendering)
+<br />
+- The first page is rendered **on the server**, then the client "takes over".
+- Improves SEO and initial loading time.
+- Angular supports SSR through **Angular Universal**.
+<br />
+With SSR, the server generates the HTML displayed by the browser. This lets the initial page load much faster, even before JavaScript has fully loaded. Once JavaScript is ready, the page becomes interactive: this process is called hydration.
+<br />
+## 📄 SSG (Static Site Generation)
+<br />
+- Pages are generated ahead of time during the build.
+- Ideal for blogs and content that changes infrequently.
+- Angular can perform SSG with third-party libraries, although this is not its main focus.
+<br />
+Static site generation produces HTML during the build rather than on every request. This lets all the site's pages be prerendered into static files. When a user visits a page, the server simply returns the prerendered file, resulting in extremely fast loading.
+<br />
+## 💡 When should you use each approach?
+<br />
+<Table
+  columns={[{key: "tech", label: "Technique"}, {key: "case", label: "Use case"}, {key: "pro", label: "✅"}, {key: "cons", label: "❌"}]}
+  data={[
+    { tech: "CSR", case: "Highly dynamic applications where SEO is not required.", pro: "High user interaction. Better performance for dynamic DOM updates.", cons: "Weaker SEO. Slower initial loading." },
+    { tech: "SSR", case: "SEO is needed. Content-heavy sites where fast initial loading matters.", pro: "Good SEO. Fast initial loading.", cons: "Higher server load. More complex implementation." },
+    { tech: "SSG", case: "Documentation. Landing pages. Blogs.", pro: "Excellent SEO. Very fast loading.", cons: "Unsuitable for highly dynamic content. Requires rebuilding to update content." },
+  ]}
+/>
+<br />
+## 🧩 What about components?
+<br />
+In Angular, everything revolves around **components**. A component is a reusable piece of user interface, with its own **HTML**, **CSS** and **logic**.
+
+<Callout type="info">
+Think of a button, a card, a form or a page: they are all components.
+</Callout>
+
+Angular lets you create standalone (independent) components and **assemble your app like a puzzle**: each piece has a role and fits with the others. The pages that make up our web app are themselves components. We will explore this in a later article.
+<br />
+## 🚀 What will we cover in the next articles?
+<br />
+In this introductory module, we will learn everything you need to start using Angular confidently:
+
+- Installing and configuring a project.
+- Creating components and pages.
+- The router and navigation.
+- Signals and the new reactive tools.
+- Modules, forms, HTTP calls, state, pipes and interceptors.
+- Finally... putting everything together in a practical project 🎮.
+
+Ready? In the next article, we will install our first Angular project.
+<br />
+Spoiler: you need Node.js, but do not panic; we will take it step by step.
+</Card>

@@ -1,0 +1,278 @@
+<Card>
+
+<br />
+Welcome to chapter three! The development environment is ready, so from here on we write code. We start with Angular's heart: **components**.
+<br />
+In the first chapter, I said that in Angular "everything revolves around components". Now I will show what that means in practice: by the end, you will know how to create one, when it makes sense to do so, and how to think in components when structuring an application.
+<br />
+## 🧩 What is a component?
+<br />
+A component is a **reusable piece of interface** that brings together three things:
+<br />
+- **HTML**: structure.
+- **CSS**: styling.
+- **TypeScript**: logic.
+<br />
+The classic analogy is LEGO, and for once it is the right one. Each brick has a shape and color (HTML and CSS), and some have special features (TypeScript). Bricks combine into larger things, the same piece can be reused in different places, and if one type of brick needs changing, you change it once and the change applies everywhere.
+<br />
+Open any website and you will spot them immediately: the header with a logo and menu, the product card with an image, price and button, the contact form, the footer. Anything repeated, or with its own logic, is a good candidate for a component.
+<br />
+## Why it helps
+<br />
+Here are the reasons that actually matter in daily work:
+<br />
+- **Reuse**: write a button once and use it in fifty places.
+- **Readability**: many small, focused files rather than 500 lines of HTML.
+- **Maintenance**: fix a card's bug in one place.
+- **Teamwork**: everyone works on their component without stepping on each other's toes.
+- **Testing**: check each piece in isolation without starting the whole app.
+<br />
+As an app grows, adding a feature often becomes a matter of combining components you already have.
+<br />
+## 🔧 The anatomy of an Angular component
+<br />
+In Angular, a component is a **TypeScript class** decorated with `@Component`:
+
+```typescript
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-saluto',           // the tag to use in HTML
+  template: `<h1>{{ titolo }}</h1>`, // the template
+  styles: [`h1 { color: rebeccapurple; }`]
+})
+export class SalutoComponent {
+  titolo = 'My first component';
+}
+```
+
+There are three parts:
+<br />
+1. The **decorator** `@Component`, telling Angular "this class is a component" and defining its selector, template and styles.
+2. The **class**, containing properties (data) and methods (actions).
+3. The **template**, ordinary HTML plus Angular's binding syntax.
+<br />
+## A word about standalone components
+<br />
+If you encountered Angular a few years ago, you will remember declaring every component inside an **NgModule**, with the associated boilerplate. Version 14 introduced **standalone components**, independent components that directly import what they need. Since version 19, standalone is the **default behavior**: you no longer even need to write `standalone: true`.
+<br />
+This guide uses modern Angular, so we stick to standalone. We will mention NgModules only when they help explain existing code.
+
+> If a tutorial asks you to declare the component in an NgModule, or insists on `standalone: true`, it was written for an older Angular version. It is not wrong, but it is no longer the recommended approach.
+
+## 🛠 Creating our first component
+<br />
+Let us pick up the project from the previous chapter:
+
+```bash
+cd il-mio-primo-progetto
+code .
+```
+
+Generate a component with the CLI (the shortcut is `ng g c benvenuto`):
+
+```bash
+ng generate component benvenuto
+```
+
+The CLI creates four files:
+
+```bash
+src/app/benvenuto/
+├── benvenuto.component.ts       # the logic
+├── benvenuto.component.html     # the template
+├── benvenuto.component.css      # the styles
+└── benvenuto.component.spec.ts  # the tests
+```
+
+The generated TypeScript file is already a standalone component, ready to use:
+
+```typescript
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-benvenuto',
+  imports: [],
+  templateUrl: './benvenuto.component.html',
+  styleUrl: './benvenuto.component.css'
+})
+export class BenvenutoComponent {
+
+}
+```
+
+Now customize it. Add a couple of properties and two methods:
+
+```typescript
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-benvenuto',
+  imports: [],
+  templateUrl: './benvenuto.component.html',
+  styleUrl: './benvenuto.component.css'
+})
+export class BenvenutoComponent {
+  nome = 'developer';
+  messaggio = 'Welcome to Angular!';
+  numeroVisite = 0;
+
+  incrementaVisite() {
+    this.numeroVisite++;
+  }
+
+  cambiaNome(nuovoNome: string) {
+    this.nome = nuovoNome;
+  }
+}
+```
+
+Then the template, in `benvenuto.component.html`:
+
+```html
+<div class="card-benvenuto">
+  <h2>{{ messaggio }}</h2>
+  <p>Hello <strong>{{ nome }}</strong>!</p>
+  <p>Hai cliccato {{ numeroVisite }} volte.</p>
+
+  <button (click)="incrementaVisite()">Increment</button>
+  <button (click)="cambiaNome('Angular developer')">Change name</button>
+</div>
+```
+
+And a little styling in `benvenuto.component.css`:
+
+```css
+.card-benvenuto {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.card-benvenuto button {
+  margin: 0.5rem 0.25rem 0;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+```
+
+The component exists, but nobody is using it. Open `src/app/app.component.html` and replace its contents with:
+
+```html
+<div class="container">
+  <h1>La mia app Angular</h1>
+  <app-benvenuto></app-benvenuto>
+</div>
+```
+
+The last step, the one beginners always forget: the component must be **imported** by the component using it. In `src/app/app.component.ts`:
+
+```typescript
+import { Component } from '@angular/core';
+import { BenvenutoComponent } from './benvenuto/benvenuto.component';
+
+@Component({
+  selector: 'app-root',
+  imports: [BenvenutoComponent], // without this, the tag is not recognized
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css'
+})
+export class AppComponent {
+  title = 'il-mio-primo-progetto';
+}
+```
+
+Start the server with `ng serve`, go to `http://localhost:4200` and play with the two buttons: you are already using properties, events and interpolation without writing any "glue" code. That is the point of Angular.
+<br />
+## 🔄 Data binding in brief
+<br />
+Our component already uses two types of **data binding**, the mechanism through which the template and class communicate. There are four in total:
+<br />
+**Interpolation** `{{ }}`: displays a property's value in the template.
+
+```html
+<h2>{{ messaggio }}</h2>
+```
+
+**Event binding** `(evento)`: executes a method when something happens.
+
+```html
+<button (click)="incrementaVisite()">Click</button>
+```
+
+**Property binding** `[proprieta]`: sets an HTML property from a class property.
+
+```html
+<img [src]="urlImmagine" [alt]="descrizione">
+```
+
+**Two-way binding** `[(ngModel)]`: synchronizes an input and a property in both directions.
+
+```html
+<input [(ngModel)]="nome" placeholder="Il tuo nome">
+```
+
+For now, recognizing them is enough. Later, we will dedicate a whole chapter to data binding and the **signals** I mentioned in chapter one.
+<br />
+## A component's lifecycle
+<br />
+Every component has a life: it is created, reacts to changes, and eventually gets destroyed. Angular lets you hook into these moments with **lifecycle hooks**, special methods called automatically:
+<br />
+- `ngOnInit()` runs once at initialization: perfect for loading data.
+- `ngOnChanges()` runs when the component's inputs change.
+- `ngOnDestroy()` runs before removal: the right place to clean up timers and subscriptions.
+
+```typescript
+import { Component, OnInit, OnDestroy } from '@angular/core';
+
+@Component({ /* ... */ })
+export class MyComponent implements OnInit, OnDestroy {
+  ngOnInit() {
+    console.log('component initialized');
+  }
+
+  ngOnDestroy() {
+    console.log('component destroyed');
+  }
+}
+```
+
+You do not need to learn them all now. `ngOnInit` and `ngOnDestroy` cover most real cases; we will meet the others along the way.
+<br />
+## A few good habits
+<br />
+Three rules that have saved me plenty of headaches on real projects:
+<br />
+- **Consistent names**: file `user-card.component.ts`, class `UserCardComponent`, selector `app-user-card`. The CLI already generates these; do not fight it.
+- **Small components**: if a template goes beyond 100 lines, it probably contains two or three components waiting to get out.
+- **One responsibility**: `UserCardComponent` displays a user. If it also displays the list, details, form and validation, something has gone wrong.
+<br />
+## The CLI commands I actually use
+<br />
+Beyond `ng g c nome`, these flags often come in handy:
+
+```bash
+# in a subfolder
+ng g c features/user-profile
+
+# without a test file
+ng g c mio-comp --skip-tests
+
+# inline template and styles for tiny components
+ng g c mio-comp --inline-template --inline-style
+
+# preview the generated files without creating anything
+ng g c mio-comp --dry-run
+```
+
+`--dry-run` is especially valuable: before generating something in a large project, you can check where the files will end up.
+<br />
+## Where we are now
+<br />
+You now know what a component is, why it is the basic unit of any Angular app, how to create one with the CLI and how to connect data and events to its template. That is quite a lot: this way of thinking will carry you through the rest of the guide.
+<br />
+In the **next chapter**, the **Router** enters the scene: we will turn our components into actual navigable pages, just as anyone opening a web application expects.
+</Card>

@@ -1,0 +1,112 @@
+<Card>
+
+<br />
+The Watch's register works, and you can be proud. Now stand on the other side for a moment: open the terminal and try this.
+
+```bash
+curl -X DELETE http://localhost:3000/guardiani/1
+```
+
+Congratulations: you just dismissed Jon Snow. No password, no permission, no questions. With the server reachable and no authentication, **anyone able to reach it** could do the same.
+<br />
+Our server is naive. This chapter teaches suspicion, because security is not a feature added at the end: it is an attitude, and now, on your first server, is the time to adopt it.
+<br />
+## 🛂 Applying the golden rule: validate everything
+<br />
+"Never trust the client" has followed us since chapter 10. Last chapter, we applied it with `400` for a missing name. Serious validation goes beyond "present or absent". Strengthen `POST /guardiani`:
+
+```javascript
+app.post('/guardiani', (request, reply) => {
+  const { nome, ruolo } = request.body;
+
+  // present, a string, nonempty and not too long
+  if (typeof nome !== 'string' || !nome.trim() || nome.length > 100) {
+    return reply.code(400).send({ errore: 'Invalid name' });
+  }
+
+  const guardiano = {
+    id: prossimoId++,
+    nome: nome.trim(),
+    ruolo: ruolo === 'attendente' ? 'attendente' : 'recluta',
+  };
+  guardiani.push(guardiano);
+  return reply.code(201).send(guardiano);
+});
+```
+
+Notice three levels: **type** (a string, not a malicious object), **content** (nonempty, cleaned with `trim`), **limits** (100 characters suffice for an honest name). Roles are no longer blindly accepted: either a known value or a recruit. The client *proposes*; the server *decides*, including details.
+
+> Overly fussy? When data reaches a database in the next section, this habit becomes essential: **SQL injection** is an entire attack category exploiting unsafe handling of input. We will return to it, and you will thank me then.
+
+## 🔑 Passwords: never, ever in plain text
+<br />
+Eventually your backend handles login and passwords. No exceptions: **never store passwords in plain text**. If the database is stolen (even big companies suffer this), attackers get everyone's passwords. And users reuse them everywhere.
+<br />
+The solution is **hashing**, a one-way transformation. A password produces a hash; the hash does not directly recover the password. At login, verify the supplied password against its stored hash.
+
+```javascript
+import bcrypt from 'bcrypt';
+
+// at registration: save the hash, discard the password
+const hash = await bcrypt.hash(password, 10);
+
+// at login: check the attempt against the stored hash
+const valido = await bcrypt.compare(tentativo, hash);
+```
+
+Two lines using a proven library such as **bcrypt**. This brings a related rule: in security, **do not invent your own solutions**. No homemade algorithms, no "who would attack us?". Use standard tools tested for years.
+<br />
+## 🚪 Protecting routes: who goes there?
+<br />
+Return to our opening problem: unrestricted `DELETE`. The server must ask for credentials before dangerous operations. Chapter 11 showed how they travel: the `Authorization` header. Here is a minimal sentry using a Fastify **hook** to inspect incoming requests:
+
+```javascript
+app.addHook('onRequest', async (request, reply) => {
+  // reads stay public; writes and deletions do not
+  if (request.method !== 'GET') {
+    const token = request.headers.authorization;
+    if (token !== 'Bearer parola-dordine') {
+      return reply.code(401).send({ errore: 'Who goes there?' });
+    }
+  }
+});
+```
+
+Retry the earlier `DELETE`: `401 Unauthorized`. Add the correct header (`-H "Authorization: Bearer parola-dordine"`): it passes. Chapter 11's 401/403 distinction now works for you.
+
+> A hardcoded token is a teaching example, not production security: real tokens are generated at login, expire and use standards such as **JWT** (JSON Web Token). But the flow (credentials in headers, a sentry on routes, 401 for missing credentials) is exactly this.
+
+## 🔒 HTTPS: the sealed letter
+<br />
+Without one detail, everything else is useless: the token **travels inside the request**, and plain HTTP sends readable text. Someone on the network path, such as a compromised café Wi-Fi connection, could read passwords and tokens.
+<br />
+**HTTPS** wraps HTTP in encryption: only sender and recipient read the content. It is the browser's secure-connection indicator, and today's standard rather than an optional extra. Good news: modern hosting platforms and free certificates (Let's Encrypt) usually handle it for you. Keep the rule: **always HTTPS in production**.
+<br />
+## 🤫 Keeping secrets out of code
+<br />
+One final habit, easy to get wrong: our hook's "password" is **in the code**. Code goes into Git, perhaps GitHub. Keys, database passwords, tokens: **never commit secrets**.
+<br />
+Instead, keep them in **environment variables**, supplied externally to the server at startup rather than stored in source code.
+
+```javascript
+const PAROLA_DORDINE = process.env.PAROLA_DORDINE;
+```
+
+Locally, use an `.env` file (always added to `.gitignore`); in production, configure them on the hosting platform. Code uses them without containing them.
+<br />
+## 🧾 Minimum hygiene checklist
+<br />
+- **Validate everything** arriving from the client: type, content, limits.
+- **Hash passwords** with standard libraries; never plain text or homemade algorithms.
+- **Protect routes** modifying data: credentials in headers, `401` when missing.
+- **HTTPS in production**, always.
+- **Secrets in environment variables**, never source code or Git.
+<br />
+This is not bank-level security: it is basic hygiene separating an exercise from something you can show the world without blushing.
+<br />
+## ✅ Conclusion
+<br />
+The backend section is **complete**: you understand servers, speak HTTP, recognize CRUD, built real APIs with Node and Fastify, and now know how to defend them. The application's heart beats, protected.
+<br />
+One promise to Samwell remains: a register remembering him after restarts. In the **next section**, we enter **databases**, where data persists and "never trust the client" will return very soon.
+</Card>

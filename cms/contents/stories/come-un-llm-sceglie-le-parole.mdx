@@ -1,5 +1,4 @@
 <Card>
-## Come fa un LLM a scegliere le parole?
 
 <br />
 Nell'[articolo precedente](/stories/llm-chatbot-agenti-chi-fa-cosa) abbiamo
@@ -12,7 +11,7 @@ Oggi scendiamo di un livello, come promesso. Sempre ad alta quota: niente
 formule da università, solo un'idea sorprendente e un esempio con quattro
 numeri in croce. L'idea è questa: **per un LLM, il significato è geometria**.
 <br />
-### 🧩 Passo uno: il testo diventa numeri
+## 🧩 Passo uno: il testo diventa numeri
 <br />
 I computer non capiscono le parole: capiscono i numeri. Quindi la prima cosa
 che succede al tuo messaggio è una traduzione, in due mosse.
@@ -40,7 +39,7 @@ accompagnano tra loro ha costruito la mappa.
 > "regina". Nessuno lo aveva programmato: la struttura del significato era
 > emersa da sola dalla statistica del linguaggio.
 
-### 🎲 Passo due: la previsione, una parola alla volta
+## 🎲 Passo due: la previsione, una parola alla volta
 <br />
 Ora che tutto è geometria, il motore può lavorare. Dato tutto il contesto (la
 tua domanda, la conversazione, quello che ha già scritto), il modello calcola
@@ -58,7 +57,7 @@ Questo semplice ciclo spiega tre comportamenti che hai sicuramente notato:
 - **la stessa domanda dà risposte diverse**: la pesca non prende sempre il primo in classifica. Una dose regolabile di casualità (si chiama *temperatura*) rende il testo naturale invece che robotico
 - **quando sbaglia, insiste**: ogni parola pescata diventa contesto per le successive. Se il modello imbocca una strada sbagliata, le parole dopo saranno coerenti... con l'errore. Le allucinazioni più convincenti nascono così
 <br />
-### 📐 Il coseno: il righello dello spazio del significato
+## 📐 Il coseno: il righello dello spazio del significato
 <br />
 Resta una domanda pratica: in uno spazio a migliaia di dimensioni, come si
 misura quanto due cose sono "vicine di significato"? Lo strumento più usato
@@ -90,7 +89,7 @@ Quattro numeri e un righello, e la macchina "sa" che gatto e felino parlano
 della stessa cosa, senza che nessuno glielo abbia spiegato. Nei sistemi veri
 le coordinate sono migliaia invece che due, ma il righello è lo stesso.
 <br />
-### 🔎 Dove incontri il coseno tutti i giorni
+## 🔎 Dove incontri il coseno tutti i giorni
 <br />
 La similarità del coseno è il cavallo da lavoro di tutto ciò che è "ricerca
 per significato":
@@ -106,7 +105,7 @@ per significato":
 > giusta: se hai capito che il significato è diventato geometria, hai capito
 > il cuore di tutta questa tecnologia.
 
-### ✅ Cosa portarti a casa
+## ✅ Cosa portarti a casa
 <br />
 - il testo viene spezzato in **token** e ogni token diventa **coordinate** in uno spazio del significato: simile vuol dire vicino
 - il modello genera **una parola alla volta**: classifica di probabilità, pesca controllata, e si ricomincia. Streaming, risposte variabili e allucinazioni coerenti si spiegano tutte da qui

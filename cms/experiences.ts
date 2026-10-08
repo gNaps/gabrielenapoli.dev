@@ -36,7 +36,7 @@ export const allExperiences: Experience[] = [
         id: 4,
       },
     ],
-    company: "SB Italia",
+    company: "Havant",
     logo: "/cms/logo_sbi.webp",
     chapter: { en: "CH.05", it: "CAP.05" },
     chapterYear: { en: "2024 - Present", it: "2024 - Oggi" },

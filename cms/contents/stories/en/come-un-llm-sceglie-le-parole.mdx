@@ -1,0 +1,71 @@
+<Card>
+
+<br />
+In the [previous article](/stories/en/llm-chatbot-agenti-chi-fa-cosa), we sorted out engines, cars and drivers, and I described the LLM as an engine that "predicts how a piece of text continues". A handy definition, but it immediately raises the next question: *how does it do that?* How does a program decide that "the cat climbed onto the" should be followed by "roof" rather than "invoice"?
+<br />
+Today we go one level deeper, as promised. Still keeping things approachable: no university-level formulas, just a surprising idea and an example with a handful of numbers. The idea is this: **for an LLM, meaning is geometry**.
+<br />
+## 🧩 Step one: text becomes numbers
+<br />
+Computers do not understand words: they understand numbers. So the first thing that happens to your message is a translation in two stages.
+<br />
+First, the text is split into **tokens**: pieces of words, roughly the length of syllables. "Impossible" might become "Im-poss-ible", while common words stay whole. That is why model limits are measured in tokens rather than words.
+<br />
+Then each token is converted into an **embedding**: a long list of numbers, often thousands, that works as a set of **coordinates**. Just as latitude and longitude position a city on Earth, an embedding positions a word in a huge space of meaning: a space with thousands of dimensions rather than two, where **words with similar meanings end up close together**.
+<br />
+"Cat" lives near "feline", "kitty" and "kitten". "Invoice" is in another neighborhood, alongside "VAT", "due date" and "accountant". The model has never seen a cat: it has seen billions of sentences, and built the map from the ways words appear together.
+
+> This map hides a discovery that made history: *directions* carry meaning. In early embedding models, researchers found that taking the point for "king", subtracting "man" and adding "woman" landed very close to "queen". Nobody had programmed that: the structure of meaning had emerged on its own from the statistics of language.
+
+## 🎲 Step two: prediction, one word at a time
+<br />
+Now that everything is geometry, the engine can get to work. Given the whole context (your question, the conversation and what it has already written), the model calculates **a score for every token in its vocabulary**: how plausible is it as the next token? The result is a probability ranking: after "the cat climbed onto the", "roof" gets a very high score, "sofa" a decent one, and "invoice" a microscopic one.
+<br />
+The model then **samples one**, adds it to the text, and starts again for the next word. One at a time, until the answer is complete.
+<br />
+This simple loop explains three behaviors you have probably noticed:
+<br />
+- **Answers appear in bursts**: that is not a visual effect; you are watching the loop live, token by token.
+- **The same question produces different answers**: sampling does not always pick the highest-ranked option. An adjustable dose of randomness (called *temperature*) makes the text sound natural rather than robotic.
+- **When it gets something wrong, it doubles down**: each sampled word becomes context for the next ones. If the model takes a wrong turn, the following words will be consistent... with the mistake. That is how the most convincing hallucinations arise.
+<br />
+## 📐 Cosine: the ruler of the space of meaning
+<br />
+One practical question remains: in a space with thousands of dimensions, how do you measure whether two things are "close in meaning"? The most common tool is called **cosine similarity**, and you can understand the idea using just two dimensions.
+<br />
+Imagine each word as an **arrow** starting at the center of the map. Cosine similarity measures **the angle between two arrows**: if they point in the same direction, the value is close to 1; if they are unrelated, it approaches 0; if they point in opposite directions, it approaches -1. The length of the arrows does not matter: only where they point. In this map, direction *is* meaning.
+<br />
+Let us do the math on a two-dimensional toy map:
+
+```text
+similarity(A, B) = (A · B) / (|A| × |B|)
+in words: dot product of coordinates, divided by the arrows' lengths
+
+cat     = [0.9, 0.2]
+feline  = [0.8, 0.3]
+invoice = [0.1, 0.9]
+
+similarity(cat, feline)  ≈ 0.99   → almost the same direction
+similarity(cat, invoice) ≈ 0.32   → different neighborhoods on the map
+```
+
+A few numbers and a ruler, and the machine "knows" that cat and feline refer to the same thing, without anyone explaining it. Real systems use thousands of coordinates rather than two, but the ruler is the same.
+<br />
+## 🔎 Where you encounter cosine every day
+<br />
+Cosine similarity is the workhorse behind anything that involves "searching by meaning":
+<br />
+- **Semantic search**: you search for "how to cancel my subscription" and find a document titled "termination procedure", even though they share no words. The two phrases are nearby arrows.
+- Recommendations such as **"people who read this also read"**: articles near each other on the map.
+- The big one: when an AI answers using **your documents** (the famous RAG, which we will revisit), this is what happens under the hood: your question becomes an arrow, the system finds the paragraphs with the closest arrows and hands them to the engine, which bases its answer on them.
+
+> An honest clarification: inside an actual LLM, things are more sophisticated than comparing angles (if you are curious, look up "attention", the mechanism the model uses to decide which words in the context deserve more weight). But embeddings and cosine are the right entry point: if you understand that meaning has become geometry, you understand the core idea behind this technology.
+
+## ✅ What to take away
+<br />
+- Text is split into **tokens**, and each token becomes **coordinates** in a space of meaning: similar means nearby.
+- The model generates **one word at a time**: a probability ranking, controlled sampling, then repeat. Streaming, varied answers and consistent hallucinations all follow from this.
+- **Cosine similarity** is the ruler of that space: it measures the angle between arrows and powers semantic search and related applications.
+<br />
+And here is the refrain from the previous article, now with the reason behind it: the engine does not "understand" as we do; it navigates a statistical map of language, brilliantly and without guarantees. Plausibility is not truth: now you also know where that plausibility comes from.
+</Card>

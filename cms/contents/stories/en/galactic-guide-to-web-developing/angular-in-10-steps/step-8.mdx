@@ -1,0 +1,141 @@
+<Card>
+
+<br />
+Components, forms, server calls: all the pieces are there. But eventually comes the question marking the move from demos to real apps: **how do two components share information?**
+<br />
+Imagine one component lets you select a game, and elsewhere in the interface another must display its details. They are not parent and child; they may live in completely different branches of the app. How do they communicate?
+<br />
+The answer is what I hinted at last chapter: **with a service**. In chapter 7, services handled HTTP calls; today we explore their second job, perhaps the most important: **holding application state**.
+<br />
+## 🧩 The principle: state lives in one place
+<br />
+A quick recap: a service with `providedIn: 'root'` is a **singleton**. Angular creates one instance for the whole app and supplies it through **dependency injection** to anyone requesting it with `inject()`.
+<br />
+That is the key: if two components inject the same service, they look at **the same object**. Put state there in a signal, and sharing follows naturally: writers update the signal, readers update automatically. This is the **single source of truth** pattern: data lives in one place, and everyone else observes it.
+<br />
+## 🛠️ Step 1: the service holding state
+<br />
+Let us build the selected-game example. The first version is as simple as possible:
+
+```typescript
+// game-selection.service.ts
+import { Injectable, signal } from '@angular/core';
+
+@Injectable({ providedIn: 'root' })
+export class GameSelectionService {
+  selectedGame = signal<string | null>(null);
+
+  select(game: string) {
+    this.selectedGame.set(game);
+  }
+}
+```
+
+It already works. But one refinement always pays off in real projects: as written, anyone injecting the service can call `selectedGame.set(...)` from anywhere in the app, and after six months you no longer know who changes what. Better to expose a **read-only** signal and route writes through service methods:
+
+```typescript
+import { Injectable, signal } from '@angular/core';
+
+@Injectable({ providedIn: 'root' })
+export class GameSelectionService {
+  private _selectedGame = signal<string | null>(null);
+
+  // the outside world can read...
+  readonly selectedGame = this._selectedGame.asReadonly();
+
+  // ...but writes go through here
+  select(game: string) {
+    this._selectedGame.set(game);
+  }
+
+  clear() {
+    this._selectedGame.set(null);
+  }
+}
+```
+
+The service is now the only place the selection can change. If something does not add up, you know exactly where to look.
+<br />
+## 🧪 Step 2: the component that writes
+<br />
+The selector injects the service and calls its method:
+
+```typescript
+// game-selector.component.ts
+import { Component, inject } from '@angular/core';
+import { GameSelectionService } from './game-selection.service';
+
+@Component({
+  selector: 'app-game-selector',
+  template: `
+    <h3>Select a game:</h3>
+    <button (click)="select('Zelda')">Zelda</button>
+    <button (click)="select('Metaphor')">Metaphor</button>
+  `
+})
+export class GameSelectorComponent {
+  private gameService = inject(GameSelectionService);
+
+  select(game: string) {
+    this.gameService.select(game);
+  }
+}
+```
+
+## 👁️ Step 3: the component that reads
+<br />
+The detail component injects the same service and simply reads the signal:
+
+```typescript
+// game-details.component.ts
+import { Component, inject } from '@angular/core';
+import { GameSelectionService } from './game-selection.service';
+
+@Component({
+  selector: 'app-game-details',
+  template: `
+    <h3>Gioco selezionato:</h3>
+    @if (selectedGame()) {
+      <p>{{ selectedGame() }}</p>
+    } @else {
+      <p>No game selected</p>
+    }
+  `
+})
+export class GameDetailsComponent {
+  selectedGame = inject(GameSelectionService).selectedGame;
+}
+```
+
+Done. Click "Zelda" in the first component, and the second updates instantly without either knowing the other: no direct reference, no events propagated up the tree. The service is their meeting point; signals do the rest.
+<br />
+## What about derived state?
+<br />
+Chapter 5's `computed` signals also belong in services. If the detail component needs to know *whether* a selection exists, there is no need for a second state to keep synchronized:
+
+```typescript
+readonly hasSelection = computed(() => this._selectedGame() !== null);
+```
+
+The same rule as always: derive anything derivable; do not duplicate it.
+<br />
+## Parent and child, or distant relatives?
+<br />
+A service is not the only way components communicate, and you should choose based on their distance:
+
+> For a **direct parent and child**, inputs (already seen with `input()` in chapter 4) and outputs for upward events are enough. A service is useful when components are **far apart** in the tree, or state must **survive navigation**: change pages, return, and the selection is still there because the singleton lives as long as the app.
+
+## 📌 When to use a service for state
+<br />
+- Multiple components need to read or write the same value.
+- State must survive navigation between pages.
+- You want to separate logic from presentation and test it without mounting components.
+<br />
+An honest point: for the vast majority of apps, **services + signals are all you need**. State management libraries such as NgRx make sense for large projects, sizeable teams and specific requirements (undo/redo, tracing every change). Do not start there: start with a service, and let the project convince you to change, rather than fashion.
+<br />
+## Where we are now
+<br />
+The state picture is complete: signals in components for local state, services with signals for shared state, `asReadonly()` to protect writes and `computed` for derived values. With this pattern, a modern Angular app's structure no longer holds architectural mysteries.
+<br />
+In the **next chapter**, we close the basic module with two finishing tools: **interceptors**, for handling all HTTP calls in one place, and **pipes**, for presenting data properly.
+</Card>

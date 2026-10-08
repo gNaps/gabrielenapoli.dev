@@ -5,6 +5,7 @@ import { getPostBySlug, projectDetailApi } from "@/utils/api.utils";
 import fs from "fs";
 import { Metadata } from "next";
 import path from "path";
+import { notFound } from "next/navigation";
 
 const postsDirectory = path.join(process.cwd(), "cms/contents/projects");
 
@@ -22,12 +23,15 @@ export const dynamicParams = false;
 export async function generateMetadata({ params }: any): Promise<Metadata> {
   const param = await params;
   const slug = param.slug.join("/");
-  const project = await projectDetailApi(slug, "");
+  const project = await projectDetailApi(slug);
+  if (!project) notFound();
 
   return {
+    alternates: { canonical: `/projects/${slug}` },
     title: `${project.title} | Gabriele Napoli`,
     description: project.description?.en ?? project.subtitle,
     openGraph: {
+      url: `/projects/${slug}`,
       title: `${project.title} | Gabriele Napoli`,
       description: project.description?.en ?? project.subtitle,
       images: [{ url: `https://gabrielenapoli.dev${project.preview.url}` }],
@@ -38,9 +42,10 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 const ProjectDetailPage = async ({ params }: any) => {
   const param = await params;
   const slug = param.slug.join("/");
-  const project = await projectDetailApi(slug, "");
+  const project = await projectDetailApi(slug);
+  if (!project) notFound();
   const detail = projectDetails[slug];
-  const content = detail ? null : await getPostBySlug(param.slug);
+  const content = detail ? null : await getPostBySlug(slug);
 
   const others = allProjects
     .filter((p) => p.slug !== slug && p.homepage)

@@ -1,0 +1,68 @@
+<Card>
+
+<br />
+Try a game: open the Watch project's folder and see it through someone else's eyes. `index.html`, `guardiani.css`, `guardiani.js`, `server.js`, `guardia.db`, `package.json`, all in one pile. Works perfectly. But return in six months, or explain it to a colleague: where do you begin?
+<br />
+Real projects die when **nobody understands them anymore**, not just when code stops working. This final section covers habits keeping projects alive, beginning with the most underrated: order.
+<br />
+## 🗂️ Separating frontend and backend
+<br />
+First recognize **two applications** sharing the pile, as the guide taught: frontend in the browser, backend on the server. The structure should tell that story:
+
+```text
+guardiani/
+├── frontend/
+│   ├── index.html
+│   ├── css/
+│   │   └── guardiani.css
+│   └── js/
+│       └── guardiani.js
+├── backend/
+│   ├── server.js
+│   ├── package.json
+│   └── guardia.db
+└── README.md
+```
+
+Nothing revolutionary, but the folder **answers questions before they are asked**. Interface? `frontend/`. APIs? `backend/`. The new `README.md` is the front door: a few lines explaining the project and how to start it. Its first future reader will be you, in six months.
+<br />
+## 🧩 Modularity: small files, clear jobs
+<br />
+`server.js` is one file, fine for now. Imagine it in a year with castles, expeditions beyond the Wall and login: five thousand lines are the same pile inside a file. The cure is **modularity**: split code into modules, each with a job.
+<br />
+Remember ES6 `import`/`export`, announced in JavaScript? This is why they exist. A growing backend naturally divides like this:
+
+```text
+backend/
+├── server.js          # startup: create the app and start listening
+├── routes/
+│   └── guardiani.js   # the /guardiani routes
+├── db/
+│   └── database.js    # the connection and queries
+└── package.json
+```
+
+Each file exports what others need, and readers find things where expected. The same principle holds on the frontend: chapter 9's frameworks formalize it. **Components** are modularity with rules.
+<br />
+## 🎯 Separation of concerns
+<br />
+Modularity says *divide*; **separation of concerns** says *how*: each piece should have **one job**. The chapter's most important principle, already practiced without realizing:
+<br />
+- HTML structure, CSS style, JavaScript behavior: **three files, three jobs** (chapters 6–8).
+- Frontend presents, backend decides, database stores (chapters 10–19).
+- On the server: routes receive, validation checks, queries save.
+<br />
+Ask: *"how many reasons does this piece have to change?"* More than one (a function validating AND saving AND formatting the response)? Time to split it.
+
+> Its twin is **DRY**, Don't Repeat Yourself. If you copy the same block for a third time, a module or function is asking to be born. Duplicated code means fixing bugs twice, and you will forget one.
+
+## 🧭 Conventions: courtesy between developers
+<br />
+One small daily detail: **names**. Lowercase folders, descriptive names (`guardiani.js`, not `stuff2.js`), consistent style: after `routes/guardiani.js`, use `routes/castelli.js`, not `routes/GestioneCastelli.js`. Conventions let experienced developers find their way around unfamiliar projects in ten minutes. Give that gift to whoever opens your folder next.
+<br />
+## ✅ Conclusion
+<br />
+Order is **maintainability**, the difference between growing and collapsing under your own weight. Structure that tells a story, focused modules, separated responsibilities, descriptive names: four inexpensive habits worth gold tomorrow.
+<br />
+Speaking of growth, how do you track *who changed what, when and why*? In the **next chapter**, chapter 3's long-awaited promise finally arrives: **Git**.
+</Card>

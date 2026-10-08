@@ -1,5 +1,4 @@
 <Card>
-## 20 - Come comunicano frontend e backend
 
 <br />
 In questa guida `fetch` l'abbiamo già usato due volte, sempre di corsa: nel
@@ -9,7 +8,7 @@ diverse. In questo capitolo smontiamo la comunicazione tra frontend e backend
 pezzo per pezzo, perché è il ponte su cui cammina *tutto* quello che hai
 costruito, e sui ponti conviene sapere dove mettere i piedi.
 <br />
-### 📜 Prima di fetch: la storia di AJAX
+## 📜 Prima di fetch: la storia di AJAX
 <br />
 Un po' di contesto, che aiuta a capire i nomi strani che incontrerai. Nel web
 delle origini ogni azione ricaricava la pagina intera: cliccavi "invia",
@@ -25,7 +24,7 @@ usò librerie apposta per non toccarlo. Oggi non serve più: il browser ha
 **`fetch`**, un'API moderna e pulita. Quando senti "chiamata AJAX", sappi che
 si parla di questo: una richiesta HTTP fatta da JavaScript.
 <br />
-### 🧩 Anatomia di una chiamata
+## 🧩 Anatomia di una chiamata
 <br />
 La forma più semplice è una `GET`:
 
@@ -52,7 +51,7 @@ Una riga merita attenzione: `JSON.stringify({...})`. Il body di una richiesta
 una stringa JSON. Tienilo a mente, perché tra poco incontrerai la sua metà
 speculare.
 <br />
-### ✉️ La Response e il mistero del doppio await
+## ✉️ La Response e il mistero del doppio await
 <br />
 Ti sei mai chiesto perché gli `await` sono **due**?
 
@@ -72,7 +71,7 @@ Ecco la simmetria promessa: in uscita `JSON.stringify` (da oggetto a testo),
 in entrata `.json()` (da testo a oggetto). Il JSON è il formato di viaggio;
 ai due capi ci sono sempre oggetti JavaScript.
 <br />
-### 🚨 Il gotcha che devi conoscere: fetch non fallisce sui 404
+## 🚨 Il gotcha che devi conoscere: fetch non fallisce sui 404
 <br />
 E ora la cosa più importante del capitolo, quella che nel capitolo 14 ho
 volutamente glissato. Intuitivamente ti aspetteresti che un `404` o un `500`
@@ -113,7 +112,7 @@ restituisci una lista vuota, e l'app resta in piedi).
 > ignora una delle due famiglie funziona benissimo, fino al giorno della
 > demo davanti al cliente.
 
-### ✅ Conclusione
+## ✅ Conclusione
 <br />
 Ora `fetch` non ha più segreti: sai da dove viene (AJAX), come si compone una
 chiamata (le stesse parti di una richiesta HTTP), perché gli `await` sono due

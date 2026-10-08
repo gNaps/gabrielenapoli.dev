@@ -1,0 +1,165 @@
+<Card>
+
+<br />
+Structure: done. Styling: done. The Night's Watch form is solid and has a handsome dark look. One problem: fill it out and press the button, and nothing interesting happens. The page looks good, but stands still.
+<br />
+Time for the third pillar: **JavaScript**, the programming language the browser executes. If HTML is the skeleton and CSS the clothing, JavaScript is **the muscles and reflexes**: reacting to users, making decisions, changing the page live.
+<br />
+## 🔌 Bringing JavaScript into the page
+<br />
+Like CSS, code must be connected to HTML. The right approach is a separate file loaded with a `<script>` tag inside `<head>`:
+
+```html
+<script src="guardiani.js" defer></script>
+```
+
+`defer` matters: it tells the browser "download the file, but execute it only **after** building the DOM". Remember the tree from the browser chapter? If our code looked for a button before the browser created it, it would find nothing. `defer` keeps the order right.
+<br />
+## 📦 Variables: naming things
+<br />
+A variable is a labeled box: put a value inside and retrieve it by name. Modern JavaScript has two ways to declare one:
+
+```javascript
+const nomeGuardiano = 'Jon Snow'; // will not change
+let reclute = 3;                  // can change over time
+
+reclute = reclute + 1; // ok: there are now 4 recruits
+```
+
+A rule that will save a thousand bugs: **use `const` by default**, switching to `let` only when a value really needs to change. Fewer mutable things mean fewer things that can break.
+<br />
+Variables can hold text (*strings*), numbers, true/false values (*booleans*), lists (*arrays*) and structures containing properties (*objects*):
+
+```javascript
+const motto = 'Night gathers';        // string
+const annoFondazione = -8000;              // number (approximately)
+const accettaReclute = true;               // boolean
+const castelli = ['Castle Black', 'Eastwatch']; // array
+const guardiano = { nome: 'Jon', ruolo: 'Lord Commander' }; // object
+```
+
+> Older tutorials also use `var`, the old declaration style with quirks addressed by `let` and `const`. Recognize it when you see it, but do not use it in new code.
+
+## ⚙️ Functions: named actions
+<br />
+If a variable is a box, a **function** is a recipe: a named block of instructions ready to execute when needed, even a thousand times.
+
+```javascript
+function saluta(nome) {
+  return `Welcome to the Wall, ${nome}!`;
+}
+
+saluta('Jon');   // "Welcome to the Wall, Jon!"
+saluta('Sam');   // "Welcome to the Wall, Sam!"
+```
+
+Notice two things. First, `nome` is a **parameter**, a placeholder receiving the value supplied at the call. Second, text between backticks (`` ` ``) is a **template literal**, letting you insert variables through `${...}`, much more conveniently than joining strings with `+`.
+<br />
+There is a more compact syntax, the **arrow function**, found everywhere in modern code:
+
+```javascript
+const saluta = (nome) => `Welcome to the Wall, ${nome}!`;
+```
+
+Same substance, less ceremony.
+<br />
+## 👂 Events: responding to users
+<br />
+Here comes the turning point. The browser creates an **event** whenever something happens (a click, a keypress, a form submission), and JavaScript listens through `addEventListener`:
+
+```javascript
+const bottone = document.querySelector('.btn-invio');
+
+bottone.addEventListener('click', () => {
+  console.log('Someone wants to enlist!');
+});
+```
+
+Read the first line carefully, because it is half the job: `document.querySelector('.btn-invio')` finds the first DOM element matching that **CSS selector**. Yes, the selectors from last chapter, reused exactly. The next part says: "when a `click` happens on this element, run this function".
+<br />
+And `console.log`? It writes to DevTools' **Console** tab. Open it (`F12`), click the button and watch your messages appear: every developer's first investigative tool.
+<br />
+## 🌳 Manipulating the DOM
+<br />
+Listening is not enough: we also want to **change** the page. The browser's DOM is no static drawing: JavaScript can read and modify it live:
+
+```javascript
+const titolo = document.querySelector('#titolo-pagina');
+
+titolo.textContent = 'The Watch is watching you'; // changes the text
+titolo.classList.add('evidenziato');          // adds a CSS class
+```
+
+The tools are few and quick to learn:
+<br />
+- `document.querySelector(...)`: find an element using a CSS selector.
+- `.textContent`: read or change an element's text.
+- `.classList.add / .remove / .toggle`: manage CSS classes.
+- `document.createElement(...)`: create a brand-new element.
+- `.value`: read what users entered in a field.
+<br />
+## 🛡️ The form comes alive
+<br />
+Combine variables, functions, events and DOM to complete the Night's Watch trilogy. Create `guardiani.js` in the project folder (we already connected the `<script>` with `defer`):
+
+```javascript
+// find the form on the page
+const form = document.querySelector('.form-dark');
+
+form.addEventListener('submit', (event) => {
+  // prevent default submission: we handle it ourselves
+  event.preventDefault();
+
+  // read the name entered by the user
+  const nome = document.querySelector('#name').value;
+
+  // create the welcome message
+  const messaggio = document.createElement('p');
+  messaggio.classList.add('benvenuto');
+  messaggio.textContent = `Welcome to the Watch, ${nome}. Your watch begins.`;
+
+  // replace the form with the message
+  form.replaceWith(messaggio);
+});
+```
+
+Add a class to `guardiani.css` to style the message:
+
+```css
+.benvenuto {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #2e2e2e;
+  border-radius: 8px;
+  color: #f2f2f2;
+  text-align: center;
+}
+```
+
+Reload, fill out the form and press "Join the Watch": the form disappears, replaced by a welcome containing your name. Notice `event.preventDefault()`: submitting normally reloads the page; we block that and decide what happens. This is the same principle behind chapter 2's Single Page Applications, except there a framework does it; here you did.
+<br />
+## 🚀 ES6+: modern JavaScript
+<br />
+One last detail, almost a revelation. Today's JavaScript (`const`, `let`, arrow functions, template literals) did not always exist: it arrived in 2015 with **ES6** (ECMAScript 2015), the update that transformed the language. A new version has appeared yearly since, hence "ES6+".
+<br />
+Congratulations: you used ES6 throughout this chapter without knowing it. Two more gems you will encounter soon:
+
+```javascript
+// destructuring: extract properties in one go
+const guardiano = { nome: 'Jon', casata: 'Stark' };
+const { nome, casata } = guardiano;
+
+// spread: copy and expand arrays and objects
+const veterani = ['Jeor', 'Aemon'];
+const guardia = [...veterani, 'Jon']; // ['Jeor', 'Aemon', 'Jon']
+```
+
+Then there are **modules** (`import`/`export`, splitting code across files) and **Promises** with `async/await`, handling operations taking time, such as chapter 2's HTTP requests. We will give them the attention they deserve later.
+<br />
+## ✅ Conclusion
+<br />
+Look at what you have: an HTML-structured page, dressed with CSS and alive through JavaScript. All three frontend pillars working in one project. As promised, none succeeds alone.
+<br />
+One thing remains before closing this part: our form needs fifteen JavaScript lines, but real apps have hundreds of thousands. How do we stay sane? In the **next chapter**, **frameworks and libraries** (Angular, React, Vue) show how they tame complexity.
+</Card>

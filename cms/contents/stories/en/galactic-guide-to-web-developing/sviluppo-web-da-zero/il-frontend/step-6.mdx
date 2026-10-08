@@ -1,0 +1,75 @@
+<Card>
+
+<br />
+The Watch's form works with just fifteen JavaScript lines. Now try a thought experiment: imagine Gmail. Thousands of screen elements, data arriving constantly, each interface piece depending on ten others. How many `querySelector` and `textContent` lines would you need? More importantly: who remembers to update *everything*, *always*, without forgetting anything?
+<br />
+Nobody. That is precisely why **frontend frameworks** exist.
+<br />
+## 🤯 The problem: keeping data and interface synchronized
+<br />
+Last chapter, we updated the DOM manually: read a value, create an element, replace it. Perfect at a small scale. At a large scale, it becomes frontend's biggest problem: **whenever data changes, someone must remember to update every interface piece displaying it**.
+<br />
+Look at the code. Here is the manual approach you already know:
+
+```javascript
+let contatore = 0;
+const bottone = document.querySelector('#incrementa');
+const output = document.querySelector('#valore');
+
+bottone.addEventListener('click', () => {
+  contatore++;
+  output.textContent = contatore; // manual synchronization
+});
+```
+
+And the same counter with a modern framework (syntax varies; the idea does not):
+
+```html
+<button (click)="contatore = contatore + 1">Increment</button>
+<p>{{ contatore }}</p>
+```
+
+The difference is philosophical: first you *instruct* the browser step by step; second you **describe how the interface should look based on the data**, and the framework handles synchronization. This is the **declarative** approach, and once you try it, there is no going back.
+<br />
+Frameworks add another big idea: **components**, reusable interface pieces bringing structure, style and logic together. Write the button once and use it everywhere.
+<br />
+## 🥊 The three protagonists
+<br />
+The landscape is crowded, but three names have dominated for years.
+<br />
+**React**, from Meta, is technically a *library* (remember the tools chapter?): it handles components and their rendering; for routing, forms and global state, you pick pieces from its enormous ecosystem. Maximum freedom also means maximum responsibility: two React projects can look nothing alike.
+<br />
+**Angular**, from Google, is a complete *framework*: router, forms, HTTP calls, testing. All included and official, with TypeScript built in and strong conventions. Less freedom on small details, much less glue on large projects: why it is widespread in enterprise teams and long-lived projects.
+<br />
+**Vue** is the middle ground: community-born (without a big tech company behind it), progressive (adopt it piece by piece) and known for a gentle learning curve and excellent documentation.
+
+> What about the others? Svelte, SolidJS, Qwik and friends bring interesting ideas, some of which will reach the mainstream. But for learners, the big three cover most job opportunities: fashions pass; foundations remain.
+
+## ⚖️ Concrete differences in approach
+<br />
+- **Library vs framework**: React gives you a tool and lets you assemble the box; Angular hands over the organized box; Vue sits between them.
+- **Templates vs JSX**: Angular and Vue extend HTML with special template syntax; React mixes markup and JavaScript in JSX. A matter of taste; both work.
+- **Conventions vs freedom**: Angular decides a lot (projects resemble each other); React very little (requiring team discipline); Vue suggests without imposing.
+- **Language**: Angular is TypeScript-first; TypeScript is optional in React and Vue, but increasingly standard there too.
+<br />
+Under the hood, all three solve the same problem (changing data, following interface) through different reactive mechanisms with equivalent results.
+<br />
+## 🧭 How do you actually choose?
+<br />
+"Which framework is best?" has started religious wars since 2015. The honest answer: **it depends, and matters less than you think**. What really weighs:
+<br />
+- **The project**: an enterprise app with ten developers and ten years ahead leans toward Angular; a quickly iterating product with a small team often chooses React; gradual growth suits Vue.
+- **The team**: the framework the team knows almost always beats the one "better on paper".
+- **The market**: examine job listings in your region or chosen sector. That is data, not opinion.
+- **The ecosystem**: libraries, ready-made components, Stack Overflow answers. All three have plenty; sleep easy.
+<br />
+My advice to beginners: **learn JavaScript well first**. Frameworks come and go (and change versions), but variables, functions, events and the DOM from recent chapters underpin every framework. Knowing only a framework leaves you lost at the first problem off the beaten path; knowing the language lets you learn a new framework in weeks.
+
+> This site has a complete Angular series: ten chapters, from basics to a complete app. When you feel ready for a framework, you know where to find it.
+
+## ✅ Conclusion
+<br />
+Frameworks are the industrial answer to a problem you now know firsthand: synchronizing data and interface without losing your mind. React, Angular and Vue solve it with different, equally valid philosophies; the right choice depends on project, team and market, not memes.
+<br />
+The frontend part is complete: structure, style, logic and tools for scaling them. In the **next chapter**, we finally look through the other side of the mirror: the **backend**, working behind the scenes to give everything you see meaning.
+</Card>

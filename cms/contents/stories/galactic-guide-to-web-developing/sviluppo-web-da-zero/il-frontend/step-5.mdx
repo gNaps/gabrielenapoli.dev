@@ -1,5 +1,4 @@
 <Card>
-## 08 - JavaScript: la logica nel browser
 
 <br />
 Struttura: fatta. Stile: fatto. Il modulo dei Guardiani della Notte è solido e
@@ -11,7 +10,7 @@ programmazione che il browser sa eseguire. Se l'HTML è lo scheletro e il CSS è
 il vestito, JavaScript è **i muscoli e i riflessi**: reagisce a quello che fa
 l'utente, prende decisioni, cambia la pagina in tempo reale.
 <br />
-### 🔌 Portare JavaScript nella pagina
+## 🔌 Portare JavaScript nella pagina
 <br />
 Come per il CSS, il codice va collegato all'HTML. Il modo giusto è un file
 separato, caricato con il tag `<script>` dentro l'`<head>`:
@@ -25,7 +24,7 @@ solo **dopo** aver costruito il DOM". Ricordi l'albero del capitolo sul
 browser? Se il nostro codice cercasse un bottone prima che il browser lo abbia
 creato, troverebbe il nulla. Con `defer`, l'ordine è sempre quello giusto.
 <br />
-### 📦 Le variabili: dare un nome alle cose
+## 📦 Le variabili: dare un nome alle cose
 <br />
 Una variabile è una scatola con un'etichetta: ci metti dentro un valore e lo
 richiami per nome. In JavaScript moderno si dichiara in due modi:
@@ -57,7 +56,7 @@ const guardiano = { nome: 'Jon', ruolo: 'Lord Comandante' }; // oggetto
 > variabili, con qualche comportamento bizzarro che `let` e `const` hanno
 > sistemato. Riconoscilo quando lo vedi, ma non usarlo nel codice nuovo.
 
-### ⚙️ Le funzioni: azioni con un nome
+## ⚙️ Le funzioni: azioni con un nome
 <br />
 Se la variabile è una scatola, la **funzione** è una ricetta: un blocco di
 istruzioni con un nome, pronto per essere eseguito quando serve, anche mille
@@ -86,7 +85,7 @@ const saluta = (nome) => `Benvenuto alla Barriera, ${nome}!`;
 
 Stessa sostanza, meno cerimonia.
 <br />
-### 👂 Gli eventi: reagire all'utente
+## 👂 Gli eventi: reagire all'utente
 <br />
 Ed eccoci al punto di svolta. Il browser genera un **evento** per qualsiasi
 cosa accada (un click, un tasto premuto, un form inviato) e JavaScript può
@@ -110,7 +109,7 @@ E `console.log`? Scrive nella tab **Console** dei DevTools. Aprila (`F12`),
 clicca il bottone, e guarda i tuoi messaggi apparire: è il primo strumento di
 indagine di ogni sviluppatore.
 <br />
-### 🌳 Manipolare il DOM
+## 🌳 Manipolare il DOM
 <br />
 Ascoltare non basta: vogliamo anche **cambiare** la pagina. Il DOM che il
 browser costruisce non è un disegno statico: JavaScript può leggerlo e
@@ -131,7 +130,7 @@ I ferri del mestiere sono pochi e si imparano in fretta:
 - `document.createElement(...)`: crea un elemento nuovo di zecca
 - `.value`: legge quello che l'utente ha scritto in un campo
 <br />
-### 🛡️ Il modulo prende vita
+## 🛡️ Il modulo prende vita
 <br />
 Mettiamo insieme tutto (variabili, funzioni, eventi, DOM) e completiamo la
 trilogia dei Guardiani. Crea `guardiani.js` nella cartella del progetto (il
@@ -179,7 +178,7 @@ decidiamo cosa succede. È lo stesso principio su cui si reggono le Single Page
 Application del capitolo 2, solo che lì lo fa un framework, qui l'hai fatto
 tu.
 <br />
-### 🚀 ES6+: il JavaScript moderno
+## 🚀 ES6+: il JavaScript moderno
 <br />
 Un'ultima cosa, che è quasi una rivelazione. Il JavaScript che hai scritto
 oggi (`const`, `let`, le arrow function, le template literal) non è sempre
@@ -205,7 +204,7 @@ le **Promise** con `async/await`, per gestire le operazioni che richiedono
 tempo, tipo le richieste HTTP del capitolo 2. A quelle dedicheremo lo spazio
 che meritano più avanti.
 <br />
-### ✅ Conclusione
+## ✅ Conclusione
 <br />
 Guarda cosa hai in mano adesso: una pagina strutturata con l'HTML, vestita con
 il CSS e viva grazie a JavaScript. I tre pilastri del frontend, tutti e tre al

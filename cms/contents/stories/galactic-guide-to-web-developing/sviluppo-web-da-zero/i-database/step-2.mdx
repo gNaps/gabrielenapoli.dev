@@ -1,5 +1,4 @@
 <Card>
-## 17 - Concetti base dei database relazionali
 
 <br />
 Il mondo relazionale ha una grammatica precisa, fatta di poche parole:
@@ -9,7 +8,7 @@ sotto, sono tutti fatti così.
 <br />
 E naturalmente le impariamo sul registro della Guardia.
 <br />
-### 📋 Tabelle, righe e colonne
+## 📋 Tabelle, righe e colonne
 <br />
 Una **tabella** raccoglie dati dello stesso tipo. Ogni **riga** è un elemento
 (un guardiano); ogni **colonna** è una sua proprietà (il nome, il ruolo).
@@ -35,7 +34,7 @@ capitolo scorso, in azione.
 Su quella colonna `castello_id` torniamo tra un attimo: è lei la protagonista
 del capitolo.
 <br />
-### 🔑 La chiave primaria
+## 🔑 La chiave primaria
 <br />
 Ogni riga ha bisogno di un'identità inconfondibile. Due guardiani potrebbero
 chiamarsi allo stesso modo, ma devono restare distinguibili: per questo ogni
@@ -48,7 +47,7 @@ sul CRUD, ed è il `42` degli URL tipo `/guardiani/42`: le API usano la
 chiave primaria per indicare *quale* risorsa. I pezzi, come sempre, si
 incastrano.
 <br />
-### 🗝️ La chiave esterna: come nascono le relazioni
+## 🗝️ La chiave esterna: come nascono le relazioni
 <br />
 Ora la domanda da un milione di dragoni: come rappresentiamo il fatto che Jon
 presta servizio al Castello Nero? L'istinto direbbe "aggiungo una colonna col
@@ -78,7 +77,7 @@ Ti suona familiare anche questo? È la **singola fonte di verità**: lo stesso
 principio che, su scala diversa, la serie su Angular qui sul sito applica
 allo stato condiviso. Le buone idee, nell'informatica, girano.
 <br />
-### 🛡️ L'integrità referenziale
+## 🛡️ L'integrità referenziale
 <br />
 E qui il database mostra i muscoli. Dichiarando la chiave esterna, non stai
 solo documentando la relazione: stai chiedendo al database di **difenderla**.
@@ -92,7 +91,7 @@ Si chiama **integrità referenziale**, e in pratica significa:
 > codice *spera* venga rispettata: sono un **contratto che il database fa
 > rispettare**. I riferimenti rotti, semplicemente, non possono esistere.
 
-### ✅ Conclusione
+## ✅ Conclusione
 <br />
 Grammatica acquisita: le **tabelle** con colonne tipizzate, la **chiave
 primaria** che dà identità a ogni riga, la **chiave esterna** che crea le

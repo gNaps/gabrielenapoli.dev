@@ -7,6 +7,7 @@ export interface CourseSection {
 }
 
 export interface Course {
+  language?: "en" | "it";
   id: number;
   slug: string;
   title: string;

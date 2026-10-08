@@ -1,5 +1,4 @@
 <Card>
-## 21 - Il flusso completo, dal click al pixel
 
 <br />
 Confessione: al progetto dei Guardiani manca ancora un pezzo, e forse non te
@@ -14,7 +13,7 @@ nuove reclute e si **aggiorna da sola** dopo ogni arruolamento. Il ciclo
 completo (form → API → database → interfaccia) tutto insieme, per la prima
 volta.
 <br />
-### 🏗️ La pagina del registro
+## 🏗️ La pagina del registro
 <br />
 Partiamo dall'HTML. Al modulo che conosci aggiungiamo la sezione dell'elenco:
 
@@ -70,7 +69,7 @@ passato invano. Due tocchi di CSS per le new entry:
 }
 ```
 
-### 📖 Leggere e mostrare: la funzione chiave
+## 📖 Leggere e mostrare: la funzione chiave
 <br />
 E ora il cuore del capitolo, in `guardiani.js`: la funzione che chiede
 l'elenco al server e lo disegna nella pagina. È il `caricaGuardiani` del
@@ -115,7 +114,7 @@ chiama **XSS**, la cugina frontend della SQL injection). Con `textContent` è
 solo testo, sempre. Mai fidarsi del client, nemmeno quando i suoi dati
 tornano indietro.
 <br />
-### ✍️ Arruolare e aggiornare
+## ✍️ Arruolare e aggiornare
 <br />
 Il submit ora usa tutto quello che sai, e alla fine **richiama
 `caricaRegistro()`**, chiudendo il cerchio:
@@ -152,7 +151,7 @@ il nome **compare nell'elenco**, subito. Riavvia pure il server: ci sono
 ancora tutti. Nessuna magia: solo ogni capitolo di questa guida al suo
 posto.
 <br />
-### 🔭 Il viaggio completo, al rallentatore
+## 🔭 Il viaggio completo, al rallentatore
 <br />
 Nel capitolo 2 ti avevo promesso che avremmo capito "cosa succede quando
 clicchi un pulsante". Guardalo adesso, fotogramma per fotogramma:
@@ -171,7 +170,7 @@ hai costruito tu**. Quando nel capitolo 2 dicevo che dietro un click "c'è un
 viaggio", era una promessa: adesso è una mappa che sai leggere (e
 percorrere) da solo.
 <br />
-### ✅ Conclusione
+## ✅ Conclusione
 <br />
 Il ciclo è chiuso: frontend, backend e database non sono più tre argomenti di
 studio ma tre organi dello stesso corpo, e li hai visti battere insieme. Da

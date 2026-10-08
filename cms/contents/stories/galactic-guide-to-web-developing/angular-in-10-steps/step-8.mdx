@@ -1,5 +1,4 @@
 <Card>
-## 08 - Stato condiviso: i service come unica fonte di verità
 
 <br />
 Componenti, form, chiamate al server: i pezzi ci sono tutti. Ma prima o poi
@@ -16,7 +15,7 @@ un service**. Nel capitolo 7 i service li abbiamo usati per le chiamate HTTP;
 oggi li vediamo nel loro secondo mestiere, che forse è anche il più importante:
 **custodire lo stato dell'applicazione**.
 <br />
-### 🧩 Il principio: lo stato vive in un posto solo
+## 🧩 Il principio: lo stato vive in un posto solo
 <br />
 Ripasso lampo dal capitolo scorso: un service con `providedIn: 'root'` è un
 **singleton**: Angular ne crea una sola istanza per tutta l'app e la
@@ -29,7 +28,7 @@ e la condivisione viene da sola: chi scrive aggiorna il signal, chi legge si
 aggiorna automaticamente. È il pattern della **singola fonte di verità**: il
 dato abita in un posto solo, tutti gli altri lo osservano.
 <br />
-### 🛠️ Step 1: il service con lo stato
+## 🛠️ Step 1: il service con lo stato
 <br />
 Costruiamo l'esempio del gioco selezionato. Prima versione, la più semplice
 possibile:
@@ -78,7 +77,7 @@ export class GameSelectionService {
 Ora il service è l'unico punto dove la selezione può cambiare. Quando qualcosa
 non torna, sai esattamente dove guardare.
 <br />
-### 🧪 Step 2: il componente che scrive
+## 🧪 Step 2: il componente che scrive
 <br />
 Il selettore inietta il service e chiama il suo metodo:
 
@@ -104,7 +103,7 @@ export class GameSelectorComponent {
 }
 ```
 
-### 👁️ Step 3: il componente che legge
+## 👁️ Step 3: il componente che legge
 <br />
 Il dettaglio inietta lo stesso service e si limita a leggere il signal:
 
@@ -134,7 +133,7 @@ all'istante, senza che i due si conoscano: nessun riferimento diretto, nessun
 evento da propagare su per l'albero. Il service fa da punto d'incontro, i
 signals fanno il resto.
 <br />
-### E lo stato derivato?
+## E lo stato derivato?
 <br />
 Anche i `computed` del capitolo 5 stanno benissimo dentro un service. Se il
 dettaglio deve sapere *se* c'è una selezione, non serve un secondo stato da
@@ -146,7 +145,7 @@ readonly hasSelection = computed(() => this._selectedGame() !== null);
 
 Stessa regola di sempre: tutto ciò che è derivabile si deriva, non si duplica.
 <br />
-### Padre-figlio o lontani parenti?
+## Padre-figlio o lontani parenti?
 <br />
 Un service non è l'unico modo per far comunicare i componenti, ed è bene
 scegliere lo strumento in base alla distanza:
@@ -157,7 +156,7 @@ scegliere lo strumento in base alla distanza:
 > quando lo stato deve **sopravvivere alla navigazione**: cambi pagina, torni
 > indietro, e la selezione è ancora lì, perché il singleton vive quanto l'app.
 
-### 📌 Quando usare un service per lo stato
+## 📌 Quando usare un service per lo stato
 <br />
 - più componenti devono leggere o scrivere lo stesso valore
 - lo stato deve sopravvivere alla navigazione tra pagine
@@ -169,7 +168,7 @@ hanno senso su progetti grandi, con team numerosi e requisiti particolari
 (undo/redo, tracciabilità di ogni cambiamento). Non partire da lì: parti dal
 service, e fatti convincere dal progetto a cambiare, non dalla moda.
 <br />
-### Dove siamo arrivati
+## Dove siamo arrivati
 <br />
 Il quadro dello stato è completo: i signals dentro i componenti per lo stato
 locale, i service con signals per lo stato condiviso, `asReadonly()` per

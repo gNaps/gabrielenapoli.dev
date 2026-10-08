@@ -1,5 +1,4 @@
 <Card>
-## 07 - Chiamate HTTP: dai servizi alla Resource API
 
 <br />
 Componenti, router, signals, form: finora la nostra app vive in un mondo tutto
@@ -11,7 +10,7 @@ Prima però dobbiamo saldare un debito: nei capitoli scorsi `inject()` è spunta
 più volte senza mai una presentazione ufficiale. È il momento di parlare di
 **servizi e dependency injection**, perché è lì che vivrà la nostra logica HTTP.
 <br />
-### 💉 Servizi e dependency injection in due minuti
+## 💉 Servizi e dependency injection in due minuti
 <br />
 Un componente dovrebbe occuparsi di una cosa sola: l'interfaccia. La logica che
 non riguarda la UI (parlare col server, condividere dati tra pagine, fare
@@ -50,7 +49,7 @@ con gli stessi dati.
 > solo la forma più recente e più comoda, perché si usa anche fuori dal
 > costruttore, come nelle guardie e nei resolver del capitolo 4.
 
-### 🧰 Abilitare HttpClient
+## 🧰 Abilitare HttpClient
 <br />
 Il client HTTP di Angular va registrato una volta sola, in `app.config.ts`:
 
@@ -65,7 +64,7 @@ export const appConfig: ApplicationConfig = {
 
 Fatto: da questo momento `HttpClient` è iniettabile ovunque.
 <br />
-### 🛠️ Un service con le operazioni CRUD
+## 🛠️ Un service con le operazioni CRUD
 <br />
 Mettiamo insieme le due cose e scriviamo il service che gestisce i nostri
 videogiochi, con le classiche operazioni CRUD (create, read, update, delete):
@@ -106,7 +105,7 @@ export class GameService {
 Nota il tipo generico, `this.http.get<Game[]>(...)`: stiamo dicendo al
 compilatore cosa aspettarci dalla risposta, e da lì in poi tutto è tipizzato.
 <br />
-### 🔄 Observables, il minimo indispensabile
+## 🔄 Observables, il minimo indispensabile
 <br />
 Ogni metodo del service restituisce un **Observable**. Cos'è? Un oggetto che
 rappresenta un valore che **arriverà in futuro**: non la risposta del server,
@@ -161,7 +160,7 @@ proprietà. Per anni i progetti Angular si sono riempiti di flag `isLoading` e
 blocchi `error` scritti a mano. Ed è esattamente il problema che la Resource
 API viene a risolvere.
 <br />
-### 🚀 La Resource API
+## 🚀 La Resource API
 <br />
 Da Angular 19 esiste `resource()`: dichiari **da cosa dipende** il dato e
 **come caricarlo**, e Angular ti dà tre signals già pronti: `value()`,
@@ -229,7 +228,7 @@ gratis.
 > `rxResource` qui sotto `loader` è diventato `stream`). Se qualcosa non
 > compila, controlla la versione di Angular del progetto.
 
-### Le varianti: rxResource e httpResource
+## Le varianti: rxResource e httpResource
 <br />
 Il `loader` di `resource()` è basato su Promise, per questo nell'esempio ho
 usato `fetch`. Se preferisci restare su `HttpClient` (che ha i suoi vantaggi,
@@ -265,7 +264,7 @@ Una riga. L'URL è una funzione che legge i signals, quindi al cambio della
 query la richiesta riparte, con loading, errori e annullamento gestiti da
 Angular.
 <br />
-### Quando usare cosa
+## Quando usare cosa
 <br />
 La mia bussola attuale:
 <br />
@@ -273,7 +272,7 @@ La mia bussola attuale:
 - **`HttpClient` con subscribe**: i *comandi* (salvataggi, cancellazioni, submit di form), dove la richiesta parte da un'azione dell'utente e non da un cambio di stato
 - **`rxResource`**: quando sei nel primo caso ma ti servono gli operatori RxJS di mezzo
 <br />
-### Dove siamo arrivati
+## Dove siamo arrivati
 <br />
 Oggi la nostra app ha smesso di parlare da sola: sai creare un service e
 iniettarlo dove serve, fare le operazioni CRUD con `HttpClient`, capire cosa

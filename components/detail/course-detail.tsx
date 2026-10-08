@@ -1,10 +1,13 @@
-"use client";
-
-import { useLang } from "@/components/providers/language-provider";
+import { getSiteCopy } from "@/cms/site-copy";
 import { Course } from "@/models/course.model";
 import { Story } from "@/models/story.model";
 import Link from "next/link";
 import { Fragment } from "react";
+import {
+  originalStorySlug,
+  courseLanguages,
+} from "@/utils/content-language.utils";
+import ContentLanguageSwitch from "./content-language-switch";
 
 function ChapterRow({ chapter, number }: { chapter: Story; number: number }) {
   return (
@@ -28,35 +31,39 @@ export default function CourseDetail({
   course: Course;
   chapters: Story[];
 }) {
-  const { lang, t } = useLang();
+  const { lang, t } = getSiteCopy(course.language ?? "it");
 
   const chapterBySlug = (slug: string) =>
-    chapters.find((c) => c.slug === slug);
-  const numberOf = (slug: string) =>
-    course.chapterSlugs.indexOf(slug) + 1;
+    chapters.find((c) => originalStorySlug(c.slug) === slug);
+  const numberOf = (slug: string) => course.chapterSlugs.indexOf(slug) + 1;
 
   return (
-    <div className="gn-page gn-page--narrow">
+    <div className="gn-page gn-page--narrow" lang={lang}>
       <div className="detail-top">
-        <Link href="/#blog" className="btn btn--back">
+        <Link href="/stories" className="btn btn--back">
           ← {t.backToBlog}
         </Link>
         <span className="eyebrow">
           {course.chapterSlugs.length}{" "}
-          {course.chapterSlugs.length === 1 ? t.chapterLabel : t.chaptersLabel}{" "}
-          · {course.kana}
+          {course.chapterSlugs.length === 1
+            ? t.chapterLabel
+            : t.chaptersLabel}{" "}
         </span>
       </div>
 
-      <div className="panel sh-10 post-head">
+      <div className="post-head">
         <div className="post-meta">
           <span>{t.evCourse}</span>
         </div>
+        <ContentLanguageSwitch
+          language={lang}
+          paths={courseLanguages(course.slug)}
+        />
         <h1 className="post-title">{course.title}</h1>
         <p className="course-intro">{course.description[lang]}</p>
       </div>
 
-      <div className="panel sh-10 course-toc">
+      <div className="course-toc">
         {course.sections
           ? course.sections.map((section, s) => (
               <Fragment key={section.title.en}>

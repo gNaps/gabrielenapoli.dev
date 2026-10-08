@@ -1,5 +1,4 @@
 <Card>
-## 04 - Il Router: da componenti a pagine
 
 <br />
 Nel capitolo scorso ti avevo promesso che avremmo trasformato i nostri componenti
@@ -14,7 +13,7 @@ In questo capitolo vediamo cos'è e come si configura, il lazy loading, come
 passare parametri nelle rotte, i modi per navigare, le guardie e i resolver.
 C'è parecchia carne al fuoco, ma ogni pezzo è corto.
 <br />
-### 🚪 Cos'è il Router
+## 🚪 Cos'è il Router
 <br />
 Il router è il sistema che gestisce la **navigazione tra le pagine** di una
 **Single Page Application**. E "pagine", in Angular, significa componenti: non
@@ -31,7 +30,7 @@ Un esempio concreto:
 - `/games` mostra `GamesComponent`
 - `/games/42` mostra il dettaglio del gioco con id 42
 <br />
-### Dove finiscono le pagine: router-outlet
+## Dove finiscono le pagine: router-outlet
 <br />
 Prima domanda da farsi: se il router "monta" i componenti, dove li mette?
 La risposta è `<router-outlet>`, un segnaposto che piazzi nel template del
@@ -60,7 +59,7 @@ import { RouterOutlet } from '@angular/router';
 export class AppComponent {}
 ```
 
-### ⚙️ Configurare le rotte
+## ⚙️ Configurare le rotte
 <br />
 La configurazione vive in due file. Il primo è `app.routes.ts`, l'elenco delle
 rotte:
@@ -95,7 +94,7 @@ export const appConfig: ApplicationConfig = {
 > Se hai creato il progetto con `ng new`, questi due file esistono già e sono già
 > collegati tra loro: ti basta riempire l'array `routes`.
 
-### 💤 Lazy loading
+## 💤 Lazy loading
 <br />
 Nell'esempio sopra hai visto due modi di dichiarare una rotta. Con `component`
 il componente finisce nel bundle iniziale dell'app; con `loadComponent` viene
@@ -113,7 +112,7 @@ import('./games/games.component')`, ma la forma esplicita si legge meglio.
 <br />
 La mia regola pratica: la home eager, quasi tutto il resto lazy.
 <br />
-### 🔁 Parametri nella rotta
+## 🔁 Parametri nella rotta
 <br />
 Il dettaglio del gioco 42 sta su `/games/42`: il 42 è un **parametro di rotta**
 e si dichiara con i due punti:
@@ -160,7 +159,7 @@ Esiste anche la strada classica, iniettare `ActivatedRoute` e leggere
 `paramMap`. La incontrerai in qualunque codebase esistente, ma per il codice
 nuovo gli input binding sono più semplici e più facili da testare.
 <br />
-### 🚦 Navigare tra le rotte
+## 🚦 Navigare tra le rotte
 <br />
 Due modi, a seconda che la navigazione parta dal template o dalla logica.
 <br />
@@ -212,7 +211,7 @@ export class LoginComponent {
 In sintesi: `routerLink` per i link veri e propri, `router.navigate()` quando
 c'è una decisione di mezzo.
 <br />
-### 🛡 Guardie: proteggere le rotte
+## 🛡 Guardie: proteggere le rotte
 <br />
 Una **guardia** decide se una rotta può essere attivata. Il caso tipico è la
 pagina riservata agli utenti autenticati. Oggi una guardia è una semplice
@@ -247,7 +246,7 @@ alla rotta con `canActivate`:
 > un meccanismo di sicurezza. I controlli veri restano sul server; la guardia serve
 > a dare un'esperienza sensata a chi non è autorizzato.
 
-### 🧩 Resolver: dati pronti prima della pagina
+## 🧩 Resolver: dati pronti prima della pagina
 <br />
 A volte una pagina senza i suoi dati non ha senso: tanto vale caricarli **prima**
 di mostrarla. È il lavoro dei **resolver**, anche loro semplici funzioni:
@@ -295,7 +294,7 @@ Il rovescio della medaglia: finché il resolver non ha finito, la navigazione
 resta in attesa. Per chiamate veloci è perfetto; per dati lenti valuta se non
 sia meglio mostrare la pagina con uno spinner.
 <br />
-### La rotta di riserva
+## La rotta di riserva
 <br />
 Ultima cosa, piccola ma da fare sempre: cosa succede se l'utente digita un URL
 che non esiste? Senza istruzioni, niente di buono. La rotta jolly `**` cattura
@@ -308,7 +307,7 @@ tutto ciò che non ha trovato corrispondenza:
 Va messa **per ultima** nell'array: le rotte vengono valutate in ordine, e il
 jolly mangia tutto quello che incontra.
 <br />
-### Dove siamo arrivati
+## Dove siamo arrivati
 <br />
 Il router è il pezzo che trasforma una collezione di componenti in
 un'applicazione: pagine con un URL, caricate solo quando servono, protette dove

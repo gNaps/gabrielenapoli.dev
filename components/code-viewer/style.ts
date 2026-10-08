@@ -1,13 +1,10 @@
-/* Prism theme for the manga code panel: fixed ink background (same in
-   light and dark theme), JetBrains Mono, high-contrast tokens tuned to
-   the site palette (pink / cyan / amber on cream). */
+/* Dark syntax theme shared by all article code blocks. */
 
-const FONT =
-  "var(--font-mono), 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace";
+const FONT = "var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace";
 
 export const style: any = {
   'code[class*="language-"]': {
-    color: "#f3eee5",
+    color: "#f5f5f4",
     background: "none",
     fontFamily: FONT,
     fontSize: "14px",
@@ -26,7 +23,7 @@ export const style: any = {
     hyphens: "none",
   },
   'pre[class*="language-"]': {
-    color: "#f3eee5",
+    color: "#f5f5f4",
     background: "transparent",
     fontFamily: FONT,
     fontSize: "14px",
@@ -53,21 +50,21 @@ export const style: any = {
     whiteSpace: "normal",
   },
   comment: {
-    color: "#8d8177",
+    color: "#94949b",
     fontStyle: "italic",
   },
   "block-comment": {
-    color: "#8d8177",
+    color: "#94949b",
     fontStyle: "italic",
   },
   prolog: {
-    color: "#8d8177",
+    color: "#94949b",
   },
   doctype: {
-    color: "#8d8177",
+    color: "#94949b",
   },
   cdata: {
-    color: "#8d8177",
+    color: "#94949b",
   },
   punctuation: {
     color: "#c9beb4",
@@ -109,20 +106,20 @@ export const style: any = {
     color: "#ffd97a",
   },
   selector: {
-    color: "#ff7aa2",
+    color: "#b18cff",
   },
   important: {
-    color: "#ff7aa2",
+    color: "#b18cff",
     fontWeight: "bold",
   },
   atrule: {
-    color: "#ff7aa2",
+    color: "#b18cff",
   },
   keyword: {
-    color: "#ff7aa2",
+    color: "#b18cff",
   },
   builtin: {
-    color: "#ff7aa2",
+    color: "#b18cff",
   },
   string: {
     color: "#a8e6a1",
@@ -137,7 +134,7 @@ export const style: any = {
     color: "#a8e6a1",
   },
   variable: {
-    color: "#f3eee5",
+    color: "#f5f5f4",
   },
   operator: {
     color: "#7fe3e1",

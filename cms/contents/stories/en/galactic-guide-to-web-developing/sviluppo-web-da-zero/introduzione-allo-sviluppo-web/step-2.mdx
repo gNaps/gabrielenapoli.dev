@@ -1,0 +1,79 @@
+<Card>
+
+<br />
+Last chapter, I left you with a spoiler: more happens behind a button click than meets the eye. Here we go. You know when you open a site, click, and something magically happens? The page updates, a message appears, data arrives. There is no magic: there is a **precise structure**, client-server architecture, supporting almost every modern web application.
+<br />
+Let us explore it together without making life complicated.
+<br />
+## 🧭 A world in two parts: client and server
+<br />
+Every web app has two main players cooperating from a distance: the **client** and the **server**.
+<br />
+The **client** is the visible part users interact with. Usually it is a browser (Chrome on a PC, Safari on an iPhone, Firefox on a tablet), or a mobile app behaving like one behind the scenes. Everything you see (text, buttons, animations, notifications) is drawn and managed by the client.
+<br />
+The **server** is remote. It lives in a data center, quiet but always active. Its job is to receive client requests, do the required work (read and write data, validate input, check permissions) and return a response.
+
+> It is like ordering coffee: you are the client, the barista is the server. You give a command ("an espresso, please"), they prepare it and hand it over. The café works because both sides speak the same language. On the web, that language is **HTTP**.
+
+## 🔁 How exactly do they communicate?
+<br />
+The mechanism is simpler than you think. When you interact with a web app (for example, clicking "Send" on a contact form), the browser builds an **HTTP request**: a message containing the action type, destination address and, if needed, data.
+<br />
+The four main action types (HTTP "verbs") are:
+<br />
+- **GET**: give me something (a page, data).
+- **POST**: here is something new to save.
+- **PUT**: update something that already exists.
+- **DELETE**: remove something.
+<br />
+The request leaves your device and travels across the internet to the server. The server receives and interprets it, does the work (perhaps saving your message to a database), then **responds**: sometimes with HTML, sometimes with JSON data the browser uses to update the interface.
+<br />
+This round trip is the **request/response cycle**, and it happens constantly, usually without you noticing.
+<br />
+## ☕ A down-to-earth example
+<br />
+Imagine you have written a comment below a blog article and click "Publish". At that point:
+<br />
+- The browser builds an HTTP `POST` request and sends it to the site's API.
+- The server receives the comment and saves it to the database.
+- The server responds with the "official" version of the saved comment.
+- The browser uses the response to update the page, displaying the comment and avatar.
+<br />
+All in a handful of milliseconds. And the nice part? You can actually *inspect* the request and response. Here is a slightly simplified version of what leaves your browser:
+
+```http
+POST /api/commenti HTTP/1.1
+Host: blog.example.com
+Content-Type: application/json
+
+{ "autore": "Gabriele", "testo": "Great article!" }
+```
+
+And what comes back from the server:
+
+```http
+HTTP/1.1 201 Created
+Content-Type: application/json
+
+{ "id": 42, "autore": "Gabriele", "testo": "Great article!" }
+```
+
+You need not understand every line yet. But notice how readable it is: a verb, an address, data; a status ("201 Created": done, created) and returned data. Underneath, the whole web consists of messages like these.
+<br />
+## ⚙️ What is a web app made of?
+<br />
+At its core, the same division always exists:
+<br />
+- The **frontend** lives in the browser: HTML, CSS and JavaScript, often organized using React, Angular or Vue.
+- The **backend** is everything behind it on the server: written using any of many languages and platforms (Node.js, C#, Python, PHP...), it handles logic, data and security.
+<br />
+They communicate through HTTP requests, usually through an interface called a **REST API**, which we will explore later.
+<br />
+Modern web apps are increasingly **Single Page Applications (SPAs)**: the interface loads once, then data updates dynamically without reloading the page. Like having a "real" app inside the browser.
+<br />
+## 🧠 What to take away
+<br />
+Understanding a web app means understanding **who does what**, **how the parts communicate** and **which direction data travels**. When you click something, more than a color changes: behind it is a journey from client to server and back, a continuous flow enabling every interaction you know.
+<br />
+With the map in hand, you are ready to explore the details. Later in this guide, we investigate the first half, the **frontend**: what it really means to write code that ends up in front of users. But first, in the **next chapter**, we discuss the **tools of the trade**: what to install and configure for this wonderful job.
+</Card>

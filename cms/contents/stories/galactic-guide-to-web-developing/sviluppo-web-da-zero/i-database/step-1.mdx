@@ -1,5 +1,4 @@
 <Card>
-## 16 - Cos'è un database e perché è importante
 
 <br />
 Samwell è sparito di nuovo, vero? Ogni riavvio del server, un'amnesia totale:
@@ -7,7 +6,7 @@ il registro della Guardia vive in un array in memoria, e la memoria muore col
 processo. Te l'avevo promesso alla fine della scorsa sezione: è ora di dare
 ai dati una casa vera. Benvenuto nel mondo dei **database**.
 <br />
-### 💾 Perché non basta un file?
+## 💾 Perché non basta un file?
 <br />
 La prima idea che viene in mente è semplice: "salvo tutto in un file di
 testo". E per un esperimento funziona pure. Ma prova a immaginare il registro
@@ -20,7 +19,7 @@ con centomila guardiani e cento client collegati:
 Un file non risponde a nessuna di queste domande. Un database sì: è nato
 esattamente per questo.
 <br />
-### 🏛️ Cos'è, davvero
+## 🏛️ Cos'è, davvero
 <br />
 Un **database** è un archivio di dati strutturato; il programma che lo
 gestisce si chiama **DBMS** (Database Management System): nomi che
@@ -37,7 +36,7 @@ E lo fa con quattro garanzie che un file si sogna:
 Quell'ultima garanzia dovrebbe suonarti familiare: è "mai fidarsi del client"
 portato al livello successivo. Anche il database, come il server, dispone.
 <br />
-### 🔗 I dati sono relazioni
+## 🔗 I dati sono relazioni
 <br />
 C'è una cosa che finora abbiamo ignorato: i dati veri **non vivono da soli**.
 Ogni guardiano presta servizio in un castello. Ogni ordine di un e-commerce
@@ -48,7 +47,7 @@ I dati, insomma, sono una rete di **relazioni**, e il modo in cui un database
 le gestisce è la scelta più importante della sua architettura. Ed è
 esattamente su questo che si divide il mondo.
 <br />
-### ⚖️ Relazionali vs non relazionali
+## ⚖️ Relazionali vs non relazionali
 <br />
 I **database relazionali** organizzano i dati in **tabelle** (righe e
 colonne, come un foglio di calcolo ma con superpoteri) collegate tra loro da
@@ -70,7 +69,7 @@ i key-value (Redis) e altri ancora, ognuno ottimizzato per un mestiere.
 > trasferiscono ovunque. Il NoSQL lo apprezzerai davvero solo dopo aver
 > capito a cosa stai rinunciando.
 
-### ✅ Conclusione
+## ✅ Conclusione
 <br />
 Ora sai perché ogni applicazione seria ha un database alle spalle: non è un
 file glorificato, è un guardiano specializzato: persistenza, velocità,

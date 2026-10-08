@@ -1,0 +1,64 @@
+<Card>
+
+<br />
+If web development were a play, you would be the director, code the script and the browser the lead actor. It takes everything you write (HTML, CSS, JavaScript) and **translates it into a visual, interactive experience** for users.
+<br />
+But what really happens when you open a web page? What does the browser do backstage between the address you type and what appears on screen? This chapter answers those questions together, without complications.
+<br />
+## 🔍 The browser interprets what it reads
+<br />
+When you type a URL and press Enter, the browser **does more than "read" code**: it interprets it. It downloads the page (the HTML), then analyzes every line, tag and attribute. It identifies linked CSS and JavaScript files and loads those too, following a precise, optimized order.
+
+> Think of a cook: reading the recipe (HTML), taking the ingredients (CSS and JavaScript) and turning them into a dish served to the user.
+
+## 🏗️ The DOM: every page's invisible structure
+<br />
+One of the most important things the browser builds is the **DOM** (Document Object Model): a **tree representation** of your HTML page.
+<br />
+Every element (heading, paragraph, image, button) becomes a **node** in this tree. These nodes can be **changed dynamically through JavaScript**. Ever clicked a button that reveals a message, or seen a list update itself? That is JavaScript manipulating the DOM in real time.
+<br />
+The DOM makes your page **alive**. Without it, everything would be static.
+<br />
+## 🎨 Where do CSS and JavaScript come in?
+<br />
+Once the DOM is built, the browser applies **CSS styles**: a button becomes blue, text centered, images shadowed. Then it executes **JavaScript**, which can listen for events, update data, modify elements, validate forms and request data from the server.
+<br />
+A simplified flow:
+<br />
+1. The browser receives HTML.
+2. It builds the DOM.
+3. It applies CSS and draws the page.
+4. It executes JavaScript.
+5. It updates the DOM and styles dynamically when needed.
+<br />
+This process repeats throughout use, making an app **reactive and interactive**.
+<br />
+## 🛠️ DevTools: a window into the engine
+<br />
+You glimpsed them in the tools chapter; now it is time to open them. To understand browser behavior, and especially **debug** problems, every browser includes developer tools, **DevTools**. Open them with `F12` or right-click → "Inspect".
+<br />
+Inside you will find:
+<br />
+- **Elements**: see and modify HTML live, check applied CSS, inspect layouts.
+- **Console**: write and execute JavaScript, read logs, discover errors.
+- **Network**: every outgoing and incoming HTTP request, with timings, status and payload (chapter 2's request/response cycle, live).
+- **Application**: localStorage, cookies, caches, service workers.
+- **Performance**: page loading time, slow points and optimization opportunities.
+
+> Learning DevTools is one of a frontend developer's most important skills. They are more than a debugger: they give direct insight into your code's actual behavior. Becoming comfortable now pays off throughout your career.
+
+## 🧠 The essentials
+<br />
+The browser is much more than a "page viewer": it is an interpreter, executor and collaborator.
+<br />
+- It translates HTML into a structure, the DOM.
+- It applies CSS to turn structure into a visual layout.
+- It runs JavaScript for interactions and dynamic behavior.
+- It provides powerful tools to inspect, test and improve the result.
+<br />
+## ✅ Conclusion
+<br />
+Understanding how the browser works makes you a more aware developer: you write code knowing **how it will be interpreted**, optimize it for speed and diagnose problems when things fail.
+<br />
+In the **next chapters**, we explore the three frontend pillars (HTML, CSS and JavaScript) individually, starting with the skeleton: **HTML**. These languages complement each other, as you will soon see: none succeeds alone.
+</Card>

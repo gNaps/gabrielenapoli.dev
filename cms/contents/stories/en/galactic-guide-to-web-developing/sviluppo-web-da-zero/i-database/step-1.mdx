@@ -1,0 +1,46 @@
+<Card>
+
+<br />
+Samwell disappeared again, right? Every restart brings total amnesia: the Watch's register lives in an in-memory array, and memory dies with the process. As promised at the last section's end, it is time to give data a real home. Welcome to **databases**.
+<br />
+## 💾 Why is a file not enough?
+<br />
+The first idea is simple: "save everything in a text file". Fine for an experiment. But imagine a hundred thousand watchmen and a hundred connected clients:
+<br />
+- How do you **find** one watchman without reading the whole file?
+- What if **two requests write simultaneously**? (Spoiler: corrupted data.)
+- What prevents saving a watchman **without a name**, or assigned to a nonexistent castle?
+<br />
+A plain file answers none of these. A database was created precisely to address them.
+<br />
+## 🏛️ What it really is
+<br />
+A **database** is a structured data archive; the program managing it is a **DBMS** (Database Management System). Names you will meet: PostgreSQL, MySQL, SQLite, SQL Server, MongoDB. Like chapter 10's web server, a DBMS is often a listening server, specializing in **keeping data**. It provides four capabilities a plain file lacks:
+<br />
+- **Persistence**: data survives restarts, crashes and updates.
+- **Fast search**: find data among millions of records in milliseconds.
+- **Concurrent access**: clients read and write together without interfering.
+- **Rules**: reject data violating defined constraints.
+<br />
+That last capability sounds familiar: "never trust the client" taken one level further. Like the server, the database decides.
+<br />
+## 🔗 Data has relationships
+<br />
+We have ignored something: real data **does not live alone**. Every watchman serves in a castle. Every e-commerce order belongs to a customer and contains products. Every post has an author and comments, which have authors too.
+<br />
+Data forms a web of **relationships**. How a database manages them is a central architectural choice, and where the field divides.
+<br />
+## ⚖️ Relational vs non-relational
+<br />
+**Relational databases** organize data in **tables** (rows and columns, like a spreadsheet with superpowers) linked by explicit references. They use **SQL** and have been a standard for fifty years: PostgreSQL, MySQL, SQLite, SQL Server. A predefined structure in exchange for strict rules and database-enforced relationships.
+<br />
+**Non-relational databases** (**NoSQL**) use other models instead of tables. A common one is the **document** model, notably MongoDB: each record resembles familiar JSON, flexible and useful when data is irregular or changes shape often. The family also includes key-value databases (Redis) and others, each optimized for different jobs.
+
+> Which should you choose? Practical beginner advice: **start relational**. It is an industry standard, makes you reason about data structure (excellent training), and its concepts transfer elsewhere. You will appreciate NoSQL more after understanding the trade-offs.
+
+## ✅ Conclusion
+<br />
+You know why serious applications need databases: specialized keepers providing persistence, speed, concurrency and rules. You know the broad distinction around **relationships**: structured tables on one side, flexible documents on the other.
+<br />
+In the **next chapter**, we enter the relational world and learn its grammar: tables, rows, columns and the keys holding them together. The Watch's register is getting serious.
+</Card>

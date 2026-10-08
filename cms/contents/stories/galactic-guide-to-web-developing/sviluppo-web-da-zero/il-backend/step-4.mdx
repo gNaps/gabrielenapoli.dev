@@ -1,5 +1,4 @@
 <Card>
-## 13 - Node.js: JavaScript fuori dal browser
 
 <br />
 Tre capitoli di teoria sul backend: server, HTTP, CRUD. Ora basta guardare la
@@ -11,7 +10,7 @@ Ricordi il capitolo su JavaScript? Ti avevo detto che è l'unico linguaggio
 che il browser sa eseguire. Vero. Ma nel 2009 qualcuno si è fatto una domanda
 niente male: *e se JavaScript potesse girare anche fuori dal browser?*
 <br />
-### ⚙️ Cos'è Node.js
+## ⚙️ Cos'è Node.js
 <br />
 **Node.js** è un **runtime**: un ambiente che esegue JavaScript direttamente
 sul computer, o sul server, senza bisogno di un browser. Sotto il cofano
@@ -25,7 +24,7 @@ contesto: niente `document`, niente DOM da manipolare (non c'è nessuna pagina
 qui), e in cambio hai accesso al sistema. Il tuo investimento degli ultimi
 capitoli vale doppio, come promesso.
 <br />
-### 📥 Installazione e primo script
+## 📥 Installazione e primo script
 <br />
 Se hai seguito il capitolo sugli strumenti forse è già tutto pronto;
 altrimenti scarica la versione **LTS** da [nodejs.org](https://nodejs.org/) e
@@ -54,7 +53,7 @@ Eccolo lì, il tuo JavaScript che gira senza browser: il `console.log` che nel
 capitolo 8 finiva nella Console dei DevTools ora stampa **nel terminale**.
 Piccolo momento, grande confine attraversato.
 <br />
-### 📦 npm e il package.json
+## 📦 npm e il package.json
 <br />
 Prima di scrivere il server ci serve **npm**, il gestore di pacchetti che
 abbiamo presentato tra gli strumenti: il posto da cui si scaricano le librerie
@@ -81,7 +80,7 @@ metterà il codice nella cartella `node_modules`, che si rigenera con un
 semplice `npm install`, motivo per cui non si condivide mai (né si committa
 su Git).
 <br />
-### 🚀 Il primo server con Fastify
+## 🚀 Il primo server con Fastify
 <br />
 Per gestire le richieste HTTP potremmo usare i mattoni grezzi di Node, ma
 (lezione del capitolo sugli strumenti) non si reinventa la ruota: usiamo un
@@ -140,7 +139,7 @@ Fastify ha preso l'oggetto restituito, lo ha trasformato in JSON, ha impostato
 il `Content-Type` e ha risposto `200 OK`. Il ciclo richiesta/risposta del
 capitolo 2, e stavolta dall'altra parte del bancone ci sei tu.
 <br />
-### ✅ Conclusione
+## ✅ Conclusione
 <br />
 Dieci righe di JavaScript e hai un backend vivo: Node che esegue il codice,
 Fastify che parla HTTP, il browser che riceve JSON. Ti manca solo una cosa

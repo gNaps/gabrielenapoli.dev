@@ -1,0 +1,65 @@
+<Card>
+
+<br />
+Here we are on the other side of the mirror. Before crossing, a small test: remember the Night's Watch form? Fill the fields, press "Join the Watch", see a welcome message. Nice. But ask the right question: **who actually received that data?**
+<br />
+Nobody. Close the page, and your application vanishes like tears in the snow beyond the Wall. So far, we have built only the visible half. Missing is the part that receives, stores and protects: the **backend**, the application's heart.
+<br />
+## 🖥️ The role of servers
+<br />
+We met the server in client-server architecture: the remote entity receiving HTTP requests and responding. Now let us focus on it.
+<br />
+A **server** is simply a computer (often without a screen or keyboard, stacked alongside thousands in a data center) running a program with a specific task: **always listening**. Twenty-four hours a day, it waits for requests and serves them:
+<br />
+1. Receives the HTTP request (our form's `POST`, for example).
+2. Interprets it: what does this client want? Are they authorized?
+3. Executes the logic: validates, saves, retrieves data.
+4. Constructs and sends the response.
+<br />
+Chapter 2's request/response cycle, from the responding side. "Server" need not mean a machine you own: with the **cloud** (AWS, Google Cloud, Azure...), you rent computing power in someone else's data centers. We will get there later.
+<br />
+## 🧠 Where application logic lives
+<br />
+In the frontend chapter: if frontend is the face, backend is the brain. Take that literally now: the backend holds **business logic**, the rules making your app *your app*.
+<br />
+The final price after a discount code. Checking an unused username. Deciding who sees what. Calculating shipping. These rules live on the server, and there is a precise reason they *must* stay there rather than in the browser.
+
+> Frontend code runs on users' machines, where they can read, change and bypass it using familiar DevTools. If discounts were calculated in the browser, a savvy user could award themselves 100% off. The backend's golden rule: **never trust the client**. The frontend proposes; the server decides.
+
+Which language implements this logic? Here the backend has freedom the frontend lacks: the browser uses JavaScript, but the server is an ordinary computer where you can use whatever you want. **Node.js** (JavaScript server-side: your recent learning pays twice), **Python**, **C#**, **Java**, **PHP**, **Go**... Each has frameworks like the frontend ones: Express and Fastify for Node, Django for Python, ASP.NET for C#, Laravel for PHP.
+<br />
+The entry points are **APIs**: addresses exposed by the server and called by the frontend, like chapter 2's `/api/commenti`. We will soon dedicate a chapter to APIs, especially the **REST** style.
+<br />
+## 🔐 Users, data and security
+<br />
+Three backend responsibilities deserve their own introduction; they will accompany your whole career.
+<br />
+**Data.** The backend guards the app's memory. Shared application data cannot rely solely on the browser (it may disappear, and each user sees only their own): it is saved in a **database**, a structured, queryable archive alongside the server. With a real backend, your Watch recruitment would end up there forever, or at least until the thaw.
+<br />
+**Users.** Almost every app needs to know *who* it faces. This has two sides worth distinguishing immediately:
+<br />
+- **Authentication** answers "who are you?": login, passwords, tokens.
+- **Authorization** answers "what can you do?": permissions, roles.
+<br />
+You are Jon Snow (authenticated), but only the Lord Commander can dismiss a watchman (authorized).
+<br />
+**Security.** The server is exposed to the internet, which is full of curious people. The backend is the defense line: it validates every incoming value (even if the frontend already did: never trust the client), stores password hashes, speaks HTTPS and keeps secrets (keys, credentials) out of the browser's sight.
+<br />
+## 🧑‍💻 What a backend developer does
+<br />
+To mirror the frontend developer's portrait, here is the other half. A backend developer:
+<br />
+- Designs and builds **APIs** consumed by the frontend.
+- Models **data**: structure, storage, fast querying.
+- Implements and tests **business logic**.
+- Handles authentication, authorization and security.
+- Considers **performance and scalability**: what happens at ten thousand users?
+<br />
+Less spotlight than the frontend (no user compliments a well-built API), but everyone notices when the backend fails.
+<br />
+## ✅ Conclusion
+<br />
+The backend is the invisible but decisive half: the listening server, logic enforcing rules, protected data, recognized users and security keeping attackers out. The frontend is what users perceive; the backend makes it real.
+<br />
+In the **next chapter**, we stay in the engine room: the app's heart has plenty left to tell.
+</Card>

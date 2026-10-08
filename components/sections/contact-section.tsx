@@ -1,142 +1,94 @@
 "use client";
-
-import IllustrationSlot from "@/components/layout/illustration-slot";
-import { useReveal } from "@/components/layout/use-reveal";
-import { useLang } from "@/components/providers/language-provider";
+import { getSiteCopy } from "@/cms/site-copy";
 import {
   GITHUB_URL,
   INSTAGRAM_URL,
   LINKEDIN_URL,
 } from "@/utils/social-links.utils";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-
-interface ContactForm {
-  name: string;
-  email: string;
-  message: string;
-}
-
-type SendState = "idle" | "sending" | "sent" | "error";
-
+import { useEffect, useRef, useState } from "react";
 export default function ContactSection() {
-  const { t } = useLang();
-  const ref = useReveal<HTMLElement>();
-  const [state, setState] = useState<SendState>("idle");
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<ContactForm>();
-
-  const onSubmit = async (data: ContactForm) => {
-    setState("sending");
+  const { t, lang } = getSiteCopy();
+  const [copied, setCopied] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(
+    () => () => {
+      if (timer.current) clearTimeout(timer.current);
+    },
+    [],
+  );
+  const copy = async () => {
     try {
-      const res = await fetch("/api/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) throw new Error(`send failed: ${res.status}`);
-      setState("sent");
-      reset();
+      await navigator.clipboard.writeText("gabrielenap@gmail.com");
+      setCopied(true);
+      setFailed(false);
+      if (timer.current) clearTimeout(timer.current);
+      timer.current = setTimeout(() => setCopied(false), 2000);
     } catch {
-      setState("error");
+      setFailed(true);
     }
   };
-
-  const sendLabel =
-    state === "sending" ? t.sending : state === "sent" ? t.sent : t.send;
-
   return (
-    <section id="contact" ref={ref} className="reveal">
-      <div className="contact-grid">
-        <div className="panel sh-12 contact-card">
-          <div className="eyebrow eyebrow--accent">{t.evContact}</div>
-          <h2 className="contact-title">{t.contactTitle}</h2>
-          <p className="contact-blurb">{t.contactBlurb}</p>
-          <form className="contact-form" onSubmit={handleSubmit(onSubmit)}>
-            <label className="field">
-              {t.fieldName}
-              <input
-                type="text"
-                {...register("name", { required: true })}
-                aria-invalid={!!errors.name}
-              />
-              {errors.name && (
-                <span className="field__error">{t.fieldRequired}</span>
-              )}
-            </label>
-            <label className="field">
-              {t.fieldEmail}
-              <input
-                type="email"
-                {...register("email", { required: true })}
-                aria-invalid={!!errors.email}
-              />
-              {errors.email && (
-                <span className="field__error">{t.fieldRequired}</span>
-              )}
-            </label>
-            <label className="field">
-              {t.fieldMsg}
-              <textarea
-                rows={4}
-                {...register("message", { required: true })}
-                aria-invalid={!!errors.message}
-              />
-              {errors.message && (
-                <span className="field__error">{t.fieldRequired}</span>
-              )}
-            </label>
-            <button
-              type="submit"
-              className="btn btn--primary contact-submit"
-              disabled={state === "sending"}
-            >
-              {sendLabel}
-            </button>
-            {state === "error" && (
-              <span className="field__error">{t.sendError}</span>
-            )}
-          </form>
+    <section id="contact" className="contact-section section-dark">
+      <div className="container">
+        <p className="eyebrow accent" data-reveal>
+          {t.evContact}
+        </p>
+        <h2 data-reveal>
+          {lang === "en" ? (
+            <>
+              Let's build
+              <br />
+              something <span className="accent">great.</span>
+            </>
+          ) : (
+            <>
+              Costruiamo
+              <br />
+              qualcosa di <span className="accent">bello.</span>
+            </>
+          )}
+        </h2>
+        <p className="contact-blurb" data-reveal>
+          {lang === "en"
+            ? "A project, a role on your team, or just a good conversation. My inbox is open."
+            : "Un progetto, un posto nel tuo team o una bella conversazione. La mia inbox è aperta."}
+        </p>
+        <div className="hero-ctas" data-reveal>
+          <a className="btn btn--primary" href="mailto:gabrielenap@gmail.com">
+            gabrielenap@gmail.com ↗
+          </a>
+          <button className="btn btn--ghost" type="button" onClick={copy}>
+            {copied
+              ? lang === "en"
+                ? "Copied ✓"
+                : "Copiata ✓"
+              : lang === "en"
+                ? "Copy email"
+                : "Copia email"}
+          </button>
         </div>
-        <div className="contact-col">
-          <div className="panel panel--img sh-12 sh-accent contact-illu">
-            <IllustrationSlot label="CONTACT · 挿絵" src="/cms/contacts.webp" />
-            <div className="sfx sfx--bye">またね!</div>
-          </div>
-          <div className="panel links-card">
-            <a href="mailto:gabrielenap@gmail.com" className="link-row">
-              gabrielenap@gmail.com<span>✉</span>
-            </a>
-            <a
-              href={GITHUB_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="link-row"
-            >
-              GitHub / gNaps<span>↗</span>
-            </a>
-            <a
-              href={LINKEDIN_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="link-row"
-            >
-              LinkedIn<span>↗</span>
-            </a>
-            <a
-              href={INSTAGRAM_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="link-row"
-            >
-              Instagram / napsryu<span>↗</span>
-            </a>
-          </div>
+        <span role="status" className="copy-status">
+          {failed
+            ? lang === "en"
+              ? "Copy unavailable. Email: gabrielenap@gmail.com"
+              : "Copia non disponibile. Email: gabrielenap@gmail.com"
+            : copied
+              ? lang === "en"
+                ? "Email copied"
+                : "Email copiata"
+              : ""}
+        </span>
+        <div className="social-links" data-reveal>
+          <a href={GITHUB_URL} target="_blank" rel="noreferrer">
+            GitHub / gNaps ↗
+          </a>
+          <a href={LINKEDIN_URL} target="_blank" rel="noreferrer">
+            LinkedIn ↗
+          </a>
+          <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer">
+            Instagram / napsryu ↗
+          </a>
         </div>
       </div>
     </section>

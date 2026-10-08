@@ -1,21 +1,14 @@
-"use client";
-
-import { useLang } from "@/components/providers/language-provider";
+import { getSiteCopy } from "@/cms/site-copy";
 import { Course } from "@/models/course.model";
 import Link from "next/link";
+import { courseLanguages } from "@/utils/content-language.utils";
 
 export default function CourseCard({ course }: { course: Course }) {
-  const { lang, t } = useLang();
+  const { lang, t } = getSiteCopy();
 
   return (
-    <Link
-      href={`/series/${course.slug}`}
-      className="course-card panel panel--ink sh-8 sh-accent press press--sm"
-    >
-      <div className="course-card__meta">
-        <span className="blink-dot" />
-        {t.evCourse}
-      </div>
+    <Link href={courseLanguages(course.slug)[lang]} className="course-card">
+      <div className="course-card__meta">{t.evCourse}</div>
       <h3 className="course-card__title">{course.title}</h3>
       <p className="course-card__desc">{course.description[lang]}</p>
       <div className="course-card__foot">

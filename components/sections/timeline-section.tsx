@@ -1,85 +1,47 @@
-"use client";
-
-import { useReveal } from "@/components/layout/use-reveal";
-import { useLang } from "@/components/providers/language-provider";
+import { getSiteCopy } from "@/cms/site-copy";
 import { Experience } from "@/models/experience.model";
-import { ReactNode, useState } from "react";
-
-function ChapterBody({
-  children,
-  showMore,
-  showLess,
-}: {
-  children: ReactNode;
-  showMore: string;
-  showLess: string;
-}) {
-  const [expanded, setExpanded] = useState(false);
-
-  return (
-    <>
-      <div className={expanded ? "tl-body" : "tl-body tl-body--clamped"}>
-        {children}
-      </div>
-      <button
-        type="button"
-        className="tl-more"
-        aria-expanded={expanded}
-        onClick={() => setExpanded((open) => !open)}
-      >
-        {expanded ? showLess : showMore}
-      </button>
-    </>
-  );
-}
-
 export default function TimelineSection({
   experiences,
 }: {
   experiences: Experience[];
 }) {
-  const { lang, t } = useLang();
-  const ref = useReveal<HTMLElement>();
-
-  /* Chapters read chronologically (CH.01 first); `order` is
-     reverse-chronological, so sort on the chapter label instead. */
-  const chapters = [...experiences]
-    .filter((exp) => exp.chapter)
-    .sort((a, b) => a.chapter!.en.localeCompare(b.chapter!.en));
-
+  const { lang, t } = getSiteCopy();
   return (
-    <section id="timeline" ref={ref} className="reveal mt-section">
-      <div className="section-head">
+    <section id="timeline" className="career-section container">
+      <div className="career-heading">
+        <p className="eyebrow accent">{t.evStory}</p>
         <h2 className="section-title">{t.timelineTitle}</h2>
-        <span className="eyebrow">{t.evStory}</span>
+        <p className="section-intro">
+          {lang === "en"
+            ? "From a university internship to leading refactors of business-critical systems. One chapter at a time."
+            : "Da uno stage universitario al refactoring di sistemi aziendali critici. Un capitolo alla volta."}
+        </p>
       </div>
-      <div className="panel sh-10 tl-panel">
-        {chapters.map((exp) => (
-          <div key={exp.slug} className="tl-row">
-            <div className="tl-rail">
-              <div className="tl-ch">{exp.chapter![lang]}</div>
-              <div className="tl-year">{exp.chapterYear?.[lang]}</div>
-              <span className="tag tag--role tl-role">{exp.jobTitle}</span>
-            </div>
-            <div style={{ minWidth: 0 }}>
-              <div className="tl-head">
-                <h3 className="tl-company">{exp.company}</h3>
+      <div className="career-timeline" data-timeline>
+        <div className="career-line" aria-hidden="true">
+          <div data-line />
+        </div>
+        {[...experiences]
+          .sort((a, b) => a.order - b.order)
+          .map((exp) => (
+            <article key={exp.slug} className="career-chapter" data-reveal>
+              <span className="career-dot" data-dot aria-hidden="true" />
+              <div className="career-meta">
+                <span>{exp.chapter?.[lang]}</span>
+                <span>{exp.chapterYear?.[lang]}</span>
+                <span className="accent">{exp.jobTitle}</span>
               </div>
-              <ChapterBody showMore={t.showMore} showLess={t.showLess}>
-                {exp.description}
-              </ChapterBody>
-              {exp.tags && (
-                <div className="tag-row tl-tags">
-                  {exp.tags.map((tag) => (
-                    <span key={tag} className="tag">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
+              <h3>{exp.company}</h3>
+              <div className="career-body">{exp.description}</div>
+              <div className="tag-row">
+                {exp.tags?.map((tag) => (
+                  <span key={tag} className="tag">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </article>
+          ))}
       </div>
     </section>
   );

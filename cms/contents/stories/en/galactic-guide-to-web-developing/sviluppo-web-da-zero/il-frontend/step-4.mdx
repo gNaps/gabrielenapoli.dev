@@ -1,0 +1,253 @@
+<Card>
+
+<br />
+So far, we have built our HTML page's scaffold. Everything works, but let us admit it: it is a little sad. Black and white, cramped together, anonymous font. Perfect for an obituary, less so for a modern web app.
+<br />
+Enter our friend **CSS**, the language giving web pages style, color and shape. If HTML is the skeleton, CSS is **the clothing, expression and elegance**.
+<br />
+## ✨ What is CSS?
+<br />
+CSS stands for **Cascading Style Sheets**. Introduced in the mid-1990s, when sites began needing appealing, consistent layouts alongside text and links. Before CSS, browsers more or less did as they pleased: imagine the chaos.
+<br />
+Today, CSS is the universal standard for styling web pages. It lets us:
+<br />
+- Change colors, fonts and spacing.
+- Arrange elements in grids or rows.
+- Handle animations, transitions and visibility.
+- Make a site **responsive**, adapting to every screen.
+<br />
+## 🎯 Selectors: telling the browser "change this"
+<br />
+To style an element, we first **select it**. CSS works like this:
+
+```css
+selettore {
+  property: value;
+}
+```
+
+For example:
+
+```css
+h1 {
+  color: navy;
+}
+```
+
+The three most common selectors are:
+<br />
+- **Element type**: `p`, `h1`, `form`.
+- **Class**, with a dot: `.box`, `.button-primary`.
+- **ID**, with a hash: `#form-iscrizione`.
+
+```css
+#titolo {
+  font-size: 24px;
+}
+
+.button {
+  background-color: black;
+  color: white;
+}
+```
+
+When should you use each? A rule of thumb:
+<br />
+- A **tag** for generic styles applying to all elements of that type.
+- A **class** for reusing styles across elements: the selector you will use 90% of the time.
+- An **ID** for one specific element, because it must be unique on the page.
+<br />
+## ❔ How do you apply CSS in practice?
+<br />
+There are three ways to bring CSS into an HTML page.
+<br />
+**1. Inline**, directly on an element through its `style` attribute:
+
+```html
+<p style="color: red;">Warning: the enemy is at the gates!</p>
+```
+
+Simple and quick, but hard to reuse and clutters the code.
+<br />
+**2. Internal**, inside a `<style>` tag in `<head>`:
+
+```html
+<head>
+  <style>
+    p {
+      color: navy;
+    }
+  </style>
+</head>
+```
+
+Fine for prototypes or individual pages; difficult to maintain as the page grows.
+<br />
+**3. External**, in a separate `.css` file connected with `<link>`:
+
+```html
+<!-- in HTML -->
+<link rel="stylesheet" href="stile.css" />
+```
+
+```css
+/* in stile.css */
+p {
+  color: darkgreen;
+}
+```
+
+Reusable, clean, maintainable: this is the approach used in real projects, and the one we will use.
+<br />
+## 📦 The box model: everything is a box
+<br />
+In CSS, **every element is a box**, and every box has four layers:
+<br />
+- **Content**: text, an image, whatever is inside.
+- **Padding**: internal space between content and border.
+- **Border**: the box's edge.
+- **Margin**: external space toward other elements.
+
+> Understanding the box model is essential for alignment, spacing and layout. When an element "does not move as expected", nine times out of ten the answer is here: inspect it in DevTools and look at the box diagram in Elements.
+
+## 📐 Flexbox: your layout ally
+<br />
+Layouts once relied on `float` and manually calculated margins: a nightmare. **Flexbox** arranges elements in rows or columns, centers them easily and controls spacing and responsive behavior.
+
+```css
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+```
+
+Headers, cards, footers, forms: Flexbox handles almost any layout.
+<br />
+## 📱 Media queries: adapting to every screen
+<br />
+**Media queries** change styles according to screen size:
+
+```css
+@media (max-width: 600px) {
+  .form-container {
+    flex-direction: column;
+  }
+}
+```
+
+This makes a site **responsive**: usable on a desktop monitor or a phone on the subway.
+<br />
+## 🛠️ CSS frameworks: why reinvent everything?
+<br />
+Writing CSS from scratch is excellent for learning, but can become tiring on large projects. CSS frameworks provide **ready-made classes**. One widely used example is **Tailwind CSS**, following a *utility-first* approach: compose styles from predefined classes rather than writing custom rules.
+
+```html
+<button class="bg-black text-white py-2 px-4 rounded">
+  Invia
+</button>
+```
+
+No CSS files to write: classes do everything. For now, though, no frameworks: learn the basics before choosing shortcuts.
+<br />
+## 💡 Dressing the Night's Watch form
+<br />
+Return to last chapter's form and bring it to life with plain CSS. Rewrite `index.html` with classes. Notice a detail: the makeshift `<br />` line breaks **disappear**. CSS now handles spacing properly.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Arruolamento Guardiani della Notte</title>
+  <!-- link to the stylesheet -->
+  <link rel="stylesheet" href="guardiani.css" />
+</head>
+<body>
+  <h1 id="titolo-pagina">Night’s Watch recruitment form</h1>
+
+  <form class="form-dark">
+    <label for="name">First name:</label>
+    <input type="text" id="name" name="name" class="campo" required />
+
+    <label for="lastname">Last name:</label>
+    <input type="text" id="lastname" name="lastname" class="campo" required />
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" class="campo" required />
+
+    <label>
+      <input type="checkbox" name="oath" required />
+      Accetto di servire fino alla morte 🧊
+    </label>
+
+    <button class="btn-invio">Join the Watch</button>
+  </form>
+</body>
+</html>
+```
+
+Create `guardiani.css` in the same folder:
+
+```css
+/* the page: a dark background worthy of the Wall */
+body {
+  background-color: #1a1a1a;
+  font-family: sans-serif;
+}
+
+/* ID selector */
+#titolo-pagina {
+  text-align: center;
+  font-size: 32px;
+  color: #f2f2f2;
+}
+
+/* class selector: the form */
+.form-dark {
+  background-color: #2e2e2e;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 500px;
+  margin: 40px auto;
+  color: white;
+}
+
+/* text inputs */
+.campo {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  padding: 8px;
+  background: #444;
+  border: none;
+  border-radius: 4px;
+  color: white;
+}
+
+/* the button */
+.btn-invio {
+  display: block;
+  margin-top: 16px;
+  background-color: #000;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-invio:hover {
+  background-color: #222;
+}
+```
+
+Reload in the browser: dark, serious, readable. A look worthy of the Night's Watch. Notice `.btn-invio:hover`: `:hover` is a **pseudo-class**, a style activated only while the mouse is over the element. Your first taste of interactivity without a line of JavaScript.
+<br />
+## ✅ Conclusion
+<br />
+CSS turns a rough page into a **polished** one, and a readable page into a **memorable** one. It is more than aesthetics: usability, accessibility, identity. Over time you will use it as a visual language, and discovering your power to position, animate and transform elements will be a lot of fun.
+<br />
+In the **next chapter**, **JavaScript** arrives, the frontend's interactive soul. Now that the page has structure and style, it is time to make it move. ⚡
+</Card>

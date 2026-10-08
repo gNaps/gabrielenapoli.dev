@@ -1,5 +1,4 @@
 <Card>
-## 15 - Sicurezza essenziale: mai fidarsi di nessuno
 
 <br />
 Il registro della Guardia funziona, e c'è di che essere fieri. Ora però
@@ -18,7 +17,7 @@ perché la sicurezza non è una feature da aggiungere alla fine: è
 un'attitudine, e il momento di prenderla è adesso, sul primo server della
 tua vita.
 <br />
-### 🛂 La regola d'oro, applicata: validare tutto
+## 🛂 La regola d'oro, applicata: validare tutto
 <br />
 "Mai fidarsi del client" te l'ho ripetuto dal capitolo 10, e nel capitolo
 scorso l'abbiamo applicata una prima volta: il `400` quando manca il nome.
@@ -56,7 +55,7 @@ recluta. Il client *propone*, il server *dispone*, anche sui dettagli.
 > esattamente dei dati non validati. Ne riparleremo, e quel giorno mi
 > ringrazierai.
 
-### 🔑 Le password: mai, mai, mai in chiaro
+## 🔑 Le password: mai, mai, mai in chiaro
 <br />
 Prima o poi il tuo backend gestirà un login, e con lui le password. La regola
 non ammette eccezioni: **una password non si salva mai in chiaro**. Se il
@@ -83,7 +82,7 @@ regola sorella: in sicurezza **non si inventa**: niente algoritmi fatti in
 casa, niente "tanto chi vuoi che ci attacchi". Si usano gli strumenti
 standard, quelli che il mondo intero testa da anni.
 <br />
-### 🚪 Proteggere le rotte: chi va là?
+## 🚪 Proteggere le rotte: chi va là?
 <br />
 Torniamo al problema dell'apertura: la `DELETE` libera per tutti. Il server
 deve chiedere le credenziali prima delle operazioni pericolose. Nel capitolo
@@ -111,7 +110,7 @@ giusto (`-H "Authorization: Bearer parola-dordine"`): passa. La coppia
 > **JWT** (JSON Web Token). Ma il flusso (credenziali nell'header, sentinella
 > sulle rotte, 401 per chi non le ha) è esattamente questo.
 
-### 🔒 HTTPS: la lettera sigillata
+## 🔒 HTTPS: la lettera sigillata
 <br />
 C'è un dettaglio che rende tutto il resto inutile, se manca: il token del
 paragrafo scorso **viaggia dentro la richiesta**, e una richiesta HTTP è
@@ -125,7 +124,7 @@ dovrai quasi mai occupartene a mano: le piattaforme di hosting moderne e i
 certificati gratuiti (Let's Encrypt) lo gestiscono per te. Ti basta la
 regola: **in produzione, sempre e solo HTTPS**.
 <br />
-### 🤫 I segreti fuori dal codice
+## 🤫 I segreti fuori dal codice
 <br />
 Ultima abitudine, forse la più facile da sbagliare: la "parola d'ordine" del
 nostro hook è scritta **nel codice**. E il codice finisce su Git, e magari su
@@ -143,7 +142,7 @@ In locale si mettono in un file `.env` (che si aggiunge al `.gitignore`,
 sempre); in produzione si configurano sulla piattaforma di hosting. Il codice
 li usa, ma non li conosce.
 <br />
-### 🧾 L'igiene minima, in una lista
+## 🧾 L'igiene minima, in una lista
 <br />
 - **valida tutto** quello che arriva dal client: tipo, contenuto, limiti
 - **password solo hashate**, con librerie standard, mai in chiaro, mai algoritmi fatti in casa
@@ -154,7 +153,7 @@ li usa, ma non li conosce.
 Non è la sicurezza di una banca: è l'igiene di base, quella che separa un
 esercizio da qualcosa che puoi mostrare al mondo senza arrossire.
 <br />
-### ✅ Conclusione
+## ✅ Conclusione
 <br />
 Con questo capitolo la parte backend della guida è **completa**: sai cosa fa
 un server, parli HTTP fluentemente, riconosci il CRUD ovunque, hai costruito

@@ -1,0 +1,158 @@
+<Card>
+
+<br />
+If you work with Angular, there is no escaping RxJS. Sooner or later, you need to **combine two or more observables**, open the documentation and find four operators that all seem to do the same thing: `zip`, `combineLatest`, `withLatestFrom` and `forkJoin`. They do not. The entire difference is **when they emit**, and choosing the wrong one is the fastest way to get a request that runs twice or a spinner that never stops.
+<br />
+This one-shot guide is a remake of an article I wrote in 2023: the same story, redesigned from top to bottom. This time, all four main characters are on stage.
+<br />
+## 🎨 The scenario
+<br />
+We need to draw colored icons, and the information comes from **two different people**: one tells us the *color*, the other the *type* of icon. They are not synchronized: they each speak whenever they want, independently. In our code, they are two observables, `color$` and `icon$`.
+
+```typescript
+import { Subject } from 'rxjs';
+
+type Color = 'red' | 'blue' | 'green' | 'purple';
+type Icon = 'github' | 'bitbucket' | 'gitlab';
+
+// the two people supplying information
+const color$ = new Subject<Color>();
+const icon$ = new Subject<Icon>();
+
+// the order in which they speak
+color$.next('red');
+icon$.next('github');
+
+color$.next('blue');
+icon$.next('bitbucket');
+
+color$.next('green');
+icon$.next('gitlab');
+
+color$.next('purple');
+```
+
+Notice the ending: four colors, but only three icons. This small imbalance will reveal the differences between the operators.
+<br />
+## 🤐 zip: one from each, paired up
+<br />
+`zip` pairs emissions **by position**: the first color with the first icon, the second with the second, and so on. Just like a zipper.
+
+```typescript
+import { zip } from 'rxjs';
+
+zip(color$, icon$).subscribe(([color, icon]) =>
+  console.log(`Disegnata icona ${icon} di colore ${color}`)
+);
+
+// → github red
+// → bitbucket blue
+// → gitlab green
+// ("purple" waits for an icon that will never arrive)
+```
+
+<img src="/cms/zip.webp" alt="Diagram of the zip operator" />
+
+**Both** values must arrive before a new pair can be emitted: the fourth color is left waiting, because there is no fourth icon.
+<br />
+**When to use it**: when the two streams actually advance in pairs and you need an exact match by index. This is the rarest of the four cases.
+
+> The dark side of `zip`: if one source is faster than the other, its values **accumulate in a buffer** while waiting for a partner. With infinite, unbalanced streams, memory usage grows silently.
+
+## 🔄 combineLatest: react to every change
+<br />
+The big omission from the first version of this article, and ironically the most widely used of the four. `combineLatest` emits **the latest available combination** whenever *any* source speaks.
+
+```typescript
+import { combineLatest } from 'rxjs';
+
+combineLatest([color$, icon$]).subscribe(([color, icon]) =>
+  console.log(`Disegnata icona ${icon} di colore ${color}`)
+);
+
+// → github red        (first complete combination)
+// → github blue       (color changes, icon stays)
+// → bitbucket blue    (icon changes, color stays)
+// → bitbucket green
+// → gitlab green
+// → gitlab purple
+```
+
+<img src="/cms/combinelatest.webp" alt="Diagram of the combineLatest operator" />
+
+Every update, wherever it comes from, produces a new pair using the other source's "last known value".
+<br />
+**When to use it**: this is the operator for **forms with multiple filters**. Search query, page, sort order: when any one changes, recalculate the result using the latest values from all of them.
+
+```typescript
+combineLatest([query$, page$, sort$])
+  .pipe(switchMap(fetchResults))
+  .subscribe(render);
+```
+
+> The classic gotcha: `combineLatest` **does not emit until every source has spoken at least once**. If a filter starts out "silent", you get no results and no error. The fix is to give it an initial value, using `startWith` or a `BehaviorSubject`.
+
+## 🎯 withLatestFrom: a lead and a context
+<br />
+Here, the relationship is no longer equal: there is a **primary** source in charge, and a secondary one that is merely *consulted*. In our case, the color decides when to draw, while the icon provides context.
+
+```typescript
+import { withLatestFrom } from 'rxjs/operators';
+
+color$
+  .pipe(withLatestFrom(icon$))
+  .subscribe(([color, icon]) =>
+    console.log(`Disegnata icona ${icon} di colore ${color}`)
+  );
+
+// → github blue      (on the second color: the first arrived
+//                     before icon$ had a value)
+// → bitbucket green
+// → gitlab purple
+```
+
+<img src="/cms/withlatestfrom.webp" alt="Diagram of the withLatestFrom operator" />
+
+Only emissions from `color$` trigger output; `icon$` can speak as much as it likes, but on its own it produces nothing.
+<br />
+**When to use it**: when an **event** needs to read some **state** on the fly. A click using the latest form value, a submit that includes the current configuration: the event leads, the state accompanies it.
+
+> Watch the startup here too: until the secondary source has emitted at least one value, emissions from the primary source **are discarded**. That is why the color "red" disappears without a trace in our example.
+
+## 🏁 forkJoin: wait until everyone is finished
+<br />
+`forkJoin` is the most drastic: it ignores everything along the way and emits **just once**, when **all** sources have **completed**, using the last value from each.
+
+```typescript
+import { forkJoin } from 'rxjs';
+
+forkJoin([color$, icon$]).subscribe(([color, icon]) =>
+  console.log(`Disegnata icona ${icon} di colore ${color}`)
+);
+
+// ...eventually, both people say goodbye and leave
+color$.complete();
+icon$.complete();
+
+// → gitlab purple    (one emission: the last values)
+```
+
+<img src="/cms/forkjoin.webp" alt="Diagram of the forkJoin operator" />
+
+**When to use it**: it is RxJS's `Promise.all`. A set of HTTP calls whose results you need together before rendering the page: `forkJoin` waits, collects and delivers everything in one go. (It works perfectly with `HttpClient` calls, because they complete automatically after the response.)
+
+> Here is the infinite spinner promised at the start: if even one source **never completes** (a Subject left open, an event stream), `forkJoin` never emits anything. No error, no warning: just endless loading. If it has happened to you, now you know the culprit.
+
+## 🧭 Which should I choose? The cheat sheet
+<br />
+- **zip**: I need pairs *by position*, first with first, second with second.
+- **combineLatest**: I want to react to *every change* using everyone's latest values (forms, filters).
+- **withLatestFrom**: I have an *event* in charge and some *state* to read along the way.
+- **forkJoin**: I wait until *all* sources finish and only need the final result (groups of HTTP calls).
+<br />
+## ✅ Conclusion
+<br />
+Four operators that appear to "combine observables", and four completely different contracts about *when* to emit. That is why they look interchangeable in tutorials and then blow up in production: the difference does not show in the happy path, but when streams are unbalanced, silent or infinite. In other words, all the time in the real world.
+<br />
+The next time you need to combine two streams, do not ask "which operator do I know?": ask **what should trigger the emission**. The answer to that question gives you the right operator.
+</Card>

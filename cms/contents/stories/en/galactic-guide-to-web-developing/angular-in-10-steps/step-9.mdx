@@ -1,0 +1,126 @@
+<Card>
+
+<br />
+The penultimate chapter of the basic module is dedicated to two tools that do not build pages but improve everything else:
+<br />
+- **Interceptors**, for handling every HTTP call in one place: tokens, logs, error handling.
+- **Pipes**, for transforming data directly in the template: dates, currencies, text that needs shortening.
+<br />
+They are the classic tools that leave you wondering how you ever managed without them.
+<br />
+## 🚦 Interceptors: customs for requests
+<br />
+An **interceptor** sits between your app and the server: every outgoing HTTP request and incoming response passes through it. Like customs, it can allow, modify, record or reject.
+<br />
+The four real-world uses are always the same, and eventually you will need them all:
+<br />
+- Adding the **authentication token** to every call.
+- **Logging** requests and response times.
+- Handling **errors** centrally (401 → redirect to login).
+- Showing a **global loader** while traffic is in progress.
+<br />
+Without an interceptor, this logic would be copied into every service. With one, you write it once.
+<br />
+## 🛠 Example: the token on every request
+<br />
+A modern interceptor is a simple `HttpInterceptorFn` function: it receives the request and a `next` function to continue processing it.
+
+```typescript
+// auth.interceptor.ts
+import { HttpInterceptorFn } from '@angular/common/http';
+
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const token = localStorage.getItem('token');
+
+  // HTTP requests are immutable: clone rather than mutate
+  const reqClone = token
+    ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
+    : req;
+
+  return next(reqClone);
+};
+```
+
+Two details to notice. First: requests are **immutable**, so you do not modify them; you **clone** them with the changes (`req.clone(...)`). Second: because an interceptor runs in Angular's context, you can use `inject()` inside it. A real `AuthService`, instead of localStorage, is injected just like in previous chapters.
+<br />
+Register it in `app.config.ts`, attaching it to `provideHttpClient`, familiar from chapter 7:
+
+```typescript
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './auth.interceptor';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideHttpClient(withInterceptors([authInterceptor]))],
+};
+```
+
+> Older projects contain interceptors as **classes** implementing `HttpInterceptor`, registered with `HTTP_INTERCEPTORS` (or `withInterceptorsFromDi()`). Same idea, more ceremony: use functions for new code.
+
+A second example, to show we can also act on the response: logging each call's duration.
+
+```typescript
+import { HttpInterceptorFn } from '@angular/common/http';
+import { finalize } from 'rxjs';
+
+export const timingInterceptor: HttpInterceptorFn = (req, next) => {
+  const start = Date.now();
+  return next(req).pipe(
+    finalize(() => console.log(`${req.method} ${req.url}: ${Date.now() - start}ms`))
+  );
+};
+```
+
+Interceptors form a chain: `withInterceptors([authInterceptor, timingInterceptor])` runs them in the listed order.
+<br />
+## 🪄 Pipes: formatting without making a mess
+<br />
+Let us move from HTTP requests to templates. **Pipes** transform values when displaying them, using the `|` syntax:
+
+```html
+<p>{{ oggi | date:'longDate' }}</p>
+<p>{{ prezzo | currency:'EUR' }}</p>
+<p>{{ nome | uppercase }}</p>
+```
+
+The component's data stays intact; only presentation changes. That is the difference between keeping `prezzo = 59.99` and ending up with a string such as "€59.99" that you can no longer use in calculations.
+<br />
+The built-in pipes I use most often:
+<br />
+- `date`: date formatting, with configurable locale and format.
+- `currency`: numbers as currency.
+- `uppercase` / `lowercase` / `titlecase`: capitalization.
+- `number`: thousands separators and decimals.
+- `json`: prints an object as JSON, invaluable for debugging.
+- `async`: subscribes to an Observable for you. If chapter 7's manual `subscribe()` felt noisy, this is the alternative.
+
+> Pipes also need to be **imported** into their component, like everything in standalone Angular: `imports: [DatePipe, CurrencyPipe]`, and so on. If a template reports a missing pipe "that should be there", this is almost always why.
+
+## ✍️ Writing a custom pipe
+<br />
+When built-in pipes are not enough, writing one takes minutes. Classic example: shortening an overly long text.
+
+```typescript
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({ name: 'shorten' })
+export class ShortenPipe implements PipeTransform {
+  transform(value: string, limit = 10): string {
+    return value.length > limit ? value.slice(0, limit) + '…' : value;
+  }
+}
+```
+
+In the template, after importing it:
+
+```html
+<p>{{ descrizione | shorten:20 }}</p>
+```
+
+One detail explains pipes' efficiency: by default they are **pure**, meaning Angular reruns them only when the input value changes. You can put twenty in a list without worrying: that is not where the app slows down.
+<br />
+## Where we are now
+<br />
+With interceptors and pipes, the basic module is **complete**: components, router, signals, forms, HTTP, shared state and now tools spanning requests and presentation. What follows is craft and practice.
+<br />
+Practice starts immediately: in the **next chapter**, the last of the series, we combine every piece into a complete app: a **digital video game library**. Bring your dice.
+</Card>

@@ -1,5 +1,4 @@
 <Card>
-## 11 - HTTP e il protocollo client-server
 
 <br />
 Nel capitolo 2 ti ho dato la mappa: client di qua, server di là, e in mezzo un
@@ -8,7 +7,7 @@ mappa non basta più: per costruire (o anche solo capire) un backend serve
 conoscere la lingua in cui le due parti si parlano. Quella lingua è **HTTP**,
 e in questo capitolo la impariamo per bene.
 <br />
-### ✉️ Anatomia di una richiesta
+## ✉️ Anatomia di una richiesta
 <br />
 Una richiesta HTTP è un messaggio di testo con una struttura fissa. Eccone
 una vera, riga per riga:
@@ -30,7 +29,7 @@ I pezzi sono quattro:
 <br />
 Vediamoli uno per uno.
 <br />
-### 🔤 I metodi: GET, POST, PUT, DELETE
+## 🔤 I metodi: GET, POST, PUT, DELETE
 <br />
 Il metodo dichiara l'intenzione della richiesta. I quattro fondamentali li
 hai già incrociati; ora mettiamoli a fuoco:
@@ -44,7 +43,7 @@ C'è anche un cugino stretto, `PATCH`, per le modifiche parziali: lo vedremo
 meglio nel prossimo capitolo, quando questi verbi si incastreranno in uno
 schema elegante.
 <br />
-### 🏷️ Gli header: il contorno che conta
+## 🏷️ Gli header: il contorno che conta
 <br />
 Gli **header** sono coppie chiave-valore che accompagnano richieste e
 risposte: non sono i dati, sono informazioni *sui* dati e sul contesto. Quelli
@@ -68,7 +67,7 @@ Authorization: Bearer abc123def456
 È così che il server sa *chi sei* a ogni richiesta (autenticazione) e può
 decidere *cosa puoi fare* (autorizzazione). Niente magia: un header.
 <br />
-### 📦 Il body: i dati veri
+## 📦 Il body: i dati veri
 <br />
 Il **body** è il carico utile: i dati del form, il commento da salvare, il
 file da caricare. Nel web moderno il formato standard di fatto è il **JSON**
@@ -86,7 +85,7 @@ identico agli oggetti JavaScript del capitolo 8.
 Leggibile per gli umani, facilissimo da produrre e consumare per le macchine:
 per questo ha conquistato il web.
 <br />
-### 🚦 La risposta e i codici di stato
+## 🚦 La risposta e i codici di stato
 <br />
 La risposta ha la stessa struttura (header + body), più una riga di stato che
 riassume com'è andata:
@@ -115,7 +114,7 @@ leggere le espressioni del server in faccia. I codici che vedrai più spesso:
 > l'autenticazione contro l'autorizzazione del capitolo scorso, tradotta in
 > numeri.
 
-### 🍽️ Cos'è una API
+## 🍽️ Cos'è una API
 <br />
 Ora hai tutti gli ingredienti per la definizione più importante di questa
 sezione. Una **API** (Application Programming Interface) è il **contratto**
@@ -136,7 +135,7 @@ usare: il meteo, le mappe, i tassi di cambio, perfino i Pokémon. Il tuo
 frontend può ordinare da qualsiasi menu esposto su Internet, ed è così che le
 app si costruiscono anche componendo servizi altrui.
 <br />
-### ✅ Conclusione
+## ✅ Conclusione
 <br />
 Ora HTTP non è più una sigla: sai leggere una richiesta riga per riga
 (metodo, percorso, header, body) e interpretare la risposta dal suo codice di

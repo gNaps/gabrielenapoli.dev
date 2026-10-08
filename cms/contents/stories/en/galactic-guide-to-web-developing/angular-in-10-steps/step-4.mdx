@@ -1,0 +1,266 @@
+<Card>
+
+<br />
+Last chapter, I promised we would turn our components into actual navigable pages. Here we are: it is time for the **Router**.
+<br />
+One of the nicest things about modern applications is moving between "pages" **without actually reloading the browser**. No white screen, no waiting: the URL changes, and so does the content, instantly. In Angular, all of this goes through the router, a concept you will use in every project.
+<br />
+This chapter covers what it is and how to configure it, lazy loading, route parameters, ways to navigate, guards and resolvers. There is a lot on the menu, but each piece is short.
+<br />
+## 🚪 What is the Router?
+<br />
+The router manages **navigation between pages** in a **Single Page Application**. And in Angular, "pages" means components: there is no different HTML file for each URL; there is a different component that the router mounts and unmounts based on the address.
+
+> In an SPA, the browser loads the application once. From then on, the router decides which component to show for each URL, without additional round trips for HTML.
+
+A concrete example:
+<br />
+- `/` displays `HomeComponent`.
+- `/games` displays `GamesComponent`.
+- `/games/42` displays details for the game with ID 42.
+<br />
+## Where pages go: router-outlet
+<br />
+First question: if the router "mounts" components, where does it put them? The answer is `<router-outlet>`, a placeholder placed in the root component's template:
+
+```html
+<!-- app.component.html -->
+<header>La mia app</header>
+<router-outlet />
+```
+
+Everything outside the outlet (header, footer, menu) stays in place; the router inserts the current page inside it. Remember the previous chapter's lesson: `RouterOutlet` is a directive and must be imported into the component using it.
+
+```typescript
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+
+@Component({
+  selector: 'app-root',
+  imports: [RouterOutlet],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css'
+})
+export class AppComponent {}
+```
+
+## ⚙️ Configuring routes
+<br />
+Configuration lives in two files. The first is `app.routes.ts`, the list of routes:
+
+```typescript
+import { Routes } from '@angular/router';
+import { HomeComponent } from './home/home.component';
+
+export const routes: Routes = [
+  { path: '', component: HomeComponent },
+  {
+    path: 'games',
+    loadComponent: () =>
+      import('./games/games.component').then((m) => m.GamesComponent),
+  },
+];
+```
+
+The second is `app.config.ts`, where the routes are registered with `provideRouter()`:
+
+```typescript
+import { ApplicationConfig } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { routes } from './app.routes';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideRouter(routes)],
+};
+```
+
+> If you created the project with `ng new`, these two files already exist and are wired together: just fill the `routes` array.
+
+## 💤 Lazy loading
+<br />
+The example above shows two ways to declare a route. With `component`, the component goes into the app's initial bundle; with `loadComponent`, it is **loaded only when the user visits that route**. This is lazy loading, and its benefits are concrete:
+<br />
+- The initial app load is lighter and faster.
+- Code stays divided into independent blocks by feature.
+- Pages the user never visits are never downloaded.
+<br />
+The `.then((m) => m.GamesComponent)` is needed because `import()` returns the whole JavaScript module, while the router needs the component. If the component is the file's default export, you can also write `loadComponent: () => import('./games/games.component')`, but the explicit form reads better.
+<br />
+My rule of thumb: load the homepage eagerly and almost everything else lazily.
+<br />
+## 🔁 Route parameters
+<br />
+The details for game 42 live at `/games/42`: 42 is a **route parameter**, declared using a colon:
+
+```typescript
+{
+  path: 'games/:id',
+  loadComponent: () =>
+    import('./game-detail/game-detail.component').then(
+      (m) => m.GameDetailComponent
+    ),
+}
+```
+
+How do you read it in the component? The modern approach is surprisingly clean, but requires an extra configuration option: `withComponentInputBinding()`.
+
+```typescript
+import { provideRouter, withComponentInputBinding } from '@angular/router';
+import { routes } from './app.routes';
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideRouter(routes, withComponentInputBinding())],
+};
+```
+
+With this option enabled, Angular takes route parameters and passes them to the component as normal **inputs**. In the component, write:
+
+```typescript
+import { Component, input } from '@angular/core';
+
+@Component({ /* ... */ })
+export class GameDetailComponent {
+  id = input.required<string>();
+}
+```
+
+> The input name must match the parameter name: the route declares `:id`, so the input is called `id`. Query strings work the same way: for `/search?q=zelda`, an input named `q` receives the value.
+
+The classic approach also exists: inject `ActivatedRoute` and read `paramMap`. You will encounter it in existing codebases, but for new code, input bindings are simpler and easier to test.
+<br />
+## 🚦 Navigating between routes
+<br />
+Two approaches, depending on whether navigation starts in the template or in the logic.
+<br />
+**From the template**, use the `routerLink` directive (import it into the component, as always):
+
+```html
+<!-- simple route -->
+<a routerLink="/home">Go home</a>
+
+<!-- route with parameters -->
+<a [routerLink]="['/games', gameId]">Game details</a>
+
+<!-- with a query string -->
+<a [routerLink]="['/search']" [queryParams]="{ q: 'zelda' }">Search Zelda</a>
+```
+
+A useful bonus for menus: `routerLinkActive` adds a CSS class when the link matches the current route.
+
+```html
+<a routerLink="/home" routerLinkActive="active-link">Home</a>
+```
+
+**From code**, use the `Router` service when navigation depends on logic: after saving a form, after login, and so on.
+
+```typescript
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
+
+@Component({ /* ... */ })
+export class LoginComponent {
+  private router = inject(Router);
+
+  onLoginSuccess(gameId: string) {
+    // using segments and parameters
+    this.router.navigate(['/games', gameId]);
+
+    // using a full URL string
+    this.router.navigateByUrl('/home');
+
+    // with a query string
+    this.router.navigate(['/search'], { queryParams: { q: 'zelda' } });
+  }
+}
+```
+
+In brief: `routerLink` for actual links, `router.navigate()` when a decision is involved.
+<br />
+## 🛡 Guards: protecting routes
+<br />
+A **guard** decides whether a route can be activated. The typical case is a page restricted to authenticated users. Today, a guard is a simple function:
+
+```typescript
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
+
+export const authGuard: CanActivateFn = () => {
+  const isLoggedIn = localStorage.getItem('token') !== null;
+
+  // true allows navigation, a UrlTree redirects
+  return isLoggedIn ? true : inject(Router).parseUrl('/login');
+};
+```
+
+Returning `false` alone would work, but could leave the user on an empty page; returning a `UrlTree` takes them straight to login instead. Attach it to the route with `canActivate`:
+
+```typescript
+{
+  path: 'profile',
+  loadComponent: () =>
+    import('./profile/profile.component').then((m) => m.ProfileComponent),
+  canActivate: [authGuard],
+}
+```
+
+> A guard protects navigation, not data: it runs in the browser, so it is not a security mechanism. Real checks stay on the server; the guard provides a sensible experience for unauthorized users.
+
+## 🧩 Resolvers: data ready before the page
+<br />
+Sometimes a page makes no sense without its data, so you might as well load it **before** showing the page. That is the job of **resolvers**, also simple functions:
+
+```typescript
+import { inject } from '@angular/core';
+import { ResolveFn } from '@angular/router';
+import { GameService } from './services/game.service';
+import { Game } from './models/game';
+
+export const gameResolver: ResolveFn<Game> = (route) => {
+  const id = route.paramMap.get('id')!;
+  return inject(GameService).getGameById(id);
+};
+```
+
+Register one on the route with `resolve`:
+
+```typescript
+{
+  path: 'games/:id',
+  loadComponent: () =>
+    import('./game-detail/game-detail.component').then(
+      (m) => m.GameDetailComponent
+    ),
+  resolve: { game: gameResolver },
+}
+```
+
+Here, the earlier `withComponentInputBinding()` comes in handy again: resolved data also reaches the component as inputs, named after the keys used in `resolve`.
+
+```typescript
+import { Component, input } from '@angular/core';
+import { Game } from './models/game';
+
+@Component({ /* ... */ })
+export class GameDetailComponent {
+  game = input.required<Game>();
+}
+```
+
+The downside: navigation waits until the resolver finishes. Perfect for quick calls; for slow data, consider displaying the page with a spinner instead.
+<br />
+## The fallback route
+<br />
+One last small but essential detail: what happens if the user types a URL that does not exist? Without instructions, nothing good. The wildcard route `**` catches anything that did not match:
+
+```typescript
+{ path: '**', component: NotFoundComponent }
+```
+
+It must be **last** in the array: routes are evaluated in order, and the wildcard consumes everything it encounters.
+<br />
+## Where we are now
+<br />
+The router turns a collection of components into an application: pages with URLs, loaded only when needed, protected where appropriate and with data ready when that makes sense. What we have covered handles the vast majority of real cases.
+<br />
+In the **next chapter**, we reach the topic I have teased twice: **data binding and signals**, or how Angular keeps data and the interface synchronized. This is where modern Angular shows its strength.
+</Card>

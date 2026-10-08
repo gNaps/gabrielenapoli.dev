@@ -1,13 +1,39 @@
+import { Children, isValidElement, type ReactNode } from "react";
 import type { MDXComponents } from "mdx/types";
 import CodeViewer from "./components/code-viewer/code-viewer";
+import { headingId } from "@/utils/heading.utils";
 
 const CALLOUT_LABELS: Record<string, string> = {
-  info: "NOTE · メモ",
-  warning: "WARNING · 注意",
-  success: "OK · 完了",
+  info: "Note",
+  warning: "Warning",
+  success: "OK",
 };
 
+function plainText(children: ReactNode): string {
+  return Children.toArray(children)
+    .map((child) =>
+      isValidElement<{ children?: ReactNode }>(child)
+        ? plainText(child.props.children)
+        : String(child),
+    )
+    .join("");
+}
 const components: MDXComponents = {
+  h2: ({ children, ...props }) => (
+    <h2 {...props} id={headingId(plainText(children))}>
+      {children}
+    </h2>
+  ),
+  h3: ({ children, ...props }) => (
+    <h3 {...props} id={headingId(plainText(children))}>
+      {children}
+    </h3>
+  ),
+  h4: ({ children, ...props }) => (
+    <h4 {...props} id={headingId(plainText(children))}>
+      {children}
+    </h4>
+  ),
   Card(props) {
     return <div>{props.children}</div>;
   },

@@ -1,0 +1,163 @@
+<Card>
+
+<br />
+Everything built in this guide converges here. The Watch's HTML form (chapter 6), styled with CSS (7), brought alive by JavaScript (8), finally talks to a real server (13) through CRUD APIs (12) using HTTP (11). Today the loop closes: **Samwell's application reaches its destination**.
+<br />
+## 📚 The Watch's register
+<br />
+Take last chapter's `server.js` and make it the official register. For now, data lives in a simple in-memory array. Remember that detail; it returns at the end.
+
+```javascript
+import Fastify from 'fastify';
+
+const app = Fastify();
+
+// the Watch register: in memory for now
+let guardiani = [
+  { id: 1, nome: 'Jon Snow', ruolo: 'lord comandante' },
+];
+let prossimoId = 2;
+
+// Read: the full list
+app.get('/guardiani', () => guardiani);
+
+// Read: one watchman
+app.get('/guardiani/:id', (request, reply) => {
+  const guardiano = guardiani.find((g) => g.id === Number(request.params.id));
+  if (!guardiano) {
+    return reply.code(404).send({ errore: 'Watchman not found' });
+  }
+  return guardiano;
+});
+
+// Create: recruitment
+app.post('/guardiani', (request, reply) => {
+  const { nome, ruolo } = request.body;
+
+  // never trust the client: the server always validates
+  if (!nome) {
+    return reply.code(400).send({ errore: 'Name is required' });
+  }
+
+  const guardiano = { id: prossimoId++, nome, ruolo: ruolo ?? 'recluta' };
+  guardiani.push(guardiano);
+  return reply.code(201).send(guardiano);
+});
+
+// Update: promotion (or demotion)
+app.patch('/guardiani/:id', (request, reply) => {
+  const guardiano = guardiani.find((g) => g.id === Number(request.params.id));
+  if (!guardiano) {
+    return reply.code(404).send({ errore: 'Watchman not found' });
+  }
+  Object.assign(guardiano, request.body);
+  return guardiano;
+});
+
+// Delete: dismissal
+app.delete('/guardiani/:id', (request, reply) => {
+  guardiani = guardiani.filter((g) => g.id !== Number(request.params.id));
+  return reply.code(204).send();
+});
+
+await app.listen({ port: 3000 });
+console.log('The Watch register is listening at http://localhost:3000');
+```
+
+Read it carefully: chapter 12 has become code. Endpoints match the CRUD table: same addresses, different verbs and operations. Status codes come from chapter 11: `404` for a missing watchman, `400` for a nameless request (**never trust the client**, chapter 10: even with the form's `required`, the server checks again), `201` for creation, `204 No Content` for successful deletion.
+<br />
+Restart and test through the terminal with `curl`, the HTTP Swiss Army knife:
+
+```bash
+# Read: the list
+curl http://localhost:3000/guardiani
+
+# Create: enlist Sam
+curl -X POST http://localhost:3000/guardiani \
+  -H "Content-Type: application/json" \
+  -d '{"nome": "Samwell Tarly"}'
+
+# read the list again: there are now two
+curl http://localhost:3000/guardiani
+```
+
+A complete, tested, working backend. Now connect the frontend.
+<br />
+## ⏳ A promise to keep: async and await
+<br />
+In the JavaScript chapter, I promised time for operations "that take time". Here it is: an HTTP request **is not instantaneous**. It leaves, travels and responds *later*. JavaScript handles this "later" with **Promises**, objects representing a value that will arrive.
+<br />
+The modern syntax is disarmingly simple:
+
+```javascript
+const risposta = await fetch('http://localhost:3000/guardiani');
+const guardiani = await risposta.json();
+```
+
+`fetch` is the browser's HTTP request function, and `await` means "wait for the result, then continue". One rule: use `await` inside functions marked **`async`**. Everything else is practice.
+<br />
+## 🚧 The invisible wall: CORS
+<br />
+Before connecting the form, let me save you an afternoon of swearing. If the frontend (opened from a file or another address) calls your server, the browser **blocks access without the required permission**. This is **CORS** (Cross-Origin Resource Sharing), protecting access across origins unless the server explicitly permits it.
+<br />
+Grant permission using an official plugin:
+
+```bash
+npm install @fastify/cors
+```
+
+And two lines at the top of `server.js`:
+
+```javascript
+import cors from '@fastify/cors';
+
+await app.register(cors); // for now: all origins are allowed
+```
+
+> In production, do not leave the door wide open: declare *which* domain may access the server. This is fine for local development, but remember the door exists: eventually you will encounter a CORS error, and now you know what it means.
+
+## 🔗 The grand finale: the form meets the server
+<br />
+Open chapter 8's `guardiani.js` and change the data's destination: a real `POST` to the register instead of a locally fabricated message.
+
+```javascript
+const form = document.querySelector('.form-dark');
+
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const nome = document.querySelector('#name').value;
+
+  // send the application to the server, as in chapter 11
+  const risposta = await fetch('http://localhost:3000/guardiani', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nome }),
+  });
+
+  const guardiano = await risposta.json();
+
+  const messaggio = document.createElement('p');
+  messaggio.classList.add('benvenuto');
+  messaggio.textContent = `Welcome to the Watch, ${guardiano.nome}. You are recruit no. ${guardiano.id}.`;
+
+  form.replaceWith(messaggio);
+});
+```
+
+Notice the differences: the event function is now `async`, the request is the same `POST` used with curl (method, headers, JSON body), and the recruit number **comes from the server**: the backend-assigned `id`, not a number invented by the frontend.
+<br />
+Open the page, fill it in, submit. Visit `http://localhost:3000/guardiani`: Samwell is **in the register**. Submit another name: the list grows. Frontend and backend doing their own jobs and cooperating through HTTP. This whole thing is a web app.
+<br />
+## 🧊 The final plot twist
+<br />
+Before celebrating, one last experiment. Stop the server (`Ctrl+C`), restart with `node server.js` and read the list again:
+<br />
+Samwell has **disappeared**.
+<br />
+Again, no bug: our data lives in an **in-memory** array, and memory dies with the process. Every restart brings total amnesia. Fine for an experiment; unacceptable for a real application: data must survive restarts, updates and crashes.
+<br />
+It needs somewhere to live **persistently**, independently of the server: a **database**, the **next part of the guide**. The Watch deserves a register remembering its names.
+<br />
+But first, one lesson remains: how to **defend it**. Notice anyone can now dismiss Jon Snow with one curl line? In the **next chapter**, we secure the server.
+</Card>

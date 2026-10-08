@@ -1,0 +1,81 @@
+<Card>
+
+<br />
+We have already used `fetch` twice in a hurry, notably in chapter 14 to send Samwell's application with a quick `async`/`await` explanation. It worked, but "it works" differs from "I understand it". This chapter takes frontend-backend communication apart, because it is the bridge carrying *everything* you built, and knowing where to step on bridges is wise.
+<br />
+## 📜 Before fetch: AJAX's history
+<br />
+Context helps with the strange names you will encounter. In the early web, every action reloaded the page: click "send", white screen, new page. Around 2005, a technique spread for HTTP requests **from JavaScript without reloading**: **AJAX** (Asynchronous JavaScript And XML; XML retired, the name remained).
+<br />
+It helped make Gmail and Google Maps possible and underpins chapter 2's Single Page Applications. The tool then, `XMLHttpRequest`, was so awkward that a generation used libraries to avoid it. Today the browser has **`fetch`**, a clean modern API. "AJAX call" simply means an HTTP request made by JavaScript.
+<br />
+## 🧩 Anatomy of a call
+<br />
+The simplest form is `GET`:
+
+```javascript
+const risposta = await fetch('http://localhost:3000/guardiani');
+```
+
+For anything else, pass a second argument, the options object:
+
+```javascript
+const risposta = await fetch('http://localhost:3000/guardiani', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ nome: 'Samwell Tarly' }),
+});
+```
+
+Recognize these pieces? **Exactly** chapter 11's HTTP request parts: method, headers, body. `fetch` provides controls to compose the message you can already read.
+<br />
+Notice `JSON.stringify({...})`. A request body is **text**, not a JavaScript object: `stringify` serializes the object into a JSON string. Remember that; its mirror image comes shortly.
+<br />
+## ✉️ Response and the two-await mystery
+<br />
+Why **two** `await` calls?
+
+```javascript
+const risposta = await fetch('http://localhost:3000/guardiani'); // 1
+const guardiani = await risposta.json();                          // 2
+```
+
+Because **two things arrive at different times**. The first resolves when the *envelope* arrives: status line and headers. You know the server returned `200`, but the body may still be traveling (megabytes do not arrive at once). The second awaits the full body and **parses** it: `.json()` turns text into actual JavaScript objects for `.map`, `.filter` and friends.
+<br />
+The promised symmetry: outgoing `JSON.stringify` (object to text), incoming `.json()` (text to object). JSON is the travel format; JavaScript objects sit at both ends.
+<br />
+## 🚨 The essential gotcha: fetch does not reject on 404
+<br />
+The chapter's most important detail, deliberately skipped in chapter 14: you might expect `404` or `500` to "fail" the call. **No**: to `fetch`, a received response means success, even if it reports an error. The Promise rejects for failures obtaining a response, such as network loss, an unavailable server or DNS resolution failure.
+<br />
+Check HTTP errors **manually** through `response.ok` (true for 2xx):
+
+```javascript
+async function caricaGuardiani() {
+  try {
+    const risposta = await fetch('http://localhost:3000/guardiani');
+
+    // HTTP error: the server responded with a failure
+    if (!risposta.ok) {
+      throw new Error(`The server responded with ${risposta.status}`);
+    }
+
+    return await risposta.json();
+  } catch (errore) {
+    // handles network errors and the throw above
+    console.error('Unable to load the register:', errore.message);
+    return [];
+  }
+}
+```
+
+The scaffold for a proper call: `try/catch` for network surprises, `response.ok` for server errors, and a deliberate failure response (here logging and returning an empty list, keeping the app standing).
+
+> Practical rule: **two error families, two checks**. Networks can fail (catch), servers can refuse (response.ok). Ignoring either works wonderfully until the client demo.
+
+## ✅ Conclusion
+<br />
+`fetch` is no mystery: you know its background (AJAX), composition (HTTP request parts), the two awaits (envelope, then body), JSON's journey (stringify out, json in), and especially real error handling.
+<br />
+In the **next chapter**, we line everything up one last time: the full flow from user click to updated pixel through Fastify and SQLite. The Watch's register deserves a proper page.
+</Card>

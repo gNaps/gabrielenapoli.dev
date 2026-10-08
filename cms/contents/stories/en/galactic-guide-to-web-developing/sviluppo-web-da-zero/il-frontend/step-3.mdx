@@ -1,0 +1,120 @@
+<Card>
+
+<br />
+Before a web page comes alive with colors, motion and complex logic, there is **the skeleton**. That skeleton is called **HTML**.
+<br />
+Imagine your page as a house: HTML is the **architectural plan**, saying where walls, windows and doors belong. Without HTML, the browser, our interpreter from last chapter, would not even know *what* to display.
+<br />
+## 📜 A little history (relax, no pop quiz)
+<br />
+HTML stands for **HyperText Markup Language**. It began in the early 1990s with Tim Berners-Lee, inventor of the World Wide Web, and a simple but revolutionary idea: **connect information through hyperlinks** and display it in a structured way through a browser. Today, **HTML5** is the modern standard enabling more semantic, accessible and interactive pages.
+<br />
+But let us begin with the basics.
+<br />
+## 🏷️ What is a markup language?
+<br />
+HTML **is not a programming language**: it has no conditions, loops or functions. It is a **markup language**, used to *describe* a document's content and structure.
+<br />
+Everything works through **tags**: elements enclosed in angle brackets telling the browser what each piece of content is.
+
+```html
+<h1>Welcome</h1>              <!-- a main heading -->
+<p>This is a paragraph.</p>   <!-- ordinary text -->
+<a href="#">A link</a>         <!-- a hyperlink -->
+```
+
+## 🦴 Every document's backbone
+<br />
+Every proper HTML page starts with the same minimal scaffold:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>La mia prima pagina</title>
+  </head>
+  <body>
+    <!-- visible content goes here -->
+  </body>
+</html>
+```
+
+Three things to remember: `<!DOCTYPE html>` tells the browser "this is HTML5"; `<head>` contains information *about* the page (the tab title, character encoding); `<body>` contains everything users see. You will write this skeleton so often that in a month you will know it by heart.
+<br />
+## 📦 The main tags
+<br />
+The tags you will use most often:
+<br />
+- `<h1>` ... `<h6>`: headings, from most to least important.
+- `<p>`: a text paragraph.
+- `<a href="">`: a hyperlink.
+- `<ul>` / `<ol>` / `<li>`: unordered and ordered lists.
+- `<img src="">`: an image.
+- `<div>`: a generic container.
+- `<span>`: an inline container.
+- `<form>`, `<input>`, `<label>`, `<button>`: form building blocks.
+<br />
+Every tag has meaning and a function. Learning them is like learning a new language's alphabet: first you peek at the dictionary, then you stop thinking about it.
+<br />
+## 🧠 Semantics: giving content meaning
+<br />
+One of modern HTML's most important aspects is **semantics**: using the right tags for the right content.
+<br />
+A heading belongs in `<h1>`, not `<div>`. A navigation block? Use `<nav>`. An article? `<article>`. A footer? `<footer>`.
+
+> Why does it matter? Browsers, search engines and screen readers understand each part's **role**. Semantic HTML is clear not just to humans, but also to machines reading your site and people using assistive technology.
+
+## 🛡️ Your first form: join the Night's Watch
+<br />
+Theory done: time to write code. Suppose you must create the official Night's Watch recruitment form.
+<br />
+Create a folder containing `index.html` with the scaffold above. Then put this inside `<body>` (a plain **HTML form**, without CSS or JavaScript):
+
+```html
+<!-- the main heading -->
+<h1>Night’s Watch recruitment form della Notte</h1>
+
+<!-- our form -->
+<form>
+  <!-- the field label -->
+  <label for="name">First name:</label><br />
+  <!-- the text input -->
+  <input type="text" id="name" name="name" required /><br /><br />
+
+  <label for="lastname">Last name:</label><br />
+  <input type="text" id="lastname" name="lastname" required /><br /><br />
+
+  <label for="email">Email:</label><br />
+  <input type="email" id="email" name="email" required /><br /><br />
+
+  <label>
+    <!-- a checkbox input -->
+    <input type="checkbox" name="oath" required />
+    Accetto di tenere fede al giuramento dei Guardiani.
+  </label><br /><br />
+
+  <!-- the confirmation button -->
+  <button type="submit">Join the Watch</button>
+</form>
+```
+
+Save and double-click `index.html` to open it in the browser. There it is: your first page. Ugly as the night, perhaps, but **yours**, and already working: submit without filling the fields and watch the browser complain about `required`.
+<br />
+Notice how each label's `for` points to its input's `id`: applied semantics. Clicking the label activates the field, and screen readers know which description belongs to which box.
+<br />
+For now, the form does nothing with the data. In the next chapters, we will **dress it with CSS** and add **functionality with JavaScript**.
+<br />
+## 🧠 What you learned
+<br />
+- HTML is the foundational language for a web page's **structure**.
+- It consists of **tags** describing elements: text, links, forms.
+- **Semantic** tags make code clearer, more accessible and professional.
+- A few tags already produce a complete page with built-in validation.
+<br />
+## ✅ Conclusion
+<br />
+HTML is easy to learn but incredibly powerful: the first step toward something others can see, read, fill out and experience.
+<br />
+In the **next chapter**, the second building block, **CSS**, makes it prettier and more orderly. Because, let us face it: the Night's Watch deserves a slightly better interface.
+</Card>

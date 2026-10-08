@@ -1,0 +1,225 @@
+<Card>
+
+<br />
+Almost every application eventually needs to ask users for something: a login, a search, a checkout. **Forms** are where data enters the app, and also where many bugs lurk: unvalidated inputs, errors shown at the wrong moment, empty submissions.
+<br />
+Angular offers two approaches:
+<br />
+- **Template-driven forms**: almost everything is written in HTML, ideal for simple forms.
+- **Reactive forms**: the form model lives in TypeScript, designed for complex forms.
+<br />
+In this chapter, we cover both, including validation and advice on choosing between them.
+<br />
+## 🧩 Template-driven: the form in HTML
+<br />
+The template-driven approach relies on the `ngModel` directive, already familiar from data binding: two-way binding applied to form fields. Most of the work happens in the template, keeping the component light.
+
+```typescript
+import { Component, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-iscrizione',
+  imports: [FormsModule],
+  templateUrl: './iscrizione.component.html'
+})
+export class IscrizioneComponent {
+  nome = signal('');
+
+  submit() {
+    console.log('submitted:', this.nome());
+  }
+}
+```
+
+```html
+<form (ngSubmit)="submit()">
+  <label>
+    Name:
+    <input name="nome" [(ngModel)]="nome" />
+  </label>
+  <p>Hello, {{ nome() }}!</p>
+
+  <button type="submit">Submit</button>
+</form>
+```
+
+Two details trip everyone up the first time:
+
+> Pass the **signal itself** to two-way binding, not the result of calling it: write `[(ngModel)]="nome"`, while `{{ nome() }}` remains a read and needs parentheses. And inside a `<form>`, every field using `ngModel` must have a `name` attribute, or Angular complains.
+
+## Validating a template-driven form
+<br />
+After the signals chapter, you might be tempted to build validation manually with a couple of `computed` signals. You can, but there is no need: Angular already tracks each field's state, whether it was touched (`touched`), changed (`dirty`), and whether it is valid, exposing that through `ngModel`. Just request it using a **template reference variable**:
+
+```html
+<form (ngSubmit)="submit()">
+  <label>
+    Name:
+    <input
+      name="nome"
+      [(ngModel)]="nome"
+      required
+      minlength="3"
+      #nomeCtrl="ngModel"
+    />
+  </label>
+
+  @if (nomeCtrl.touched && nomeCtrl.invalid) {
+    <div class="errore">
+      @if (nomeCtrl.hasError('required')) {
+        <p>This field is required</p>
+      }
+      @if (nomeCtrl.hasError('minlength')) {
+        <p>At least 3 characters are required</p>
+      }
+    </div>
+  }
+
+  <button type="submit">Submit</button>
+</form>
+```
+
+What is happening:
+<br />
+- `required` and `minlength` are ordinary HTML attributes Angular turns into validators.
+- `#nomeCtrl="ngModel"` gives us direct access to the field's state in the template.
+- Errors appear only after the field is touched: no red form on first load.
+<br />
+For two or three fields, this approach is straightforward and quick. When there are ten fields, or fields are dynamically added and removed, the template becomes tangled. That is where reactive forms enter the picture.
+<br />
+## 🔧 Reactive forms: the form in TypeScript
+<br />
+In **reactive forms**, the form model is an object you construct in the component using three building blocks:
+<br />
+- **FormControl**: a single field.
+- **FormGroup**: a group of controls, typically the entire form.
+- **FormArray**: a dynamic list of controls, for fields added at runtime.
+<br />
+The template simply connects to the model. Here is a profile form with validation and a dynamic contact list:
+
+```typescript
+import { Component } from '@angular/core';
+import {
+  FormArray,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+
+@Component({
+  selector: 'app-profilo',
+  imports: [ReactiveFormsModule],
+  templateUrl: './profilo.component.html'
+})
+export class ProfiloComponent {
+  profiloForm = new FormGroup({
+    nome: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    email: new FormControl('', [Validators.required, Validators.email]),
+    contatti: new FormArray([new FormControl('', Validators.email)]),
+  });
+
+  get nome() {
+    return this.profiloForm.get('nome');
+  }
+
+  get email() {
+    return this.profiloForm.get('email');
+  }
+
+  get contatti() {
+    return this.profiloForm.get('contatti') as FormArray;
+  }
+
+  aggiungiContatto() {
+    this.contatti.push(new FormControl('', Validators.email));
+  }
+
+  onSubmit() {
+    if (this.profiloForm.valid) {
+      console.log(this.profiloForm.value);
+    } else {
+      // reveals errors for every field
+      this.profiloForm.markAllAsTouched();
+    }
+  }
+}
+```
+
+And its template:
+
+```html
+<form [formGroup]="profiloForm" (ngSubmit)="onSubmit()">
+  <label>
+    Name:
+    <input type="text" formControlName="nome" />
+  </label>
+  @if (nome?.touched && nome?.invalid) {
+    <div class="errore">
+      @if (nome?.hasError('required')) {
+        <p>Name is required</p>
+      }
+      @if (nome?.hasError('minlength')) {
+        <p>At least 3 characters are required</p>
+      }
+    </div>
+  }
+
+  <label>
+    Email:
+    <input type="email" formControlName="email" />
+  </label>
+  @if (email?.touched && email?.invalid) {
+    <div class="errore">
+      @if (email?.hasError('required')) {
+        <p>Email is required</p>
+      }
+      @if (email?.hasError('email')) {
+        <p>Il formato non è valido</p>
+      }
+    </div>
+  }
+
+  <div formArrayName="contatti">
+    @for (contatto of contatti.controls; track $index) {
+      <input [formControlName]="$index" placeholder="Contatto {{ $index + 1 }}" />
+    }
+  </div>
+  <button type="button" (click)="aggiungiContatto()">Add contact</button>
+
+  <button type="submit">Submit</button>
+</form>
+```
+
+Notice the submission flow: the button is always clickable, and if the form is invalid, `markAllAsTouched()` reveals every error. This is deliberate: disabling the button with `[disabled]="profiloForm.invalid"` is convenient, but leaves users facing an inactive button with no explanation. A click that reveals errors is a clearer experience.
+
+> Since Angular 14, reactive forms are **typed**: the compiler knows `profiloForm.value.nome` is a string and reports an error if you try to read a nonexistent field. If writing `new FormGroup(...)` manually feels verbose, look at `FormBuilder`: injected through `inject(FormBuilder)`, it reduces ceremony with `fb.group({...})`.
+
+## Which approach should you choose?
+<br />
+My compass after years of forms:
+<br />
+- **Template-driven** for small, static forms with standard HTML validation: login, search, newsletter.
+- **Reactive** for dynamic fields, cross-field validation, conditional logic or thorough testing: you can test the TypeScript model without touching the DOM.
+<br />
+When in doubt, reactive: a growing template-driven form needs rewriting; an oversized reactive form merely has a few extra lines.
+<br />
+## Ready-to-use validators
+<br />
+Angular provides built-in validators, usable as attributes (template-driven) or through `Validators` (reactive):
+<br />
+- `Validators.required`: the field cannot be empty.
+- `Validators.email`: email format.
+- `Validators.minLength(n)` / `Validators.maxLength(n)`: minimum and maximum length.
+- `Validators.min(n)` / `Validators.max(n)`: numeric values.
+- `Validators.pattern(regex)`: anything expressible with a regular expression.
+<br />
+When these are insufficient, write custom validators: simple functions receiving a control and returning an error object or `null`. We will revisit them when needed.
+<br />
+## Where we are now
+<br />
+You can now collect data using both Angular approaches: template-driven with `ngModel` and state exposed in the template, and reactive with a TypeScript model, programmatic validation and dynamic fields via `FormArray`. Above all, you know when to use each.
+<br />
+In the **next chapter**, we discuss **services and dependency injection**: where to put logic and data shared by components, starting with that `inject()` that keeps appearing in examples.
+</Card>

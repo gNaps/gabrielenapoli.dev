@@ -1,0 +1,76 @@
+<Card>
+
+<br />
+Last chapter, we said the backend stores data and governs it through logic. But what do we actually *do* with data? The answer is surprisingly short. Four things. Four. Always the same, in every application.
+<br />
+They are called **CRUD**, and once you see them, you cannot unsee them.
+<br />
+## 🔤 The four operations
+<br />
+CRUD is an acronym:
+<br />
+- **C**reate: create new data.
+- **R**ead: read existing data.
+- **U**pdate: modify existing data.
+- **D**elete: remove data.
+<br />
+Make it concrete with the Night's Watch. Imagine the backend holds its official register:
+<br />
+- A recruit fills in the form → **Create**: add a watchman.
+- The Lord Commander consults the list → **Read**: read watchmen.
+- Jon Snow is promoted → **Update**: modify his role.
+- A deserter is dismissed (let us call it that) → **Delete**: remove them.
+<br />
+The trick for never forgetting: consider any app. Instagram? Create a post, read the feed, update a bio, delete a photo. E-commerce? Add to cart, view the catalog, change quantity, remove an item. Gmail, Spotify, office management software: **under different disguises, it is always CRUD**. The clothes change; the dance stays the same.
+<br />
+## 🔁 Mapping to HTTP methods
+<br />
+Last chapter's HTTP verbs (GET, POST, PUT, DELETE) were no coincidence: **every CRUD operation has a verb**:
+<br />
+- **Create** → `POST`: something new to save.
+- **Read** → `GET`: give me data.
+- **Update** → `PUT` or `PATCH`: update this.
+- **Delete** → `DELETE`: delete it (no surprise there).
+<br />
+Here is the promised cousin, `PATCH`. Its distinction from `PUT` is subtle but useful: `PUT` **replaces the whole resource** (a complete watchman, new version); `PATCH` **changes part of it** (only the role field). You will frequently encounter `PATCH` for partial changes.
+<br />
+The Watch's register as seen through its APIs:
+
+```http
+GET    /guardiani       → l'elenco dei guardiani
+GET    /guardiani/42    → watchman number 42
+POST   /guardiani       → enlist a new watchman
+PATCH  /guardiani/42    → update watchman 42
+DELETE /guardiani/42    → dismiss watchman 42
+```
+
+Notice the elegance: **the address says what you act on; the verb says what you do**. The same address (`/guardiani/42`), three operations depending on the method. Combining resources and verbs is central to **REST**, the widespread API design style you will hear about in every team.
+<br />
+## 📬 A complete round trip
+<br />
+Follow an operation from start to finish, like chapter 2 but with new eyes. The frontend enlists a recruit:
+
+```http
+POST /guardiani HTTP/1.1
+Content-Type: application/json
+
+{ "nome": "Samwell Tarly", "ruolo": "attendente" }
+```
+
+The server responds:
+
+```http
+HTTP/1.1 201 Created
+Content-Type: application/json
+
+{ "id": 43, "nome": "Samwell Tarly", "ruolo": "attendente" }
+```
+
+See what happened: the server accepted the request, saved Sam in the register, assigned an **ID** (43, identifying him in future `GET`, `PATCH` or `DELETE` requests) and returned the familiar `201 Created`. If watchman 999 did not exist? `404 Not Found`. Malformed request? `400`. Last chapter's status codes start working for you.
+<br />
+## ✅ Conclusion
+<br />
+CRUD pays off forever: four operations, HTTP verbs, and suddenly every API feels familiar because it is. When you write APIs or consume them from the frontend, this chapter is the map in your pocket.
+<br />
+Theory ends here: in the **next chapter**, we write our first real server. A hint: we will use a language you already know.
+</Card>

@@ -11,6 +11,7 @@ export interface Project {
   subtitle: string;
   urlGithub: string;
   urlPreview: string;
+  urlDownload?: string;
   gallery?: Image[];
   content?: any;
   /* Manga card extras: cards without them fall back to `subtitle`

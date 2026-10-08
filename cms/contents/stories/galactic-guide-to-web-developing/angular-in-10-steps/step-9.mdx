@@ -1,5 +1,4 @@
 <Card>
-## 09 - Interceptor e pipe: gli attrezzi di finitura
 
 <br />
 Penultimo capitolo del modulo base, e lo dedichiamo a due strumenti che non
@@ -10,7 +9,7 @@ costruiscono pagine ma rendono migliore tutto il resto:
 <br />
 Sono i classici attrezzi che, una volta scoperti, ti chiedi come facevi prima.
 <br />
-### 🚦 Interceptor: la dogana delle richieste
+## 🚦 Interceptor: la dogana delle richieste
 <br />
 Un **interceptor** si mette in mezzo tra la tua app e il server: ogni richiesta
 HTTP in uscita, e ogni risposta in entrata, passa da lì. Come una dogana, può
@@ -27,7 +26,7 @@ tutti:
 Il punto è sempre lo stesso: senza interceptor, questa logica andrebbe copiata
 in ogni service. Con l'interceptor la scrivi una volta.
 <br />
-### 🛠 Esempio: il token su ogni richiesta
+## 🛠 Esempio: il token su ogni richiesta
 <br />
 Oggi un interceptor è una semplice funzione di tipo `HttpInterceptorFn`:
 riceve la richiesta e la funzione `next` per farla proseguire.
@@ -89,7 +88,7 @@ export const timingInterceptor: HttpInterceptorFn = (req, next) => {
 Gli interceptor si mettono in fila: `withInterceptors([authInterceptor,
 timingInterceptor])` li esegue nell'ordine in cui li elenchi.
 <br />
-### 🪄 Pipe: formattare senza sporcare
+## 🪄 Pipe: formattare senza sporcare
 <br />
 Cambiamo completamente zona: dalle richieste HTTP al template. Le **pipe**
 trasformano un valore al momento di mostrarlo, con la sintassi `|`:
@@ -118,7 +117,7 @@ Le pipe pronte all'uso che uso più spesso:
 > template ti dà errore su una pipe "che dovrebbe esserci", è quasi sempre
 > questo.
 
-### ✍️ Scrivere una pipe personalizzata
+## ✍️ Scrivere una pipe personalizzata
 <br />
 Quando le pipe di serie non bastano, scriverne una è questione di minuti.
 Esempio classico: accorciare un testo troppo lungo.
@@ -144,7 +143,7 @@ Un dettaglio che spiega perché le pipe sono così efficienti: di default sono
 **pure**, cioè Angular le riesegue solo quando il valore in ingresso cambia.
 Puoi metterne venti in una lista senza pensarci: non è lì che l'app rallenta.
 <br />
-### Dove siamo arrivati
+## Dove siamo arrivati
 <br />
 Con interceptor e pipe il modulo base è **completo**: componenti, router,
 signals, form, HTTP, stato condiviso e ora anche gli attrezzi trasversali per

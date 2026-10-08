@@ -1,0 +1,173 @@
+<Card>
+
+<br />
+I have mentioned them twice; it is time to explain them properly: **signals** are how modern Angular handles state and reactivity. If you come from React or Vue, the idea will feel familiar; if you come from "old" Angular, prepare to write much less code for the same result.
+<br />
+In this chapter, we cover signals, **computed**, **linked signals**, **effects**, and the new template **control flow** (`@if` and `@for`), which goes hand in hand with signals.
+<br />
+## 🔔 What are signals?
+<br />
+A **signal** is a container for a value with a superpower: it tracks who uses it. When the value changes, every part of the app that reads it updates automatically. No events to handle, no subscriptions to remember to close.
+
+```typescript
+import { signal } from '@angular/core';
+
+const counter = signal(0); // a signal starting at zero
+```
+
+Three operations to know:
+
+```typescript
+// read: a signal is a function, call it
+console.log(counter()); // 0
+
+// replace the value
+counter.set(5);
+
+// update using the current value
+counter.update((valore) => valore + 1);
+```
+
+The function-like syntax, `counter()`, feels strange at first. But that is the trick: calling the function tells Angular exactly *who* reads *what*, and when the value changes, it knows precisely what to update. This makes signal reactivity readable from top to bottom: follow the calls and you know what depends on what.
+<br />
+## ⚙️ Computed: derived values
+<br />
+A **computed** is a signal whose value is calculated from other signals. You never update it manually: it recalculates itself when its dependencies change.
+
+```typescript
+import { computed, signal } from '@angular/core';
+
+const counter = signal(0);
+const doubleCounter = computed(() => counter() * 2);
+
+counter.set(3);
+console.log(doubleCounter()); // 6, without doing anything else
+```
+
+Computed signals are also lazy and efficient: calculation happens only when someone reads the value, and the result is cached until dependencies change. Use them whenever data can be *derived* from other data: totals, filters, validity flags. If you catch yourself manually synchronizing two properties, almost always one should have been a computed signal.
+<br />
+## 🔗 Linked signals
+<br />
+There is a case neither `signal` nor `computed` handles well: a value the user can change, but that must **reset** when something upstream changes. A classic example: the selected size on a product page. The user can choose it (so it needs to be writable), but changing the product should restore the default selection (so it must derive from another source).
+<br />
+That is what `linkedSignal` is for:
+
+```typescript
+import { linkedSignal, signal } from '@angular/core';
+
+const taglie = signal(['S', 'M', 'L']);
+
+// writable, but recalculates when `taglie` changes
+const tagliaSelezionata = linkedSignal(() => taglie()[0]);
+
+tagliaSelezionata.set('L');   // the user selects L
+taglie.set(['XS', 'XL']);     // a new product arrives...
+console.log(tagliaSelezionata()); // 'XS': selection reset
+```
+
+> The key difference from a computed signal: a computed is **read-only**; you can never call `.set()` on it. A linked signal is writable like an ordinary signal, but derives its value again when its source changes.
+
+## 🌀 Effects: reacting to changes
+<br />
+An **effect** runs code whenever the signals it reads change. It is for *side effects*: logging, saving to localStorage, synchronizing with external libraries.
+
+```typescript
+import { Component, effect, signal } from '@angular/core';
+
+@Component({ /* ... */ })
+export class DemoComponent {
+  counter = signal(0);
+
+  constructor() {
+    effect(() => {
+      console.log(`the counter is ${this.counter()}`);
+    });
+  }
+}
+```
+
+Advice from experience: effects are where you should **not** put data derivation logic. If you are calling `.set()` on another signal inside an effect, stop: what you wanted was almost always a computed or linked signal.
+<br />
+## 🖥️ The new control flow: @if and @for
+<br />
+Since Angular 17, templates have a new syntax for conditions and loops: `@if` and `@for` blocks written directly in the markup, with no imports. They replace the old `*ngIf` and `*ngFor` and are more readable and faster.
+<br />
+**`@if`**, including `@else`:
+
+```html
+@if (isVisible()) {
+  <p>Questo testo appare solo se isVisible è true</p>
+} @else {
+  <p>Altrimenti appare questo</p>
+}
+```
+
+**`@for`**, for iterating a list. Notice `track`: it is required and tells Angular how to identify each element, so list changes update only the necessary DOM. There is also `@empty` for an empty list:
+
+```html
+<ul>
+  @for (item of items(); track item) {
+    <li>{{ item }}</li>
+  } @empty {
+    <li>Niente da mostrare</li>
+  }
+</ul>
+```
+
+> Existing projects still contain `*ngIf` and `*ngFor` everywhere: they work, and migration need not be rushed (there is even a dedicated schematic, `ng generate @angular/core:control-flow`). But use blocks for new code: fewer imports, fewer surprises.
+
+## Putting it all together
+<br />
+A small but complete component with a signal, a computed and control flow:
+
+```typescript
+import { Component, computed, signal } from '@angular/core';
+
+@Component({
+  selector: 'app-carrello',
+  templateUrl: './carrello.component.html'
+})
+export class CarrelloComponent {
+  articoli = signal([
+    { nome: 'Vinland Saga vol. 18', prezzo: 7.5 },
+    { nome: 'D&D dice', prezzo: 12 },
+  ]);
+
+  totale = computed(() =>
+    this.articoli().reduce((somma, a) => somma + a.prezzo, 0)
+  );
+
+  svuota() {
+    this.articoli.set([]);
+  }
+}
+```
+
+```html
+@if (articoli().length > 0) {
+  <ul>
+    @for (articolo of articoli(); track articolo.nome) {
+      <li>{{ articolo.nome }} - {{ articolo.prezzo }} €</li>
+    }
+  </ul>
+  <p>Total: {{ totale() }} €</p>
+  <button (click)="svuota()">Empty cart</button>
+} @else {
+  <p>Il carrello è vuoto.</p>
+}
+```
+
+No subscriptions, no manual update management: change the data and the interface follows. That is all, and it is a lot.
+<br />
+## Where we are now
+<br />
+Today's pieces, recapped:
+<br />
+- **signal**: reactive state, read by calling it and changed with `set` and `update`.
+- **computed**: a derived, read-only value that recalculates automatically.
+- **linkedSignal**: writable, but resets when its source changes.
+- **effect**: code reacting to changes, only for side effects.
+- **@if / @for**: modern template control flow, with required `track` in loops.
+<br />
+Signals complete the picture of reactivity. In the **next chapter**, we immediately put them to work with **forms**: collecting user data, validating it and handling submission using Angular's two approaches.
+</Card>

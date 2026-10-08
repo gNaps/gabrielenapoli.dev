@@ -7,6 +7,9 @@ export interface Story {
   slug: string;
   preview: Image;
   writtenAt: string;
+  language: "en" | "it";
+  description: string;
+  updatedAt?: string;
   content?: any;
 }
 

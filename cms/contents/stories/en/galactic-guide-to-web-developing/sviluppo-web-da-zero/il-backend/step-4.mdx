@@ -1,0 +1,108 @@
+<Card>
+
+<br />
+Three chapters of backend theory: servers, HTTP, CRUD. Enough watching the engine room through glass: time to get our hands on it. Good news with a double payoff: to write our first backend, **you do not need a new language**.
+<br />
+Remember JavaScript? I said it was the language the browser executes. True. But in 2009, someone asked a fine question: *what if JavaScript could also run outside the browser?*
+<br />
+## ⚙️ What is Node.js?
+<br />
+**Node.js** is a **runtime**, an environment executing JavaScript directly on a computer or server without a browser. Underneath, it uses V8, Chrome's engine, extracted to do things browsers do not: read files, open network connections and, for us, **listen for HTTP requests**.
+<br />
+The differences are smaller than you think: variables, functions, arrays, objects, events stay identical. The context changes: no `document`, no DOM (there is no page here), but access to the system instead. Your recent investment pays twice, as promised.
+<br />
+## 📥 Installation and your first script
+<br />
+If you followed the tools chapter, you may be ready. Otherwise, download **LTS** from [nodejs.org](https://nodejs.org/) and check in the terminal:
+
+```bash
+node --version
+npm --version
+```
+
+Then the initiation ritual. Create a `barriera-server` folder with `hello.js` inside:
+
+```javascript
+const motto = 'Night gathers';
+console.log(`${motto}, and now my server begins.`);
+```
+
+Run it from the terminal:
+
+```bash
+node hello.js
+```
+
+There is your JavaScript running without a browser: chapter 8's `console.log`, previously in DevTools, now prints **in the terminal**. A small moment, a big boundary crossed.
+<br />
+## 📦 npm and package.json
+<br />
+Before writing the server, we need **npm**, the package manager introduced among our tools: where you download other people's libraries. Every Node project starts like this:
+
+```bash
+npm init -y
+```
+
+This creates **`package.json`**, the project's identity card: name, version, dependencies, commands. Open it and add the line enabling modern module syntax (ES6 `import`):
+
+```json
+{
+  "name": "barriera-server",
+  "version": "1.0.0",
+  "type": "module"
+}
+```
+
+When you install a library, npm records it among dependencies and puts its code in `node_modules`. That folder is regenerated with `npm install`, so it is never shared or committed to Git.
+<br />
+## 🚀 Your first server with Fastify
+<br />
+We could use Node's raw building blocks for HTTP requests, but as the tools chapter taught us, do not reinvent the wheel: use a framework. Our choice is **Fastify**: modern, fast as its name suggests, with an API that reads naturally.
+
+> The alternative found throughout tutorials is **Express**, Node's longstanding framework: older and still widespread. The concepts are identical; switching takes an afternoon. Like frontend frameworks, learn the ideas rather than the syntax.
+
+Install it:
+
+```bash
+npm install fastify
+```
+
+Create `server.js`:
+
+```javascript
+import Fastify from 'fastify';
+
+const app = Fastify();
+
+// our first route: responds to GET /
+app.get('/', () => {
+  return { messaggio: 'The Wall is listening' };
+});
+
+// listen on port 3000
+await app.listen({ port: 3000 });
+console.log('Server listening at http://localhost:3000');
+```
+
+Start it:
+
+```bash
+node server.js
+```
+
+The terminal prints a message and **does not return control**. It is not frozen: the server is doing its job from chapter 10, listening until you stop it with `Ctrl+C`.
+<br />
+Open `http://localhost:3000` in the browser:
+
+```json
+{ "messaggio": "The Wall is listening" }
+```
+
+Pause to see what happened: the theory of previous chapters has come alive. The browser sent `GET /`; **the function you wrote** ran on the server; Fastify converted the returned object to JSON, set `Content-Type` and responded `200 OK`. Chapter 2's request/response cycle, with you on the other side of the counter.
+<br />
+## ✅ Conclusion
+<br />
+Ten JavaScript lines and you have a living backend: Node executing code, Fastify speaking HTTP, the browser receiving JSON. One piece remains to close the loop opened at this section's beginning: give the server something to keep.
+<br />
+In the **next chapter**, we build **the Watch register's APIs** (chapter 12's CRUD endpoints for real) and connect our old HTML form to a real backend. Samwell's application is about to reach its destination.
+</Card>

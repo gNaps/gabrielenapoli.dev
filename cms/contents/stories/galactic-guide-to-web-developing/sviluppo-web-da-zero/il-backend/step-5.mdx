@@ -1,5 +1,4 @@
 <Card>
-## 14 - Il primo backend vero: le API dei Guardiani
 
 <br />
 Tutto quello che abbiamo costruito in questa guida converge qui. Il modulo
@@ -8,7 +7,7 @@ HTML dei Guardiani (capitolo 6), vestito di CSS (7), reso vivo da JavaScript
 (12) usando il protocollo HTTP (11). Oggi il cerchio si chiude:
 **l'adesione di Samwell arriva a destinazione**.
 <br />
-### 📚 Il registro della Guardia
+## 📚 Il registro della Guardia
 <br />
 Riprendiamo il `server.js` del capitolo scorso e trasformiamolo nel registro
 ufficiale. I dati, per ora, vivranno in un semplice array in memoria. Segna
@@ -97,7 +96,7 @@ curl http://localhost:3000/guardiani
 
 Un backend completo, collaudato, funzionante. Ora colleghiamo il frontend.
 <br />
-### ⏳ Il debito da saldare: async e await
+## ⏳ Il debito da saldare: async e await
 <br />
 Nel capitolo su JavaScript ti avevo promesso che alle operazioni "che
 richiedono tempo" avremmo dedicato lo spazio giusto. Eccolo, perché ci serve
@@ -117,7 +116,7 @@ significa letteralmente "aspetta che il risultato arrivi, poi continua".
 Unica regola: `await` si usa dentro funzioni marcate **`async`**. Tutto qui,
 il resto è pratica.
 <br />
-### 🚧 Il muro invisibile: CORS
+## 🚧 Il muro invisibile: CORS
 <br />
 Prima di collegare il form, ti salvo da un pomeriggio di imprecazioni. Se il
 frontend (aperto da file o da un altro indirizzo) chiama il tuo server, il
@@ -145,7 +144,7 @@ await app.register(cors); // per ora: tutti possono chiamarci
 > questa porta esiste: prima o poi un errore CORS lo incontrerai comunque, e
 > adesso saprai cosa significa.
 
-### 🔗 Il gran finale: il form incontra il server
+## 🔗 Il gran finale: il form incontra il server
 <br />
 Apriamo il `guardiani.js` del capitolo 8 e cambiamo il destino di quei dati:
 non più un messaggio finto costruito al volo, ma una vera `POST` al registro.
@@ -185,7 +184,7 @@ Samwell è lì, **nel registro**. Compila di nuovo con un altro nome: l'elenco
 cresce. Frontend e backend, ognuno col suo mestiere, che collaborano via
 HTTP. Questa, tutta intera, è una web app.
 <br />
-### 🧊 Il colpo di scena finale
+## 🧊 Il colpo di scena finale
 <br />
 Prima di festeggiare, un ultimo esperimento. Ferma il server (`Ctrl+C`),
 riavvialo con `node server.js` e rileggi l'elenco:

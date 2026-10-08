@@ -1,0 +1,67 @@
+<Card>
+
+<br />
+The relational world has a precise grammar with few words: tables, rows, columns, keys. Learn them calmly now, and you will understand databases encountered throughout your career: underneath, they share these foundations.
+<br />
+Naturally, we learn them using the Watch's register.
+<br />
+## 📋 Tables, rows and columns
+<br />
+A **table** collects data of one kind. Each **row** is an item (a watchman); each **column** is a property (name, role). Our relational register:
+
+```text
+guardiani
+┌────┬────────────────┬─────────────────┬─────────────┐
+│ id │ nome           │ ruolo           │ castello_id │
+├────┼────────────────┼─────────────────┼─────────────┤
+│ 1  │ Jon Snow       │ lord comandante │ 1           │
+│ 2  │ Samwell Tarly  │ attendente      │ 1           │
+│ 3  │ Eddison Tollet │ recluta         │ 2           │
+└────┴────────────────┴─────────────────┴─────────────┘
+```
+
+It resembles a spreadsheet, with a crucial difference: columns have **declared types** (`id` is an integer, `nome` text), and constraints let the database **reject** invalid data. A missing required name is refused. These are last chapter's rules in action.
+<br />
+We will return shortly to `castello_id`: it is this chapter's main character.
+<br />
+## 🔑 The primary key
+<br />
+Every row needs an unmistakable identity. Two watchmen might share a name but must stay distinguishable. A **primary key** has a value **unique** to each row, usually a numeric `id` incremented by the database on insertion.
+<br />
+Sounds familiar? It is Samwell's **ID 43** from CRUD, and `42` in `/guardiani/42`: APIs use the primary key to specify *which* resource. The pieces fit together again.
+<br />
+## 🗝️ The foreign key: creating relationships
+<br />
+The million-dragon question: how do we show Jon serves at Castle Black? Instinct says "add a column containing the castle's name". But what if the castle also has a location, commander and construction year? Copy them for every watchman? Update a thousand rows when the commander changes?
+<br />
+The relational solution is more elegant: castles get **their own table**, and watchmen *point to them*:
+
+```text
+castelli
+┌────┬──────────────────┬────────────────┐
+│ id │ nome             │ posizione      │
+├────┼──────────────────┼────────────────┤
+│ 1  │ Castle Black    │ centro         │
+│ 2  │ Eastwatch  │ costa est      │
+└────┴──────────────────┴────────────────┘
+```
+
+`castello_id` in the watchmen table is a **foreign key**: it contains the primary key of a row in *another* table. Jon has `castello_id = 1` → castle row 1 → Castle Black. Castle data exists **in one place**, referenced by everyone else.
+<br />
+Familiar again? It is the **single source of truth**, the same principle the Angular series applies to shared state on another scale. Good ideas travel in computing.
+<br />
+## 🛡️ Referential integrity
+<br />
+Now the database shows its strength. Declaring a foreign key does more than document a relationship: it asks the database to **defend it**. This is **referential integrity**:
+<br />
+- A watchman's `castello_id` cannot reference a castle that **does not exist**: insertion is rejected.
+- You cannot delete Castle Black **while someone serves there**, unless you chose cascading deletion in advance (`RESTRICT` and `CASCADE`: block or cascade).
+
+> This is a fundamental difference from plain files and many document databases: relationships are an **enforced contract**, rather than a convention your code hopes people respect. Broken references cannot exist under those constraints.
+
+## ✅ Conclusion
+<br />
+Grammar acquired: **tables** with typed columns, **primary keys** identifying rows, **foreign keys** creating relationships and **referential integrity** defending them. The Watch's register has a structure worthy of eight thousand years of history.
+<br />
+The language remains: in the **next chapter**, we learn **SQL** to read, insert, update and delete. We also keep the security chapter's promise: you will see SQL injection firsthand.
+</Card>

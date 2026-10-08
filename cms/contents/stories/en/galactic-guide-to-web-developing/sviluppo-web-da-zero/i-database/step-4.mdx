@@ -1,0 +1,131 @@
+<Card>
+
+<br />
+Six chapters ago, Samwell disappeared at every restart. Today, the loop closes: we connect Fastify to a real database and give the Watch its promised permanent register.
+<br />
+## 🔌 How they communicate
+<br />
+First an overview applicable to any stack. A database is usually a separate server; the backend connects through a **driver**, a library opening connections, sending SQL queries and translating results into your language's objects. A request's full flow becomes:
+
+```text
+browser ──HTTP──▶ backend ──SQL──▶ database
+browser ◀──JSON── backend ◀──righe── database
+```
+
+The frontend **never** talks directly to the database in this architecture: it passes through the backend, which validates, checks permissions and chooses queries. Now chapter 10 becomes fully clear: the backend guards data too.
+<br />
+## 🗃️ Our database: SQLite
+<br />
+For our first connection, choose **SQLite**, perfect for learning: no separate server to install or configure, because the entire database lives in **one file** alongside your code. It is no toy: used across phones everywhere, it speaks last chapter's SQL.
+
+```bash
+npm install better-sqlite3
+```
+
+Open `server.js` and retire the in-memory array:
+
+```javascript
+import Fastify from 'fastify';
+import cors from '@fastify/cors';
+import Database from 'better-sqlite3';
+
+const app = Fastify();
+await app.register(cors);
+
+// the register now lives in a file: guardia.db
+const db = new Database('guardia.db');
+
+// create the table if missing (SQL from chapter 17!)
+db.exec(`
+  CREATE TABLE IF NOT EXISTS guardiani (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT NOT NULL,
+    ruolo TEXT NOT NULL DEFAULT 'recluta'
+  )
+`);
+
+// Read: the list, straight from the database
+app.get('/guardiani', () => {
+  return db.prepare('SELECT * FROM guardiani').all();
+});
+
+// Create: persistent recruitment
+app.post('/guardiani', (request, reply) => {
+  const { nome } = request.body;
+
+  if (typeof nome !== 'string' || !nome.trim() || nome.length > 100) {
+    return reply.code(400).send({ errore: 'Invalid name' });
+  }
+
+  const result = db
+    .prepare('INSERT INTO guardiani (nome) VALUES (?)')
+    .run(nome.trim());
+
+  return reply.code(201).send({
+    id: result.lastInsertRowid,
+    nome: nome.trim(),
+    ruolo: 'recluta',
+  });
+});
+
+await app.listen({ port: 3000 });
+console.log('The permanent register is listening at http://localhost:3000');
+```
+
+These are last chapter's `SELECT` and `INSERT`, delivered by the driver. Now the moment awaited for six chapters: start the server, recruit Samwell through the form or curl, **stop it and restart**. Read the list:
+<br />
+Samwell **is still there**. 🎉
+<br />
+Data now lives in `guardia.db`, surviving restarts, crashes and updates. Promise kept: the Watch has a register remembering its names.
+<br />
+## 💉 The question mark that saves you
+<br />
+Before celebrating too much, return to `INSERT` and inspect `?`:
+
+```javascript
+db.prepare('INSERT INTO guardiani (nome) VALUES (?)').run(nome.trim());
+```
+
+This is a **parameterized query**, the promised SQL injection defense. SQL and data travel **separately**: the database receives the query structure (with `?` placeholders) and the values, treated **only as data**. Last chapter's malicious `' OR '1'='1` would be saved literally as a recruit's bizarre name, never becoming part of the command.
+
+> One habit provides this defense: **never concatenate input into queries; always use parameters**. Every driver and language has its syntax. From now on, a query built with `+` should set off an alarm.
+
+## 🧙 ORMs: talking to databases through objects
+<br />
+Writing SQL manually is fine, and knowing how is essential. On large projects, endlessly translating rows into objects and objects into queries becomes repetitive work. **ORMs** (Object-Relational Mapping) map tables to language objects and generate SQL for you.
+<br />
+A popular Node option is **Prisma**. Describe the schema:
+
+```prisma
+model Guardiano {
+  id    Int    @id @default(autoincrement())
+  nome  String
+  ruolo String @default("recluta")
+}
+```
+
+Then query in typed JavaScript without visible SQL:
+
+```javascript
+// Read
+const guardiani = await prisma.guardiano.findMany({
+  where: { ruolo: 'recluta' },
+  orderBy: { nome: 'asc' },
+});
+
+// Create
+await prisma.guardiano.create({
+  data: { nome: 'Samwell Tarly' },
+});
+```
+
+Recognize `where` and `orderBy`? Last chapter's SELECT in different clothes. Prisma's generated queries are parameterized by default, helping prevent injection by design.
+<br />
+Driver and handwritten SQL, or ORM? The honest answer: **it depends**. ORMs offer productivity, types and safe defaults; direct SQL offers full control without hidden machinery. Real projects often use both: ORM for daily work, SQL for complex queries. (Fastify plus Prisma is actually my working stack; you will see it in this site's projects.)
+<br />
+## ✅ Conclusion
+<br />
+Look at the complete architecture you traversed: frontend collecting data and sending HTTP, backend validating, protecting and deciding, database storing persistently. **A complete web app**, sharing the anatomy of Gmail, Amazon or business software. Scale changes; the skeleton does not.
+<br />
+We studied each piece separately. In the **next section**, the last of this arc, we follow the whole cycle continuously: frontend-backend communication and the flow from click to updated pixel. All that remains is joining the dots.
+</Card>

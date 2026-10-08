@@ -1,0 +1,111 @@
+<Card>
+
+<br />
+Tables and keys are ready. Now we need the language for talking to the database: **SQL** (Structured Query Language), fifty years old and aging beautifully. It may offer computing's best effort-to-longevity ratio: what you learn today worked in 1980 and will remain useful in 2050.
+<br />
+Here is something to make you smile: SQL is **declarative**. Say *what* you want rather than *how* to get it; the database handles the execution plan. Familiar? Chapter 9's frontend frameworks have the same philosophy. Good ideas travel, as promised.
+<br />
+## 🔍 SELECT: reading
+<br />
+The command you will write most often:
+
+```sql
+-- the full register
+SELECT * FROM guardiani;
+
+-- solo alcune colonne
+SELECT nome, ruolo FROM guardiani;
+```
+
+The asterisk means "all columns". Real power comes with **filters**:
+
+```sql
+-- solo le reclute
+SELECT * FROM guardiani WHERE ruolo = 'recluta';
+
+-- le reclute del castello 1, in ordine alfabetico, massimo 10
+SELECT * FROM guardiani
+WHERE ruolo = 'recluta' AND castello_id = 1
+ORDER BY nome
+LIMIT 10;
+```
+
+`WHERE` filters rows, `ORDER BY` sorts them, `LIMIT` sets a maximum. Read it as a sentence: "give me recruits, ordered by name, at most ten". Declarative indeed.
+<br />
+## ✍️ INSERT, UPDATE, DELETE: writing
+<br />
+The other three introduce themselves, already familiar under other disguises:
+
+```sql
+-- Create: recruitment
+INSERT INTO guardiani (nome, ruolo, castello_id)
+VALUES ('Grenn', 'recluta', 1);
+
+-- Update: promozione
+UPDATE guardiani SET ruolo = 'ranger' WHERE id = 3;
+
+-- Delete: dismissal
+DELETE FROM guardiani WHERE id = 3;
+```
+
+Exactly: chapter 12's **CRUD** in its native language. `INSERT` is Create, `SELECT` Read, and `UPDATE` and `DELETE` keep their names. HTTP verbs map it to the web; SQL maps it to data.
+
+> Look again at `UPDATE` and `DELETE`, especially `WHERE`. Imagine them **without it**: `DELETE FROM guardiani` deletes *every* row. No confirmation, no recycle bin. Every developer has a horror story starting with a forgotten WHERE: write it *before* the rest, and on real databases, check first with SELECT.
+
+## 🤝 JOIN: querying relationships
+<br />
+Last chapter's foreign keys lead here. "Give me watchmen **with their castle names**" needs two tables; the bridge is **JOIN**:
+
+```sql
+SELECT guardiani.nome, guardiani.ruolo, castelli.nome AS castello
+FROM guardiani
+JOIN castelli ON guardiani.castello_id = castelli.id;
+```
+
+Read slowly: take watchmen, link castles *where* foreign key meets primary key, and return columns from both (`AS` renames them to distinguish the two `nome` fields). Result:
+
+```text
+┌────────────────┬─────────────────┬───────────────────┐
+│ nome           │ ruolo           │ castello          │
+├────────────────┼─────────────────┼───────────────────┤
+│ Jon Snow       │ lord comandante │ Castle Black     │
+│ Samwell Tarly  │ attendente      │ Castle Black     │
+│ Eddison Tollet │ recluta         │ Eastwatch   │
+└────────────────┴─────────────────┴───────────────────┘
+```
+
+JOIN has variants and depth you will discover over time; for now, this covers a surprising number of real cases.
+<br />
+## 💉 Promise kept: SQL injection
+<br />
+In security, I promised you would see why "never trust the client" is essential. The moment has arrived.
+<br />
+Imagine a login building its query by **pasting** user input into a string:
+
+```javascript
+// ⚠️ NEVER DO THIS: an example of what NOT to do
+const query = "SELECT * FROM utenti WHERE nome = '" + input + "'";
+```
+
+Normal input (`Jon`) works. An attacker enters this instead:
+
+```text
+' OR '1'='1
+```
+
+Mentally paste it into the string and see the resulting query:
+
+```sql
+SELECT * FROM utenti WHERE nome = '' OR '1'='1'
+```
+
+`'1'='1'` is always true: the query returns **every user**. Variants bypass login, read others' data or delete tables. This is **SQL injection**, long among the most exploited vulnerabilities. It persists because it is *easy to introduce*, rather than sophisticated.
+
+> The defense exists, is simple and appears next chapter: **never build queries by concatenating user input**. Keep data separate from commands using parameterized queries. Remember that for a few more pages.
+
+## ✅ Conclusion
+<br />
+You speak data's language: `SELECT` with filters, sorting and limits; `INSERT`, `UPDATE` and `DELETE` (respecting `WHERE`); and `JOIN` turning relationships into answers. You recognize a famous web attack, already half the defense.
+<br />
+The last mile: connect **our Fastify server** to a real database. In the **next chapter**, the loop opened six chapters ago closes: Samwell is about to stop disappearing.
+</Card>

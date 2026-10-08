@@ -1,5 +1,4 @@
 <Card>
-## Login con Twitch in Next.js e Auth.js
 
 <br />
 Oggi costruiamo un'app Next.js dove l'utente **entra col suo account Twitch**
@@ -13,7 +12,7 @@ I link utili prima di partire:
 - [Docs Next.js](https://nextjs.org/docs)
 - [Docs Auth.js](https://authjs.dev)
 <br />
-### 🔧 Setup: la console Twitch
+## 🔧 Setup: la console Twitch
 <br />
 Il primo passo è sulla [console developer di
 Twitch](https://dev.twitch.tv/console): crea un account se non ce l'hai, poi
@@ -43,7 +42,7 @@ Quel `AUTH_SECRET` serve ad Auth.js per firmare le sessioni: generalo con
 > variabili `AUTH_*` qui sopra restano sul server, dove i segreti devono
 > stare.
 
-### 📦 Setup: il progetto
+## 📦 Setup: il progetto
 <br />
 Creiamo il progetto e installiamo Auth.js (il pacchetto si chiama ancora
 `next-auth`, nella versione 5):
@@ -54,7 +53,7 @@ cd twitch-follows
 npm install next-auth@beta
 ```
 
-### 🔑 La configurazione di Auth.js
+## 🔑 La configurazione di Auth.js
 <br />
 Tutta la configurazione vive in un file `auth.ts` nella radice del progetto:
 qui dichiariamo il provider Twitch (Auth.js ne ha uno pronto), gli **scope**
@@ -112,7 +111,7 @@ import { handlers } from '@/auth';
 export const { GET, POST } = handlers;
 ```
 
-### 🚪 La pagina di login
+## 🚪 La pagina di login
 <br />
 Niente `use client`, niente hook: una **server action** e un bottone.
 
@@ -136,7 +135,7 @@ export default function LoginPage() {
 }
 ```
 
-### 📡 Le chiamate alle API di Twitch
+## 📡 Le chiamate alle API di Twitch
 <br />
 I canali seguiti si leggono da `GET /channels/followed` (è il motivo dello
 scope `user:read:follows` di prima), i dettagli dei canali da `GET /users` e
@@ -186,7 +185,7 @@ export const getFollowedStreams = (userId: string, token: string) =>
   twitchGetAll(`/streams/followed?user_id=${userId}&first=100`, token);
 ```
 
-### 🏠 La homepage
+## 🏠 La homepage
 <br />
 La pagina principale è un server component: legge la sessione con `auth()`,
 chiama le tre API e incrocia i risultati. Tutto sul server, il token non
@@ -250,7 +249,7 @@ Il flusso completo: sessione → canali seguiti → dettagli (ordinati per nome)
 > callback `jwt` quando sta per scadere. Per un progetto dimostrativo la
 > prima basta; sappi che la seconda esiste, prima di andare in produzione.
 
-### ✅ Conclusione
+## ✅ Conclusione
 <br />
 Ricapitolando: un'app registrata sulla console Twitch, Auth.js che gestisce
 tutto il ballo OAuth con un provider e due callback, il token custodito lato

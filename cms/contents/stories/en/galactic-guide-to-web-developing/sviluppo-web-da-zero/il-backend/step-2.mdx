@@ -1,0 +1,107 @@
+<Card>
+
+<br />
+In chapter 2, I gave you the map: client here, server there, and a continuous request/response cycle between them. In the engine room, that map is no longer enough: to build or understand a backend, you need the language both sides speak. It is **HTTP**, and this chapter teaches it properly.
+<br />
+## ✉️ Anatomy of a request
+<br />
+An HTTP request is a text message with a fixed structure. Here is one, line by line:
+
+```http
+POST /login HTTP/1.1
+Host: barriera.example.com
+Content-Type: application/json
+
+{ "email": "jon@barriera.net", "password": "ghost" }
+```
+
+Four parts:
+<br />
+- **Method** (`POST`): the verb, what I want to do.
+- **Path** (`/login`): the resource I address.
+- **Headers** (`Host`, `Content-Type`...): accompanying information.
+- **Body**: the actual data, when needed.
+<br />
+Let us examine them individually.
+<br />
+## 🔤 Methods: GET, POST, PUT, DELETE
+<br />
+The method declares the request's intention. You have met the four essentials; now focus on them:
+<br />
+- **GET**: give me something. No body, no server-side changes: repeat it a hundred times harmlessly. This is what browsers request for pages.
+- **POST**: here is something new. A body carries data, and something *happens* on the server: creation, saving, registration.
+- **PUT**: replace this resource with the version I send.
+- **DELETE**: remove this resource.
+<br />
+There is a close cousin, `PATCH`, for partial changes. Next chapter, these verbs fit into an elegant pattern.
+<br />
+## 🏷️ Headers: context that matters
+<br />
+**Headers** are key-value pairs accompanying requests and responses: information *about* data and context. You will soon encounter:
+<br />
+- `Content-Type`: body format (usually `application/json` in our world).
+- `Accept`: the format the client *wants* in the response.
+- `Authorization`: credentials, who makes the request.
+- `User-Agent`: the client (which browser or app).
+<br />
+`Authorization` deserves more attention because it closes a loop from the backend chapter. After login, the server returns a **token**; from then on, the client attaches it to requests:
+
+```http
+GET /guardiani HTTP/1.1
+Host: barriera.example.com
+Authorization: Bearer abc123def456
+```
+
+That is how the server knows *who you are* (authentication) and decides *what you may do* (authorization). No magic: a header.
+<br />
+## 📦 The body: actual data
+<br />
+The **body** is the payload: form data, a comment to save, a file to upload. Modern web's de facto standard is **JSON** (JavaScript Object Notation), which you have already seen: almost identical to chapter 8's JavaScript objects.
+
+```json
+{
+  "nome": "Samwell Tarly",
+  "ruolo": "attendente",
+  "corvo": true
+}
+```
+
+Readable to humans, easy for machines to produce and consume: why it conquered the web.
+<br />
+## 🚦 Responses and status codes
+<br />
+Responses have the same structure (headers + body), plus a status line summarizing the outcome:
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{ "token": "abc123def456" }
+```
+
+The number is the **status code**, and reading it is like reading the server's facial expressions. Common codes:
+<br />
+- **200 OK**: all good, here is what you requested.
+- **201 Created**: created as requested.
+- **400 Bad Request**: malformed request; check what you sent.
+- **401 Unauthorized**: who are you? Authentication required.
+- **403 Forbidden**: I know who you are, but you cannot do that.
+- **404 Not Found**: this resource does not exist.
+- **500 Internal Server Error**: this time the problem is mine.
+
+> Use the first digit to navigate: **2xx** success, **3xx** redirection, **4xx** client error ("your mistake"), **5xx** server error ("my mistake"). Notice 401/403: last chapter's authentication versus authorization, translated into numbers.
+
+## 🍽️ What is an API?
+<br />
+You now have all the ingredients for this section's most important definition. An **API** (Application Programming Interface) is the **contract** through which software exposes functionality to other software. On the web: server addresses, accepted methods, expected data and promised responses.
+<br />
+The classic metaphor is a restaurant: you (the client) do not enter the kitchen (the server) to prepare food. Order from the **menu** (the API) through the waiter (the HTTP request), and the dish arrives (the response). The menu tells you what you can request and receive. **How** the kitchen prepares it does not concern you: chefs, recipes and suppliers can change without you noticing, as long as the menu stays the same.
+<br />
+The web is also full of **public APIs**: weather, maps, exchange rates, even Pokémon. Your frontend can order from any available internet menu, building apps by combining other people's services.
+<br />
+## ✅ Conclusion
+<br />
+HTTP is no longer just an acronym: you can read a request (method, path, headers, body) and interpret its response's status code. You know an API is a contract, a menu, a promise.
+<br />
+In the **next chapter**, these verbs fit a pattern that will stay with you: the four operations every application performs on data. It is called **CRUD**, and once you see it, you see it everywhere.
+</Card>

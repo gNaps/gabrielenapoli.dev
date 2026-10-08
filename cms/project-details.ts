@@ -9,6 +9,8 @@ export interface ProjectDetails {
   chapter: LocalizedText;
   year: LocalizedText;
   role: string;
+  status?: string;
+  platform: string;
   sfx: string;
   tagline: LocalizedText;
   blocks: { label: LocalizedText; body: LocalizedText }[];
@@ -19,11 +21,13 @@ export const projectDetails: Record<string, ProjectDetails> = {
   napsql: {
     chapter: { en: "CASE 01 · NAPSQL", it: "CASO 01 · NAPSQL" },
     year: { en: "2025 - Present", it: "2025 - Oggi" },
-    role: "LEAD DEV",
+    role: "Creator & developer",
+    status: "Version 2.0 in development",
+    platform: "Desktop · macOS, Windows & Linux",
     sfx: "ドン!",
     tagline: {
-      en: "A fast, modern SQL client for people who live inside a database: the SSMS alternative that boots in a second.",
-      it: "Un client SQL moderno e veloce per chi vive dentro un database: l'alternativa a SSMS che parte in un secondo.",
+      en: "A fast, modern SQL client for people who live inside a database: a lighter alternative to SSMS.",
+      it: "Un client SQL moderno e veloce per chi vive dentro un database: un'alternativa più leggera a SSMS.",
     },
     blocks: [
       {
@@ -50,24 +54,24 @@ export const projectDetails: Record<string, ProjectDetails> = {
     ],
     results: [
       {
-        big: "<1s",
+        big: "Desktop",
         label: {
-          en: "cold start on a laptop",
-          it: "avvio a freddo su un portatile",
+          en: "cross-platform SQL Server client",
+          it: "client SQL Server multipiattaforma",
         },
       },
       {
-        big: "3",
+        big: "Multiple",
         label: {
-          en: "live connections side by side",
-          it: "connessioni attive affiancate",
+          en: "live database connections",
+          it: "connessioni database attive",
         },
       },
       {
-        big: "100%",
+        big: "Keyboard",
         label: {
-          en: "keyboard-navigable editor",
-          it: "editor navigabile da tastiera",
+          en: "query editor built around shortcuts",
+          it: "editor di query con scorciatoie",
         },
       },
     ],
@@ -75,7 +79,8 @@ export const projectDetails: Record<string, ProjectDetails> = {
   venticritico: {
     chapter: { en: "CASE 02 · VENTICRITICO", it: "CASO 02 · VENTICRITICO" },
     year: { en: "2024 - Present", it: "2024 - Oggi" },
-    role: "SOLO BUILD",
+    role: "Creator & developer",
+    platform: "Web app",
     sfx: "バン!",
     tagline: {
       en: "Run your D&D campaigns with a natural 20: sessions, NPCs, loot and notes in one place, live across the table.",
@@ -113,10 +118,10 @@ export const projectDetails: Record<string, ProjectDetails> = {
         },
       },
       {
-        big: "<100ms",
+        big: "Realtime",
         label: {
-          en: "realtime sync at the table",
-          it: "sincronizzazione al tavolo",
+          en: "shared campaign updates",
+          it: "aggiornamenti condivisi della campagna",
         },
       },
       {
@@ -131,7 +136,8 @@ export const projectDetails: Record<string, ProjectDetails> = {
   oakbot: {
     chapter: { en: "CASE 03 · OAKBOT", it: "CASO 03 · OAKBOT" },
     year: { en: "2023", it: "2023" },
-    role: "SOLO BUILD",
+    role: "Creator & developer",
+    platform: "Telegram",
     sfx: "ピカ!",
     tagline: {
       en: "A smart Pokédex right inside Telegram: fuzzy search, inline results, no app to install.",
@@ -155,8 +161,8 @@ export const projectDetails: Record<string, ProjectDetails> = {
       {
         label: { en: "STACK", it: "STACK" },
         body: {
-          en: "Node.js with a cached API layer over PokéAPI, so repeated lookups are instant and the upstream stays happy.",
-          it: "Node.js con un layer API in cache sopra PokéAPI: le ricerche ripetute sono immediate e l'upstream resta sereno.",
+          en: "Node.js and grammY, connected to a GraphQL Pokémon API for stats, type matchups and evolution data.",
+          it: "Node.js e grammY, collegati a un’API GraphQL Pokémon per statistiche, tipi ed evoluzioni.",
         },
       },
     ],
@@ -166,8 +172,11 @@ export const projectDetails: Record<string, ProjectDetails> = {
         label: { en: "apps to install", it: "app da installare" },
       },
       {
-        big: "~80ms",
-        label: { en: "cached response time", it: "risposta con cache" },
+        big: "Commands",
+        label: {
+          en: "stats, type matchups and evolutions",
+          it: "statistiche, tipi ed evoluzioni",
+        },
       },
       {
         big: "2",
@@ -178,7 +187,8 @@ export const projectDetails: Record<string, ProjectDetails> = {
   regalando: {
     chapter: { en: "CASE 04 · REGALANDO", it: "CASO 04 · REGALANDO" },
     year: { en: "2023 - 2024", it: "2023 - 2024" },
-    role: "FULLSTACK",
+    role: "Fullstack developer",
+    platform: "Web · iOS · Android",
     sfx: "パッ!",
     tagline: {
       en: "The gift-giving experience, reimagined: shared wishlists and group gifts without the spoilers.",

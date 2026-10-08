@@ -1,86 +1,67 @@
 import Footer from "@/components/layout/footer";
 import Header from "@/components/layout/header";
-import Marquee from "@/components/layout/marquee";
-import SpeedLines from "@/components/layout/speed-lines";
-import { LanguageProvider } from "@/components/providers/language-provider";
+import ScrollEffects from "@/components/layout/scroll-effects";
 import type { Metadata } from "next";
-import { Bebas_Neue, JetBrains_Mono } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 
-/* Latin-only families go through next/font. The two Japanese families
-   (Shippori Mincho B1, Zen Kaku Gothic New) are loaded with a classic
-   Google Fonts <link> instead: they ship as ~120 unicode-range slices
-   that `subsets: ["latin"]` cannot filter, so next/font would inline
-   hundreds of @font-face rules (~544 kB of blocking CSS). With the
-   <link> the browser downloads only the slices actually used. */
-const bebas = Bebas_Neue({
+const geist = Geist({
   subsets: ["latin"],
-  weight: "400",
   display: "swap",
-  variable: "--font-display",
+  variable: "--font-sans",
 });
-
-const jetbrains = JetBrains_Mono({
+const mono = Geist_Mono({
   subsets: ["latin"],
-  weight: ["400", "600"],
   display: "swap",
   variable: "--font-mono",
 });
-
 export const metadata: Metadata = {
-  title: "Gabriele Napoli | Fullstack JavaScript Developer in Milan",
+  metadataBase: new URL("https://gabrielenapoli.dev"),
+  title: "Gabriele Napoli | Fullstack Developer in Milan",
   description:
-    "Fullstack JavaScript developer based in Milan, building fast and scalable web applications with Angular, React and Node.js.",
+    "Fullstack developer and AI enthusiast in Milan. Building reliable web apps with Angular, React, Next.js and Node.js since 2018.",
+  openGraph: {
+    title: "Gabriele Napoli | Fullstack Developer in Milan",
+    description:
+      "Interfaces that feel right. Backends that hold. A human eye on every line.",
+    siteName: "Gabriele Napoli",
+    locale: "en_US",
+    type: "website",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Gabriele Napoli — Fullstack developer in Milan",
+      },
+    ],
+  },
+  twitter: { card: "summary_large_image" },
+  robots: { index: true, follow: true },
+  icons: { icon: "/favicon.svg" },
 };
-
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={`${bebas.variable} ${jetbrains.variable}`}
-    >
-      <head>
-        <script
-          // Applies the stored theme before first paint (no flash) and
-          // migrates the legacy `theme` localStorage key to `gn-theme`.
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('gn-theme')||localStorage.getItem('theme');if(t==='dark'||t==='light'){document.documentElement.dataset.theme=t;localStorage.setItem('gn-theme',t);}}catch(e){}})();`,
-          }}
-        />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap"
-          rel="stylesheet"
-        />
+    <html lang="en" className={`${geist.variable} ${mono.variable}`}>
+      <body>
+        <a className="skip-link" href="#main-content">
+          Skip to content
+        </a>
+        <Header />
+        <ScrollEffects />
+        <main id="main-content" tabIndex={-1}>
+          {children}
+        </main>
+        <Footer />
         <Script
           id="goatcounter"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
           data-goatcounter="https://napsryu.goatcounter.com/count"
-          src="//gc.zgo.at/count.js"
-          async
+          src="https://gc.zgo.at/count.js"
         />
-        <link rel="icon" href="/favicon.svg" />
-      </head>
-      <body>
-        <LanguageProvider>
-          <div className="halftone" aria-hidden />
-          <SpeedLines />
-          <Header />
-          <main>{children}</main>
-          <Marquee />
-          <Footer />
-        </LanguageProvider>
       </body>
     </html>
   );

@@ -1,6 +1,4 @@
-"use client";
-
-import { useLang } from "@/components/providers/language-provider";
+import { getSiteCopy } from "@/cms/site-copy";
 import { Course } from "@/models/course.model";
 import { Story } from "@/models/story.model";
 import Link from "next/link";
@@ -13,7 +11,7 @@ export default function BlogGrid({
   stories: Story[];
   courses?: Course[];
 }) {
-  const { t } = useLang();
+  const { t } = getSiteCopy();
 
   return (
     <div className="blog-grid">
@@ -24,7 +22,7 @@ export default function BlogGrid({
         <Link
           key={story.slug}
           href={`/stories/${story.slug}`}
-          className="blog-card panel sh-8 press press--sm"
+          className="blog-card"
         >
           <div className="blog-card__meta">
             <span className="blog-card__kind">{t.articleKind}</span>

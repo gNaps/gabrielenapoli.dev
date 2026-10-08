@@ -1,5 +1,4 @@
 <Card>
-## 05 - Signals: la reattività che si legge
 
 <br />
 Te li ho anticipati due volte, è ora di parlarne davvero: i **signals** sono il
@@ -11,7 +10,7 @@ In questo capitolo vediamo cosa sono i signals, i **computed**, i
 **linked signals**, gli **effect** e il nuovo **control flow** del template
 (`@if` e `@for`), che con i signals va a braccetto.
 <br />
-### 🔔 Cosa sono i signals
+## 🔔 Cosa sono i signals
 <br />
 Un **signal** è un contenitore per un valore, con un superpotere: tiene traccia
 di chi lo sta usando. Quando il valore cambia, tutte le parti dell'app che lo
@@ -43,7 +42,7 @@ proprio il trucco: chiamando la funzione, Angular sa esattamente *chi* legge
 rende la reattività dei signals leggibile dall'alto in basso: segui le chiamate
 e sai chi dipende da chi.
 <br />
-### ⚙️ Computed: valori derivati
+## ⚙️ Computed: valori derivati
 <br />
 Un **computed** è un signal il cui valore si calcola a partire da altri signals.
 Non lo aggiorni mai a mano: si ricalcola da solo quando cambiano le sue
@@ -65,7 +64,7 @@ cambiano. Usali ogni volta che un dato è *derivabile* da altri: totali, filtri,
 flag di validità. Se ti accorgi di tenere sincronizzate a mano due proprietà,
 quasi sempre una delle due doveva essere un computed.
 <br />
-### 🔗 Linked signals
+## 🔗 Linked signals
 <br />
 C'è un caso che né `signal` né `computed` coprono bene: un valore che l'utente
 può modificare, ma che deve **resettarsi** quando cambia qualcosa a monte.
@@ -92,7 +91,7 @@ console.log(tagliaSelezionata()); // 'XS': selezione resettata
 > puoi mai fare `.set()` su di lui. Il linked signal è scrivibile come un signal
 > normale, ma torna a derivare il suo valore quando la sorgente cambia.
 
-### 🌀 Effect: reagire ai cambiamenti
+## 🌀 Effect: reagire ai cambiamenti
 <br />
 Un **effect** esegue del codice ogni volta che i signals che legge cambiano.
 Serve per i *side effect*: log, salvataggi in localStorage, sincronizzazioni con
@@ -118,7 +117,7 @@ la logica di derivazione dei dati. Se dentro un effect stai facendo `.set()` su
 un altro signal, fermati: quasi sempre quello che volevi era un computed o un
 linked signal.
 <br />
-### 🖥️ Il nuovo control flow: @if e @for
+## 🖥️ Il nuovo control flow: @if e @for
 <br />
 Da Angular 17 il template ha una sintassi nuova per condizioni e cicli: blocchi
 `@if` e `@for` scritti direttamente nel markup, senza importare niente. Prendono
@@ -153,7 +152,7 @@ il DOM necessario. C'è anche `@empty`, per il caso lista vuota:
 > `ng generate @angular/core:control-flow`). Ma per il codice nuovo usa i
 > blocchi: meno import, meno sorprese.
 
-### Mettiamo tutto insieme
+## Mettiamo tutto insieme
 <br />
 Un componente piccolo ma completo, con signal, computed e control flow:
 
@@ -197,7 +196,7 @@ export class CarrelloComponent {
 Niente subscription, niente gestione manuale degli aggiornamenti: cambi i dati
 e l'interfaccia segue. Tutto qui, ed è tanto.
 <br />
-### Dove siamo arrivati
+## Dove siamo arrivati
 <br />
 Ricapitolando i pezzi di oggi:
 <br />

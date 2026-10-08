@@ -13,6 +13,7 @@ export const allProjects: Project[] = [
     slug: "napsql",
     subtitle: "🗄️ A fast, modern SQL client: the SSMS alternative.",
     title: "NapSQL",
+    urlDownload: "https://github.com/gNaps/napsql-releases/releases",
     urlGithub: "",
     urlPreview: "",
     sfx: "ドン!",

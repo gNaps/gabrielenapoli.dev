@@ -1,0 +1,77 @@
+<Card>
+
+<br />
+A term has been everywhere lately: **vibe coding**. Andrej Karpathy coined it in early 2025 to describe an approach where you surrender completely to AI: roughly describe what you want, accept the code without really reading it, and if something goes wrong, paste the error and ask it to fix it. Keep going by feel until it "more or less works".
+<br />
+And it does work. That is the problem.
+<br />
+## 🎧 The appeal of vibe coding
+<br />
+Let us be honest: vibe coding is **fun**. Describe an idea, and three minutes later you have a working page. No documentation to read, no setup, none of the effort that usually separates an idea from its first demo. For a weekend prototype to show on Monday, or to explore an unfamiliar API, it is a fantastic tool. I use it too, and I am not ashamed of it.
+<br />
+The trouble starts when that code stops being an experiment and becomes *the project*. Because vibe coding has a hidden cost, and you pay interest on it.
+<br />
+## 🕳️ The code nobody has read
+<br />
+The implicit deal in vibe coding is: "I will not read the code; it works anyway." But in professional software, code that works today is only half the job. The other half is code somebody will need to **understand tomorrow**: to fix it, extend it and defend it.
+<br />
+That is where things unravel:
+<br />
+- **Debugging blind**: when something breaks (and it will), nobody knows where to look. You did not write it or read it: you are maintaining a system you do not know.
+- **Debt that quietly piles up**: every "you fix it" iteration adds another layer. AI does not spontaneously refactor: it patches. After twenty patches, you have an architecture nobody chose.
+- **Security**: unvalidated inputs, concatenated queries, secrets in the code. AI also reproduces bad patterns it has encountered, and anyone who does not read the code will miss them.
+- **Responsibility**: when the code goes to production, your name is on the commit. "The AI wrote it" is never an acceptable answer in a code review.
+<br />
+There is also a subtler error of perspective. Vibe coding optimizes the speed of *writing* code. But writing code was never the bottleneck: the hard parts of this job are **deciding what to build** and **checking that it is right**. Giving in to the vibes does not help with those: it makes them worse, because you give up precisely the moments where thinking happens.
+<br />
+## 📋 The alternative: spec-driven development
+<br />
+The answer is not to go back to writing everything by hand. It is to use AI **the other way around**: rather than delegating decisions and keeping the typing, delegate the typing and keep the decisions. This is called **spec-driven development**: write the specification first, then have it implemented.
+<br />
+A spec is not a forty-page corporate document. For a single feature, a few carefully written lines are enough:
+
+```markdown
+## Feature: status filter in the game library
+
+Behavior:
+- Users can filter games by status: all, to play, playing, completed.
+- The filter is a group of buttons above the list.
+- The active filter is highlighted.
+
+Constraints:
+- Filter state lives in a signal; the filtered list is a computed.
+- No new dependencies.
+- Title counters do not change with the filter (they always count everything).
+
+Acceptance criteria:
+- With the "playing" filter, I see only games currently being played.
+- Changing filters does not reload data from the server.
+- An empty list for the selected filter shows a dedicated message.
+```
+
+Look at what happened when you wrote it: you had to decide *where the state lives*, *what must not change* and *how the edge case behaves*. A spec is not bureaucracy: **it is thought put into writing before it becomes code**. And it is exactly the material an LLM works best with: clear constraints and verifiable criteria.
+<br />
+The complete workflow, the one I actually use:
+<br />
+1. **Write the spec**: behavior, constraints, acceptance criteria. Ten minutes well spent.
+2. **Have the AI implement it**, providing the complete spec.
+3. **Review against the spec**, rather than by feel: is every criterion satisfied? Are the constraints respected?
+4. **Ask for tests** that demonstrate the acceptance criteria: an executable spec is worth twice as much.
+5. Fix what does not add up **by updating the spec**, rather than piling up "fix it" messages in the chat.
+
+> Step 3 is the most important. "Reviewing by feel" is not a review: without written criteria, reviewing AI code boils down to "looks okay", which is precisely vibe coding with an extra step. The spec changes the question from "does this convince you?" to "does this satisfy these five points?". You can answer the second; all you can do with the first is nod.
+
+## ⚖️ So is vibe coding evil?
+<br />
+No, and that deserves to be said without moralizing. Vibe coding is perfectly fine when the code is **disposable by definition**: a spike to see whether an idea holds up, a script you run once, a toy project for learning. In those cases, maintenance costs nothing because there will be no maintenance.
+<br />
+My rule is simple: **if the code has a future, it needs a spec**. If it will end up in a shared repository, in front of users, or even just in front of me three months from now, someone needs to have thought it through. And as long as I am signing the commit, that someone is me.
+<br />
+## 🧭 The lesson is always the same
+<br />
+The beginner's guide on this site includes a sentence that sums it up: *AI accelerates people who can judge what it produces*. Vibe coding gives up judgment and keeps the acceleration: it looks like a bargain until the bill arrives. Spec-driven development does the opposite: it puts judgment at the beginning (the spec) and the end (review against the criteria), leaving AI the part in between, which is what it does best.
+<br />
+The irony is that none of this is new: clear requirements, acceptance criteria and tests that demonstrate them have been software engineering for fifty years. AI has not changed the rules of the game. It has simply made ignoring them much more expensive, because unconsidered code can now be produced at industrial speed.
+<br />
+Write the spec. As always, your future self will thank you.
+</Card>
